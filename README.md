@@ -14,11 +14,11 @@ Nossa equipe foi dividida para cobrir todo o ciclo de vida do desenvolvimento de
 
 ## 🛠️ Tecnologias Utilizadas
 
-*   **Backend:** 
+*   **Backend:** Python (FastAPI + SQLAlchemy)
 *   **Frontend:** React com TypeScript
-*   **Banco de Dados:** 
+*   **Banco de Dados:** PostgreSQL (Docker)
 *   **Integração Contínua (CI):** GitHub Actions
-*   **Testes:** 
+*   **Testes:** Pytest / Unitest
 
 ---
 
@@ -92,3 +92,28 @@ A documentação detalhada do projeto foi construída na **Wiki do GitHub**. Lá
 
 Siga os passos abaixo para rodar a aplicação na sua máquina:
 
+### 1. Requisitos Prévios
+* **Docker** e **Docker Compose** instalados
+* **Python 3.11+** ou **uv** instalado
+
+### 2. Iniciar o Banco de Dados (PostgreSQL)
+```bash
+# Subir o container do PostgreSQL em background
+docker compose up -d
+```
+
+### 3. Configuração do Backend (FastAPI)
+```bash
+# Usando uv (Recomendado)
+uv venv
+uv sync
+uv run uvicorn app.main:app --reload
+
+# Ou usando venv e pip tradicional
+python -m venv .venv
+source .venv/bin/activate  # No Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+A API estará acessível em `http://localhost:8000` e a documentação interativa (Swagger UI) em `http://localhost:8000/docs`.
