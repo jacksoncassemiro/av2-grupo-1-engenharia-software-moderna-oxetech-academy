@@ -1,16 +1,78 @@
+# Sobe o stack completo em qualquer maquina: banco + API + frontend.
+#   docker compose up -d --build
+#   docker compose exec backend alembic upgrade head
+#   docker compose exec backend python -m app.seeds.seed
+#
+# Frontend: http://localhost:3000   |   API/Swagger: http://localhost:8000/docs
+
+name: clinica-mvp
+
 services:
   postgres:
     image: postgres:16-alpine
     container_name: clinica_db
-    restart: always
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: clinica_db
+      POSTGRES_USER: ${POSTGRES_USER:-clinica}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-clinica}
+      POSTGRES_DB: ${POSTGRES_DB:-clinica_db}
     ports:
-      - "5433:5432"
+      - "${POSTGRES_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clinica} -d ${POSTGRES_DB:-clinica_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      target: runtime
+      args:
+        INSTALL_DEV: "true"
+    container_name: clinica_api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-clinica}:${POSTGRES_PASSWORD:-clinica}@postgres:5432/${POSTGRES_DB:-clinica_db}
+      APP_ENV: ${APP_ENV:-development}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-troque-esta-chave-em-producao}
+      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES:-1440}
+      CANCELAMENTO_ANTECEDENCIA_HORAS: ${CANCELAMENTO_ANTECEDENCIA_HORAS:-24}
+      TIMEZONE: ${TIMEZONE:-America/Maceio}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      SEED_ATENDENTE_NOME: ${SEED_ATENDENTE_NOME:-Atendente Padrao}
+      SEED_ATENDENTE_LOGIN: ${SEED_ATENDENTE_LOGIN:-recepcao@clinica.com}
+      SEED_ATENDENTE_SENHA: ${SEED_ATENDENTE_SENHA:-admin123}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    container_name: clinica_web
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      BACKEND_INTERNAL_URL: http://backend:8000
+      NEXT_PUBLIC_API_URL: /api
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
 
 volumes:
   postgres_data:

@@ -1,0 +1,33 @@
+name: Bug
+description: Defeito encontrado em teste ou uso
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: severidade
+    attributes:
+      label: Severidade
+      options: [Critica, Alta, Media, Baixa]
+    validations:
+      required: true
+  - type: input
+    id: caso
+    attributes:
+      label: Caso de teste
+      placeholder: CT07
+  - type: textarea
+    id: passos
+    attributes:
+      label: Passos para reproduzir
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Resultado esperado vs. obtido
+    validations:
+      required: true
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Evidencia (screenshot / log)

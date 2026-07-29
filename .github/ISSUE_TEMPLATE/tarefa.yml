@@ -1,0 +1,30 @@
+name: Tarefa tecnica
+description: Tarefa de backend, frontend, QA ou infra
+title: "[AREA] "
+labels: ["tarefa"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [BACKEND, FRONTEND, QA, INFRA, DOCS]
+    validations:
+      required: true
+  - type: dropdown
+    id: prioridade
+    attributes:
+      label: Prioridade
+      options: [OBRIGATORIO, DESEJAVEL]
+    validations:
+      required: true
+  - type: input
+    id: us
+    attributes:
+      label: User Story relacionada
+      placeholder: US-08
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descricao
+    validations:
+      required: true

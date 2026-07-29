@@ -1,0 +1,138 @@
+---
+name: clinica-frontend
+description: Cria telas do MVP da clinica com Next.js App Router, TypeScript e Mantine v9. Use quando a tarefa envolver pagina, formulario, tabela, modal, notificacao, guarda de rota por perfil, chamada a API ou teste Vitest no frontend deste projeto.
+---
+
+# Frontend da clínica — como implementar
+
+Stack: Next.js App Router + React + TypeScript **strict** + **Mantine v9** + **yarn**.
+Provider e `ColorSchemeScript` já configurados em `src/app/layout.tsx` — não duplicar.
+
+## Regras não negociáveis
+
+1. **`'use client'`** no topo de qualquer página/componente com estado, evento, hook ou
+   componente interativo do Mantine. Componentes Mantine não funcionam em Server Component.
+2. **Nenhuma outra biblioteca de UI.** Sem Tailwind, MUI, shadcn, styled-components.
+   Estilo: props do Mantine (`mt`, `p`, `c`, `gap`) ou CSS Module com `postcss-preset-mantine`.
+3. **HTTP só via `src/lib/api.ts`.** Nunca `fetch` em componente. O `api()` já injeta o
+   Bearer token e converte erro da API em `ApiError` com mensagem legível.
+4. **Tipos vêm de `src/types/dominio.ts`**, espelhando o backend. Sem `any`.
+5. **Testes importam de `@test-utils`**, nunca de `@testing-library/react` direto —
+   o `render` customizado é o que injeta o `MantineProvider`.
+
+## Estrutura de rotas
+
+Route groups por perfil, com guarda no `layout.tsx` do grupo (RF18):
+
+```
+src/app/login/page.tsx              US-00
+src/app/primeiro-acesso/page.tsx    US-00 (ativar login / auto-cadastro)
+src/app/(paciente)/…                US-04, US-06, US-07, US-08, US-10, US-11
+src/app/(atendente)/…               US-01, US-02, US-03, US-05, US-09, US-12, US-13, US-14
+```
+
+Mapa completo em `frontend/src/app/README.md`.
+
+## Formulário — padrão do projeto
+
+`@mantine/form` com `validate`; erro da API vira notificação, não `alert`:
+
+```tsx
+'use client';
+
+import { Button, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+
+import { api, ApiError } from '@/lib/api';
+import { cpfEhValido, formatarCpf } from '@/lib/cpf';
+
+export function FormularioPaciente() {
+  const form = useForm({
+    initialValues: { nome: '', cpf: '', telefone: '', email: '' },
+    validate: {
+      nome: (v) => (v.trim().length < 3 ? 'Informe o nome completo' : null),
+      cpf: (v) => (cpfEhValido(v) ? null : 'CPF invalido'),          // RN07
+      email: (v) => (!v || /^\S+@\S+$/.test(v) ? null : 'E-mail invalido'), // RN08
+    },
+  });
+
+  async function enviar(valores: typeof form.values) {
+    try {
+      await api('/pacientes', { method: 'POST', body: valores });
+      notifications.show({ message: 'Paciente cadastrado', color: 'green' });
+      form.reset();
+    } catch (erro) {
+      // RN01/RN02 chegam aqui como 409 com mensagem pronta do backend.
+      notifications.show({
+        message: erro instanceof ApiError ? erro.message : 'Falha inesperada',
+        color: 'red',
+      });
+    }
+  }
+
+  return (
+    <form onSubmit={form.onSubmit(enviar)}>
+      <TextInput label="Nome" withAsterisk {...form.getInputProps('nome')} />
+      <TextInput
+        label="CPF"
+        withAsterisk
+        {...form.getInputProps('cpf')}
+        onChange={(e) => form.setFieldValue('cpf', formatarCpf(e.currentTarget.value))}
+      />
+      <Button type="submit" mt="md" loading={form.submitting}>Salvar</Button>
+    </form>
+  );
+}
+```
+
+## Componentes por caso de uso
+
+| Precisa de | Use |
+|---|---|
+| Formulário | `@mantine/form` + `TextInput`, `Select`, `PasswordInput` |
+| Data / hora | `@mantine/dates`: `DatePickerInput`, `TimeInput` (+ `dayjs`) |
+| Confirmação | `modals.openConfirmModal` (`@mantine/modals`) |
+| Feedback | `notifications.show` (`@mantine/notifications`) |
+| Status da consulta | `Badge` com cor por status |
+| Listagem | `Table` + `Table.Thead/Tbody/Tr/Td` |
+| Layout autenticado | `AppShell` com `AppShell.Navbar` |
+| Carregando | `Skeleton` ou `LoadingOverlay` |
+
+Cores sugeridas por status (RN06): SOLICITADA `yellow`, CONFIRMADA `teal`,
+FINALIZADA `gray`, CANCELADA `red`.
+
+## Campo único de login (US-00)
+
+A tela de login tem **um** campo "CPF ou E-mail". Use `pareceEmail()` de `src/lib/cpf.ts`
+para decidir se aplica máscara de CPF enquanto o usuário digita. O backend normaliza
+os dois formatos — não envie o CPF com máscara.
+
+## Teste com Vitest
+
+```tsx
+import { describe, expect, it } from 'vitest';
+import { render, screen, userEvent } from '@test-utils';
+
+import { FormularioPaciente } from '@/components/FormularioPaciente';
+
+describe('FormularioPaciente', () => {
+  it('bloqueia envio com CPF invalido (RN07)', async () => {
+    render(<FormularioPaciente />);
+    await userEvent.type(screen.getByLabelText(/CPF/i), '11111111111');
+    await userEvent.click(screen.getByRole('button', { name: /salvar/i }));
+    expect(await screen.findByText('CPF invalido')).toBeInTheDocument();
+  });
+});
+```
+
+`async` Server Components não são testáveis no Vitest (ADR-007) — mantenha a lógica
+testável em Client Components ou em funções puras de `src/lib/`.
+
+## Checklist antes de abrir PR
+
+- [ ] `yarn lint && yarn typecheck && yarn test`
+- [ ] `'use client'` onde há interatividade
+- [ ] Zero `any`, zero `fetch` direto, zero `console.log`
+- [ ] Erro da API tratado com notificação
+- [ ] Rota protegida pelo guard do route group
