@@ -94,11 +94,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: yarn
-          cache-dependency-path: frontend/yarn.lock
 
       - name: Instalar dependencias
-        run: yarn install --frozen-lockfile
+        # --frozen-lockfile e o modo correto e sera usado a partir do momento em
+        # que o yarn.lock estiver commitado. O fallback existe apenas para o
+        # primeiro run da equipe, antes do lockfile entrar no repositorio.
+        run: |
+          if [ -f yarn.lock ]; then
+            yarn install --frozen-lockfile
+          else
+            echo "::warning::yarn.lock ausente - rode 'yarn install' e comite o lockfile."
+            yarn install
+          fi
 
       - name: Lint (ESLint)
         run: yarn lint
