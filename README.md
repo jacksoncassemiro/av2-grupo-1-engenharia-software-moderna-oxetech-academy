@@ -295,10 +295,31 @@ usarem. Para dúvidas de API do Mantine: `https://mantine.dev/llms.txt`.
 ├── frontend/                 Next.js + TypeScript + Mantine
 ├── docs/                     documentação + ADRs + material das aulas
 ├── wiki/                     espelho do Wiki do GitHub
-├── scripts/                  publicar wiki · popular board
+├── scripts/                  publicar wiki · popular board (.ps1 e .sh)
 ├── .claude/skills/           skills de projeto para IA
 └── .github/                  CI, templates de PR e Issue
 ```
+
+---
+
+## 🪟 Windows
+
+A maioria da equipe está no Windows. Os scripts de automação têm versão **PowerShell**:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # 1x por sessão
+
+.\scripts\popular-board.ps1 -Auditar     # audita o Kanban antes de mexer
+.\scripts\criar-labels.ps1               # labels dos templates de Issue
+.\scripts\publicar-wiki.ps1 -DryRun      # publica a Wiki
+python scripts\gerar-wiki.py              # regenera wiki/ a partir de docs/
+```
+
+Rodar o `.sh` no PowerShell **não faz nada** — e sem o `Set-ExecutionPolicy` o `.ps1` falha em
+silêncio. Detalhes e solução de problemas em [`scripts/README.md`](scripts/README.md).
+
+Para `make`, use Git Bash ou WSL. Sem `make`, os comandos Docker equivalentes estão no início
+deste README.
 
 ---
 

@@ -11,13 +11,40 @@ Provider e `ColorSchemeScript` já configurados em `src/app/layout.tsx` — não
 ## Regras não negociáveis
 
 1. **`'use client'`** no topo de qualquer página/componente com estado, evento, hook ou
-   componente interativo do Mantine. Componentes Mantine não funcionam em Server Component.
-2. **Nenhuma outra biblioteca de UI.** Sem Tailwind, MUI, shadcn, styled-components.
+   componente interativo do Mantine.
+2. **Nunca use compound component em Server Component.** `List.Item`, `Popover.Target`,
+   `Table.Thead`, `Tabs.Tab`, `Menu.Item`, `Card.Section`, `AppShell.Navbar`... Propriedades
+   estáticas não atravessam a fronteira RSC — chegam como `undefined` e o **`next build` quebra
+   no prerender**:
+
+   ```
+   Error occurred prerendering page "/"
+   Element type is invalid: expected a string ... but got: undefined
+   ```
+
+   Esse erro **não aparece** no `tsc` (o tipo existe), nem no ESLint, nem no Vitest (jsdom não
+   tem fronteira RSC). Só no build. As duas correções:
+
+   ```tsx
+   // A) marcar como Client Component
+   'use client';
+   import { List } from '@mantine/core';
+   <List><List.Item>…</List.Item></List>
+
+   // B) manter Server Component e usar o import nomeado  ← preferível quando não há interação
+   import { List, ListItem } from '@mantine/core';
+   <List><ListItem>…</ListItem></List>
+   ```
+
+   `frontend/__tests__/server-components.test.ts` varre `src/app/` e falha se algum arquivo sem
+   `'use client'` usar compound component. Se você adicionar um componente novo com compounds,
+   inclua o nome dele na lista `COM_COMPOUND` desse teste.
+3. **Nenhuma outra biblioteca de UI.** Sem Tailwind, MUI, shadcn, styled-components.
    Estilo: props do Mantine (`mt`, `p`, `c`, `gap`) ou CSS Module com `postcss-preset-mantine`.
-3. **HTTP só via `src/lib/api.ts`.** Nunca `fetch` em componente. O `api()` já injeta o
+4. **HTTP só via `src/lib/api.ts`.** Nunca `fetch` em componente. O `api()` já injeta o
    Bearer token e converte erro da API em `ApiError` com mensagem legível.
-4. **Tipos vêm de `src/types/dominio.ts`**, espelhando o backend. Sem `any`.
-5. **Testes importam de `@test-utils`**, nunca de `@testing-library/react` direto —
+5. **Tipos vêm de `src/types/dominio.ts`**, espelhando o backend. Sem `any`.
+6. **Testes importam de `@test-utils`**, nunca de `@testing-library/react` direto —
    o `render` customizado é o que injeta o `MantineProvider`.
 
 ## Estrutura de rotas

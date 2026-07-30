@@ -148,8 +148,12 @@ Justificativa: `docs/06-design-patterns.md` e `docs/adr/ADR-006-design-patterns.
   `src/app/layout.tsx` — não duplicar.
 - Componentes Mantine **não funcionam em Server Components**. Página com componente
   interativo precisa de `'use client'` no topo.
-- Compound components (`Popover.Target`) só em Client Component; alternativa é a sintaxe
-  `PopoverTarget`.
+- **Compound components (`List.Item`, `Popover.Target`, `Table.Thead`) NÃO funcionam em Server
+  Component.** Propriedades estáticas não atravessam a fronteira RSC: chegam como `undefined` e
+  o `next build` quebra no prerender com *"Element type is invalid ... got: undefined"*.
+  O erro **não** aparece no `tsc`, nem no ESLint, nem no Vitest — só no build.
+  Solução: `'use client'` no topo, **ou** import nomeado (`ListItem`, `PopoverTarget`).
+  `frontend/__tests__/server-components.test.ts` é a guarda que antecipa isso para o `yarn test`.
 - **Não instale outra biblioteca de UI** (Tailwind, MUI, shadcn). Estilo pontual: CSS Modules
   com `postcss-preset-mantine`, ou props do Mantine (`mt`, `p`, `c`).
 - Formulários: `@mantine/form` (`useForm` com `validate`). Datas: `@mantine/dates` + `dayjs`.
@@ -202,6 +206,16 @@ make lint           # ruff + eslint + tsc
 make migration m="cria tabela consulta"
 make seed           # idempotente, pode rodar quantas vezes quiser
 ```
+
+**Windows sem `make`** (a maioria da equipe): use o Docker direto — ver README §"Rodar em 3
+comandos". Os scripts de automação têm versão PowerShell: `scripts\*.ps1`. Antes de rodar:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Sem isso o `.ps1` falha **em silêncio** — e rodar o `.sh` no PowerShell também não faz nada.
+Detalhes em `scripts/README.md`.
 
 Frontend: http://localhost:3000 · Swagger: http://localhost:8000/docs
 Login inicial: `recepcao@clinica.com` / `admin123` (do `.env`)
