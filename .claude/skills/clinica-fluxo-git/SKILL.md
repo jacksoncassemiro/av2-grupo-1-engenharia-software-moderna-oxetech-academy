@@ -84,11 +84,13 @@ git push origin main develop --tags
 
 ## Board (GitHub Projects)
 
-Colunas: **Backlog → Ready → In progress → In review → Done**
+Colunas: **To Do → In Dev → Code Review → In QA → UAT → Done**
 
-- Ao começar: mova para *In progress* e se atribua. WIP máximo **2 itens por pessoa**.
-- Ao abrir PR: mova para *In review*.
-- *Done* só depois do merge em `develop` **e** critérios de aceite validados pelo PO.
+- Ao começar: mova para *In Dev* e se atribua. WIP máximo **2 itens por pessoa**.
+- Ao abrir PR: mova para *Code Review*.
+- Após o merge: *In QA* (QA executa o caso de teste e coleta evidência).
+- Depois: *UAT* (PO percorre os critérios de aceite).
+- *Done* só depois do merge em `develop` **e** aprovação do PO em *UAT*.
 
 Itens podem ser **draft items** (só no board, sem Issue) ou Issues do repo.
 Para popular em lote: `scripts/popular-board.sh` (ver `--help`).

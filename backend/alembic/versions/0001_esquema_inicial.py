@@ -34,24 +34,27 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
-# Os ENUMs sao declarados com create_type=False para que a criacao/remocao do tipo
-# seja explicita, e nao um efeito colateral do create_table.
-tipo_usuario = sa.Enum("PACIENTE", "ATENDENTE", name="tipo_usuario", create_type=False)
+# ATENCAO: nao chame `.create()` nestes ENUMs no upgrade.
+#
+# `op.create_table()` com uma coluna `sa.Enum` ja dispara `CREATE TYPE` no hook
+# `before_create` da tabela. Criar o tipo antes, na mao, faz o segundo CREATE
+# estourar `psycopg.errors.DuplicateObject: type "tipo_usuario" already exists`.
+# (`create_type=False` so existe em `sqlalchemy.dialects.postgresql.ENUM`, nao no
+# `sa.Enum` generico - passar isso aqui nao suprime nada.)
+#
+# Cada ENUM e usado por exatamente UMA tabela, entao o auto-create roda uma vez so.
+# No downgrade o DROP TABLE nao remove o tipo, por isso ali a remocao e explicita.
+tipo_usuario = sa.Enum("PACIENTE", "ATENDENTE", name="tipo_usuario")
 status_consulta = sa.Enum(
     "SOLICITADA",
     "CONFIRMADA",
     "CANCELADA",
     "FINALIZADA",
     name="status_consulta",
-    create_type=False,
 )
 
 
 def upgrade() -> None:
-    conexao = op.get_bind()
-    tipo_usuario.create(conexao, checkfirst=True)
-    status_consulta.create(conexao, checkfirst=True)
-
     # ------------------------------------------------------------------ especialidade
     op.create_table(
         "especialidade",
@@ -203,6 +206,7 @@ def downgrade() -> None:
     op.drop_table("paciente")
     op.drop_table("especialidade")
 
+    # DROP TABLE nao remove o tipo ENUM - precisa ser explicito.
     conexao = op.get_bind()
     status_consulta.drop(conexao, checkfirst=True)
     tipo_usuario.drop(conexao, checkfirst=True)

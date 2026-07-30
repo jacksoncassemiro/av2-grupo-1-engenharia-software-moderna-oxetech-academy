@@ -67,7 +67,7 @@ Detalhes em [13-papeis-e-responsabilidades.md](Papeis-e-Responsabilidades).
 
 ## 4. Definition of Ready
 
-Item só entra em *Ready* (e portanto só pode ser puxado) se:
+Item só entra em *To Do* (e portanto só pode ser puxado) se:
 
 - [ ] User Story no formato *Como… Quero… Para…*
 - [ ] Critérios de aceite em Gherkin (Dado / Quando / Então)
@@ -77,8 +77,8 @@ Item só entra em *Ready* (e portanto só pode ser puxado) se:
 - [ ] Estimativa acordada pelo time
 - [ ] Sem ambiguidade que exija decisão do PO durante a implementação
 
-Item sem DoR entra em *Backlog*, não em *Ready*. Puxar item não refinado é a origem do
-retrabalho descrito no case da plataforma educacional.
+Item sem DoR fica sem label de sprint e não pode ser puxado. Puxar item não refinado é a
+origem do retrabalho descrito no case da plataforma educacional.
 
 ---
 
@@ -105,15 +105,20 @@ Item só vai para *Done* se:
 Colunas já existentes no board:
 
 ```
-┌─────────────┬──────────┬──────────────┬──────────────┬──────────┐
-│   BACKLOG   │  READY   │ IN PROGRESS  │  IN REVIEW   │   DONE   │
-│             │          │  WIP: 2/pes  │   WIP: 5     │          │
-├─────────────┼──────────┼──────────────┼──────────────┼──────────┤
-│ priorizado  │ refinado │  em execução │ PR aberto    │ merged + │
-│ pelo PO     │ com DoR  │  com dono    │ aguardando   │ validado │
-│             │          │              │ revisão      │ pelo PO  │
-└─────────────┴──────────┴──────────────┴──────────────┴──────────┘
+┌──────────┬─────────────┬──────────────┬────────────┬───────────┬──────────┐
+│  TO DO   │   IN DEV    │ CODE REVIEW  │   IN QA    │    UAT    │   DONE   │
+│          │ WIP: 2/pes  │   WIP: 3     │  WIP: 5    │           │          │
+├──────────┼─────────────┼──────────────┼────────────┼───────────┼──────────┤
+│ refinado │ em execução │ PR aberto    │ QA execu-  │ PO valida │ merged + │
+│ com DoR  │ com dono    │ aguardando   │ tando o CT │ critérios │ aprovado │
+│          │             │ revisão      │            │ de aceite │          │
+└──────────┴─────────────┴──────────────┴────────────┴───────────┴──────────┘
 ```
+
+O fluxo tem duas etapas de qualidade antes de *Done*: **In QA** (o caso de teste é executado e
+a evidência coletada) e **UAT** (o PO percorre os critérios de aceite). Isso ataca direto o
+problema que o material aponta no case da EdTech — *"QA só atua no final (gargalo)"* — porque o
+item não passa por cima do QA para chegar a Done.
 
 ### Políticas explícitas do fluxo
 
@@ -121,8 +126,8 @@ O case da EdTech no material lista exatamente os problemas que estas políticas 
 
 | Problema apontado no material | Política adotada |
 |---|---|
-| "Não há limite de trabalho em progresso (WIP)" | **WIP 2 por pessoa** em *In progress* |
-| "Tarefas ficam paradas sem dono claro" | Item em *In progress* **tem** responsável ou volta a *Ready* |
+| "Não há limite de trabalho em progresso (WIP)" | **WIP 2 por pessoa** em *In Dev* |
+| "Tarefas ficam paradas sem dono claro" | Item em *In Dev* **tem** responsável ou volta a *To Do* |
 | "QA só atua no final (gargalo)" | QA escreve CTs no dia 2–3 e executa durante a sprint |
 | "Falta de métricas (lead time, cycle time)" | Métricas da §7, revisadas na Retrospectiva |
 | "Falta de visibilidade do fluxo" | Board é a única fonte de verdade do status |
@@ -142,11 +147,11 @@ O case da EdTech no material lista exatamente os problemas que estas políticas 
 
 | Métrica | Como medir | Alvo |
 |---|---|---|
-| **Cycle time** | Dias entre *In progress* e *Done* | ≤ 2 dias |
-| **Lead time** | Dias entre *Backlog* e *Done* | ≤ 5 dias |
+| **Cycle time** | Dias entre *In Dev* e *Done* | ≤ 2 dias |
+| **Lead time** | Dias entre *To Do* e *Done* | ≤ 5 dias |
 | **Throughput** | Itens concluídos por sprint | estável entre as sprints |
-| **WIP médio** | Itens em *In progress* | ≤ 8 (2 × 4 devs) |
-| **Taxa de retrabalho** | Itens que voltaram de *In review* ou *Done* | < 20% |
+| **WIP médio** | Itens em *In Dev* | ≤ 8 (2 × 4 devs) |
+| **Taxa de retrabalho** | Itens que voltaram de *Code Review*, *In QA* ou *UAT* | < 20% |
 | **Bugs escapados** | Bugs achados após o item ir para *Done* | 0 críticos |
 | **CI verde em `develop`** | % de commits com pipeline verde | 100% |
 
@@ -160,8 +165,8 @@ Revisadas na Retrospectiva. Métrica que ninguém olha não é métrica.
 flowchart LR
     A["PO refina US<br/>critérios de aceite"] --> B{DoR ok?}
     B -- não --> A
-    B -- sim --> C["Ready"]
-    C --> D["Dev puxa<br/>WIP ≤ 2"]
+    B -- sim --> C["To Do"]
+    C --> D["Dev puxa<br/>In Dev, WIP ≤ 2"]
     D --> E["QA escreve<br/>caso de teste"]
     D --> F["branch feature/*"]
     F --> G["Model → Schema<br/>Repository → Service"]
@@ -170,15 +175,15 @@ flowchart LR
     I --> J["make lint && make test"]
     J -- falhou --> G
     J -- ok --> K["PR → develop"]
-    K --> L["Code review<br/>≥ 1 aprovação"]
+    K --> L["Code Review<br/>≥ 1 aprovação"]
     L -- changes requested --> G
     L -- aprovado --> M["CI: quality gate"]
     M -- vermelho --> G
     M -- verde --> N["merge em develop"]
-    N --> O["QA executa CT<br/>+ evidência"]
+    N --> O["In QA: executa CT<br/>+ evidência"]
     O -- bug --> P["Issue de bug"]
     P --> G
-    O -- ok --> Q["PO valida<br/>critérios de aceite"]
+    O -- ok --> Q["UAT: PO valida<br/>critérios de aceite"]
     Q -- rejeitado --> A
     Q -- aprovado --> R["Done"]
 ```

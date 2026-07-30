@@ -149,6 +149,63 @@ def test_constraints_das_regras_de_negocio_existem(ddl_migracao, regra, trecho_e
 
 
 @pytest.mark.integration
+def test_cada_enum_e_criado_uma_unica_vez(ddl_migracao):
+    """`CREATE TYPE` duplicado estoura DuplicateObject e derruba a migracao inteira."""
+    for enum in ("tipo_usuario", "status_consulta"):
+        ocorrencias = ddl_migracao.count(f"CREATE TYPE {enum} ")
+        assert ocorrencias == 1, (
+            f"'CREATE TYPE {enum}' aparece {ocorrencias}x no SQL da migracao (esperado 1)."
+        )
+
+
+@pytest.mark.integration
+def test_migracao_nao_cria_enum_na_mao_antes_do_create_table():
+    """Guarda contra o erro `type "tipo_usuario" already exists`.
+
+    `op.create_table()` com coluna `sa.Enum` ja emite `CREATE TYPE` no hook
+    `before_create`. Chamar `<enum>.create(...)` no upgrade faz o segundo CREATE
+    falhar em PostgreSQL.
+
+    Este teste existe porque o modo offline (`--sql`) NAO reproduz a falha: lá o
+    `checkfirst=True` do create explicito e simplesmente ignorado, então o SQL
+    gerado parece correto e o erro só aparece no banco real.
+    """
+    padrao_proibido = re.compile(r"^\s*\w+\.create\(\s*(conexao|bind|op\.get_bind\(\))", re.M)
+
+    problemas: list[str] = []
+    for arquivo in VERSIONS.glob("*.py"):
+        if arquivo.name.startswith("__"):
+            continue
+        fonte = arquivo.read_text(encoding="utf-8")
+        # Só é problema quando o mesmo arquivo também cria tabela — aí o auto-create existe.
+        if "op.create_table(" not in fonte:
+            continue
+        corpo_upgrade = fonte.split("def upgrade(")[-1].split("def downgrade(")[0]
+        if padrao_proibido.search(corpo_upgrade):
+            problemas.append(arquivo.name)
+
+    assert not problemas, (
+        "Migracao criando ENUM na mao no upgrade, junto com op.create_table: "
+        f"{problemas}. Remova o `.create(...)` — o create_table ja faz o CREATE TYPE. "
+        "Mantenha o `.drop(...)` explicito apenas no downgrade."
+    )
+
+
+@pytest.mark.integration
+def test_downgrade_remove_os_enums():
+    """DROP TABLE nao remove o tipo ENUM; sem o drop explicito o downgrade fica sujo."""
+    for arquivo in VERSIONS.glob("*.py"):
+        if arquivo.name.startswith("__") or "CREATE TYPE" in arquivo.read_text(encoding="utf-8"):
+            continue
+    fonte = (VERSIONS / "0001_esquema_inicial.py").read_text(encoding="utf-8")
+    corpo_downgrade = fonte.split("def downgrade(")[-1]
+    for enum in ("tipo_usuario", "status_consulta"):
+        assert f"{enum}.drop(" in corpo_downgrade, (
+            f"downgrade() nao remove o ENUM {enum} - DROP TABLE nao faz isso sozinho"
+        )
+
+
+@pytest.mark.integration
 def test_indice_do_slot_e_parcial_para_permitir_reagendamento(ddl_migracao):
     """RN03 / ADR-006.
 

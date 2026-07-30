@@ -62,13 +62,19 @@ Node 22.
 
 | Passo | Comando | Reprova se |
 |---|---|---|
-| Lint | `yarn lint` | Erro de ESLint |
-| Tipos | `yarn typecheck` (`tsc --noEmit`) | Erro de tipo — inclusive `any` implícito |
+| Lint | `yarn lint` → `eslint .` | Erro de ESLint |
+| Tipos | `yarn typecheck` (`next typegen && tsc --noEmit`) | Erro de tipo — inclusive `any` implícito |
 | Testes | `yarn test --coverage` | Teste falhou |
 | Build | `yarn build` | Build de produção quebrado |
 
 O `typecheck` separado importa: `next build` não falha em todo erro de tipo, mas `tsc --noEmit`
-falha.
+falha. E o `next typegen` antes dele é obrigatório: é o que gera `next-env.d.ts` e os tipos de
+rota que o `tsc` precisa.
+
+> **`next lint` foi removido no Next 16.** Usar `next lint` faz o Next interpretar `lint` como
+> nome de diretório e falhar com
+> `Invalid project directory provided, no such directory: .../frontend/lint`.
+> O substituto oficial é a CLI do ESLint (`eslint .`) com `eslint-config-next` em flat config.
 
 > **Nota:** o passo de instalação usa `--frozen-lockfile` quando existe `yarn.lock`.
 > Rodem `yarn install` localmente e **comitem o `yarn.lock`** — sem ele o CI emite um warning
@@ -83,7 +89,7 @@ Este job é o que dá substância ao RNF07. Sem ele, "funciona na minha máquina
 | `docker compose config --quiet` | YAML e interpolação de variáveis válidos |
 | `cp .env.example .env` + `up -d --build` | O `.env.example` é realmente copiar-e-rodar |
 | Loop de `curl /health` (até 150s) | API sobe e responde de fato |
-| `alembic upgrade head` | Migração funciona dentro do container |
+| `alembic upgrade head` + `alembic current` | Migração funciona **e** alguma revisão foi realmente aplicada |
 | `python -m app.seeds.seed` | Seed cria o atendente inicial |
 | **`python -m app.seeds.seed` de novo** | **Seed é idempotente** — prova a promessa do ADR-004 |
 | `docker compose down -v` | Limpeza (roda com `if: always()`) |
@@ -170,6 +176,8 @@ Módulo 6 que não se aplicam a um MVP local ficam como evolução futura.
 |---|---|---|
 | `ruff format --check` falha | Código não formatado | `ruff format .` e commitar |
 | `alembic upgrade head` falha no CI, passa local | Migração não commitada, ou duas heads | `alembic heads`; commitar a migração |
+| Seed falha com `UndefinedTable: relation "usuario" does not exist` | `alembic/versions/` vazia ou sem a tabela. **Alembic passa em silêncio quando não há revisão.** | `pytest tests/integration/test_migracoes.py` mostra o que falta; gere/revise a migração |
+| `yarn lint` falha com `no such directory: frontend/lint` | Script usando `next lint`, removido no Next 16 | Trocar por `eslint .` |
 | `yarn install` com warning de lockfile | `yarn.lock` não commitado | `yarn install` local e commitar o lockfile |
 | `tsc --noEmit` falha, `next build` passa | Erro de tipo que o build ignora | Corrigir o tipo — não use `any` |
 | Job `docker` falha no healthcheck | API não subiu | Ler `docker compose logs backend` no output do job |

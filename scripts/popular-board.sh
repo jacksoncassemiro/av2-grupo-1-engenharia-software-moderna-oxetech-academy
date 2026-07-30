@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Popula o quadro Kanban do GitHub Projects com as User Stories e tarefas.
 #
+# IDEMPOTENTE: antes de criar, o script lista o que JA existe (issues do repo e
+# itens do board) e PULA qualquer titulo repetido. Pode rodar quantas vezes quiser.
+# Isso importa porque a equipe ja criou ~41 issues a partir das tarefas da Wiki
+# (US-00 a US-12); rodar sem essa protecao duplicaria tudo.
+#
+# Colunas reais do board: To Do | In Dev | Code Review | In QA | UAT | Done
+#
 # DOIS MODOS:
 #   --draft   (padrao)  cria DRAFT ITEMS: vivem so no board, NAO criam Issue no repo
 #   --issues            cria Issues no repositorio e adiciona ao board
@@ -13,6 +20,7 @@
 #   ./scripts/popular-board.sh                    # draft items
 #   ./scripts/popular-board.sh --issues           # Issues + board
 #   ./scripts/popular-board.sh --sprint 1         # so a Sprint 1
+#   ./scripts/popular-board.sh --auditar          # so mostra o que ja existe vs. o planejado
 #
 # Requisitos: gh CLI autenticado com escopo `project`
 #   gh auth login
@@ -33,6 +41,7 @@ while [[ $# -gt 0 ]]; do
     --draft)   MODO="draft";  shift ;;
     --dry-run) DRY_RUN=true;  shift ;;
     --sprint)  SPRINT_FILTRO="$2"; shift 2 ;;
+    --auditar) MODO="auditar"; shift ;;
     -h|--help) sed -n '2,25p' "$0"; exit 0 ;;
     *) echo "Opcao desconhecida: $1" >&2; exit 1 ;;
   esac
@@ -49,6 +58,25 @@ MSG
     exit 1
   fi
 fi
+
+# ─────────────────────────────────────────────────────────────
+# Titulos que JA existem (issues do repo + itens do board)
+# ─────────────────────────────────────────────────────────────
+EXISTENTES=""
+if ! ${DRY_RUN}; then
+  echo "==> Lendo o que ja existe (para nao duplicar)..."
+  issues=$(gh issue list --repo "${REPO}" --state all --limit 500 \
+             --json title --jq '.[].title' 2>/dev/null || true)
+  itens_board=$(gh project item-list "${NUMERO_PROJETO}" --owner "${DONO}" \
+                  --limit 500 --format json --jq '.items[].content.title' 2>/dev/null || true)
+  EXISTENTES=$(printf '%s\n%s\n' "${issues}" "${itens_board}" | sed '/^$/d' | sort -u)
+  echo "    ${issues:+$(printf '%s' "${issues}" | wc -l) issues}  ${itens_board:+$(printf '%s' "${itens_board}" | wc -l) itens no board}"
+fi
+
+ja_existe() {
+  [[ -z "${EXISTENTES}" ]] && return 1
+  grep -Fxq "$1" <<< "${EXISTENTES}"
+}
 
 # ─────────────────────────────────────────────────────────────
 # Itens: SPRINT|TIPO|TITULO|CORPO
@@ -168,8 +196,47 @@ Origem: conflito C08
 Prioridade: P3 - corta primeiro se o prazo apertar."
 )
 
+# ─────────────────────────────────────────────────────────────
+# Modo auditoria: mostra o que existe, o que falta, e nada mais
+# ─────────────────────────────────────────────────────────────
+if [[ "${MODO}" == "auditar" ]]; then
+  echo
+  echo "════ ITENS QUE JA EXISTEM (${REPO}) ════"
+  gh issue list --repo "${REPO}" --state all --limit 500 \
+    --json number,title,labels \
+    --template '{{range .}}#{{.number}}  {{.title}}{{if .labels}}  [{{range .labels}}{{.name}} {{end}}]{{end}}{{"\n"}}{{end}}' \
+    2>/dev/null || echo "  (falha ao listar issues)"
+
+  echo
+  echo "════ COBERTURA DAS USER STORIES ════"
+  for us in 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15; do
+    qtd=$(grep -c "US-${us}" <<< "${EXISTENTES}" || true)
+    marca="ok "
+    [[ "${qtd}" -eq 0 ]] && marca="!! FALTA"
+    printf '  %s US-%s  -> %s item(ns) mencionando\n' "${marca}" "${us}" "${qtd}"
+  done
+
+  echo
+  echo "════ ITENS PLANEJADOS SEM CORRESPONDENTE (titulo exato) ════"
+  faltando=0
+  for item in "${ITENS[@]}"; do
+    resto="${item#*|}"; tipo="${resto%%|*}"
+    resto="${resto#*|}"; titulo="${resto%%|*}"
+    if ! ja_existe "${titulo}"; then
+      printf '  [%-8s] %s\n' "${tipo}" "${titulo}"
+      faltando=$((faltando + 1))
+    fi
+  done
+  echo
+  echo "  ${faltando} de ${#ITENS[@]} itens planejados nao tem titulo identico no repo."
+  echo "  Atencao: titulo diferente nao significa que o trabalho nao esteja coberto."
+  echo "  Compare com a lista acima antes de rodar sem --auditar."
+  exit 0
+fi
+
 total=0
 criados=0
+pulados=0
 
 echo "==> Modo: ${MODO}${SPRINT_FILTRO:+ (Sprint ${SPRINT_FILTRO} apenas)}"
 ${DRY_RUN} && echo "==> DRY RUN - nada sera criado"
@@ -188,6 +255,12 @@ for item in "${ITENS[@]}"; do
 
   if ${DRY_RUN}; then
     printf '  [S%s] %-8s %s\n' "${sprint}" "${tipo}" "${titulo}"
+    continue
+  fi
+
+  if ja_existe "${titulo}"; then
+    pulados=$((pulados + 1))
+    printf '  --  ja existe: %s\n' "${titulo}"
     continue
   fi
 
@@ -218,18 +291,18 @@ done
 
 echo
 if ${DRY_RUN}; then
-  echo "==> ${total} itens seriam criados."
+  echo "==> ${total} itens seriam avaliados (nesse modo nao ha checagem de duplicidade)."
 else
-  echo "==> ${criados} itens criados."
+  echo "==> ${criados} criados, ${pulados} pulados por ja existirem."
   echo "==> Board: https://github.com/users/${DONO}/projects/${NUMERO_PROJETO}"
 fi
 
 cat <<'FIM'
 
 Proximos passos manuais no board:
-  1. Mover para "Ready" os itens da Sprint 1 que atendem a Definition of Ready.
+  1. Deixar em "To Do" os itens da Sprint 1 que atendem a Definition of Ready.
   2. Atribuir responsavel a cada item (draft item aceita assignee).
-  3. Respeitar o WIP: no maximo 2 itens por pessoa em "In progress".
+  3. Respeitar o WIP: no maximo 2 itens por pessoa em "In Dev".
   4. Se usou --draft e quiser rastreabilidade em PR, converta o item em Issue
      pela interface ("Convert to issue").
 FIM

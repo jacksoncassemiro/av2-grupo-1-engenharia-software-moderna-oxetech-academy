@@ -13,6 +13,11 @@ Implemente **de dentro para fora**. Nunca comece pelo router.
    linha de defesa das RNs (ex.: `UniqueConstraint` da RN05).
 2. **Migração** — `make migration m="descricao"`, depois **leia** o arquivo gerado em
    `alembic/versions/` e corrija índices parciais que o autogenerate não pega.
+
+   ⚠️ `alembic upgrade head` **não falha** com `versions/` vazia ou desatualizada — ele
+   simplesmente não cria nada, e o erro aparece só depois (`UndefinedTable`).
+   `tests/integration/test_migracoes.py` compara model × migração e falha no PR. Rode-o
+   sempre que tocar em model.
 3. **Schema** (`app/schemas/`) — validação de formato (RN07 CPF, RN08 e-mail, RN09 horário).
 4. **Repository** (`app/repositories/`) — só query. Herde de `RepositorioBase`.
 5. **Service** (`app/services/`) — a regra de negócio. Levante exceção de domínio.

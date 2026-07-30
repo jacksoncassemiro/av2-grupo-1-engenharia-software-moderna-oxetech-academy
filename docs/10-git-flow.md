@@ -198,15 +198,19 @@ Git Flow no grafo durante a apresentação.
 
 | Coluna | Significado | WIP |
 |---|---|---|
-| **Backlog** | Priorizado pelo PO, não iniciado | — |
-| **Ready** | Refinado, com critérios de aceite claros | — |
-| **In progress** | Alguém trabalhando | **2 por pessoa** |
-| **In review** | PR aberto aguardando revisão | 5 |
-| **Done** | Merge em `develop` + critérios validados pelo PO | — |
+| **To Do** | Priorizado e refinado, ainda não iniciado | — |
+| **In Dev** | Alguém desenvolvendo | **2 por pessoa** |
+| **Code Review** | PR aberto aguardando revisão | 3 |
+| **In QA** | QA executando o caso de teste | 5 |
+| **UAT** | PO validando os critérios de aceite | — |
+| **Done** | Merge em `develop` + critérios aprovados pelo PO | — |
+
+O **UAT** separado de *Done* é útil: deixa visível o que a engenharia terminou mas o PO ainda
+não aprovou — e é onde o entregável "verificar critérios de aceite" do PO acontece.
 
 Regras:
 
-- Item em *In progress* tem responsável atribuído. Sem dono, volta para *Ready*.
+- Item em *In Dev* tem responsável atribuído. Sem dono, volta para *To Do*.
 - **WIP limit de 2 por pessoa.** O `Aula - Pratica - Metodologia Agil.pdf` aponta "muitas
   tarefas em paralelo (overload)" e "não há limite de WIP" como as causas dos atrasos no case
   da EdTech. É a regra mais fácil de furar e a que mais dói.

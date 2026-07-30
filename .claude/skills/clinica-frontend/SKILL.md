@@ -129,6 +129,19 @@ describe('FormularioPaciente', () => {
 `async` Server Components não são testáveis no Vitest (ADR-007) — mantenha a lógica
 testável em Client Components ou em funções puras de `src/lib/`.
 
+## Lint e typecheck no Next 16
+
+`next lint` foi **removido** na v16, junto com a opção `eslint` do `next.config`.
+
+| Script | O que roda | Por quê |
+|---|---|---|
+| `yarn lint` | `eslint .` | CLI do ESLint, com `eslint.config.mjs` em flat config |
+| `yarn typecheck` | `next typegen && tsc --noEmit` | `next typegen` gera `next-env.d.ts` e os tipos de rota; sem ele o `tsc` falha |
+
+`eslint.config.mjs` importa `eslint-config-next/core-web-vitals` e `eslint-config-next/typescript`
+direto (sem `FlatCompat`). Se precisar desligar uma regra, adicione um objeto `{ rules: {...} }`
+depois dos spreads — nunca remova os `globalIgnores`.
+
 ## Checklist antes de abrir PR
 
 - [ ] `yarn lint && yarn typecheck && yarn test`

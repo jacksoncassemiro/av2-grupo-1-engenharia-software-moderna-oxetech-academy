@@ -157,6 +157,11 @@ Justificativa: `docs/06-design-patterns.md` e `docs/adr/ADR-006-design-patterns.
 - Chamadas HTTP: **sempre** via `src/lib/api.ts`. Nunca `fetch` direto em componente.
 - Testes: importe `render` de `@test-utils` (traz o `MantineProvider`), nunca de
   `@testing-library/react` direto.
+- **`next lint` não existe mais** (removido no Next 16, junto com a opção `eslint` do
+  `next.config`). O lint roda pela CLI: `yarn lint` → `eslint .`, configurado em
+  `eslint.config.mjs` com `eslint-config-next/core-web-vitals` + `/typescript` em flat config.
+- `yarn typecheck` é `next typegen && tsc --noEmit`. O `next typegen` gera `next-env.d.ts` e os
+  tipos de rota — sem ele o `tsc` falha no CI.
 
 Consulta de dúvida de API do Mantine: `https://mantine.dev/llms.txt`.
 
@@ -202,6 +207,11 @@ Login inicial: `recepcao@clinica.com` / `admin123` (do `.env`)
 - ❌ Adicionar biblioteca de UI além do Mantine.
 - ❌ Colocar regra de negócio em router ou em componente React.
 - ❌ Usar `Base.metadata.create_all()` — o esquema é gerenciado por Alembic.
+- ❌ Criar model sem a migração correspondente. `alembic upgrade head` **passa em silêncio**
+  quando `alembic/versions/` está vazia ou desatualizada — o erro só aparece depois, no seed,
+  como `UndefinedTable: relation "usuario" does not exist`.
+  `backend/tests/integration/test_migracoes.py` compara model × migração e falha no PR.
+- ❌ Usar `next lint` (não existe no Next 16) ou `npm`/`pnpm` no frontend.
 - ❌ Commitar `.env`, `node_modules/`, `.next/`, `coverage/`.
 - ❌ Deletar ou reescrever ADRs existentes — para mudar de decisão, escreva um ADR novo
   que **supersede** o anterior.
@@ -213,5 +223,6 @@ Login inicial: `recepcao@clinica.com` / `admin123` (do `.env`)
 
 1. `make lint && make test` passando.
 2. Regras tocadas têm teste citando o ID (`RN0X`).
-3. `docs/` atualizado se o comportamento mudou.
+3. `docs/` atualizado se o comportamento mudou; migração revisada à mão se mexeu em model
+   (o autogenerate não cria índice parcial).
 4. Item movido no board (GitHub Projects) e PR aberto com o template preenchido.

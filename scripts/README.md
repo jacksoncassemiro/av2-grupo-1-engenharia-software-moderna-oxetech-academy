@@ -14,11 +14,33 @@ Popula o [quadro Kanban](https://github.com/users/jacksoncassemiro/projects/3) c
 Stories e as tarefas de backend, frontend, QA, infra e documentação — 61 itens no total.
 
 ```bash
+./scripts/popular-board.sh --auditar       # ⭐ comece por aqui: o que já existe vs. o planejado
 ./scripts/popular-board.sh --dry-run       # só lista o que criaria
 ./scripts/popular-board.sh                 # draft items (padrão)
 ./scripts/popular-board.sh --issues        # Issues no repo + board
 ./scripts/popular-board.sh --sprint 1      # só a Sprint 1
 ```
+
+### ⚠️ O board já está populado
+
+A equipe já criou **41 issues** a partir das tarefas da Wiki (US-00 a US-12), com títulos no
+padrão `[US-00] [BACKEND] Endpoint de Login`. O script é **idempotente** (pula título repetido),
+mas os títulos planejados aqui usam outra convenção — então rodar direto criaria itens
+*parecidos*, não idênticos.
+
+**Rode `--auditar` primeiro.** Ele lista as issues existentes, mostra a cobertura de cada US-XX
+e diz quais itens planejados não têm correspondente exato. Aí você decide: ajustar os títulos do
+array `ITENS` para o padrão da equipe, ou criar só o que realmente falta.
+
+O que o planejamento tem e a Wiki não tinha, e portanto provavelmente **falta** no board:
+US-13 (confirmar/finalizar consulta), US-14 (agenda geral), US-15 (cadastro de atendente), e as
+tarefas de QA (CTs, sessões exploratórias, branch protection), INFRA (migração, yarn.lock) e
+DOCS (slides, release).
+
+### Colunas reais do board
+
+`To Do` · `In Dev` · `Code Review` · `In QA` · `UAT` · `Done` — documentadas em
+[`../docs/10-git-flow.md`](../docs/10-git-flow.md) §7.
 
 ### Draft item ou Issue?
 
