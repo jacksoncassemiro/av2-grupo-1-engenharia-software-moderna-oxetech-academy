@@ -4,25 +4,25 @@ Entregável do PO. US-00 a US-12 vêm do backlog original da Wiki; **US-13, US-1
 adicionadas para cobrir lacunas identificadas em
 [14-conflitos-e-decisoes.md](14-conflitos-e-decisoes.md).
 
-Formato: *Como… Quero… Para…* com critérios de aceite em Gherkin e tarefas marcadas
+Formato: _Como… Quero… Para…_ com critérios de aceite em Gherkin e tarefas marcadas
 `[BACKEND]` / `[FRONTEND]` / `[QA]` e `[OBRIGATÓRIO]` / `[DESEJÁVEL]`.
 
 ---
 
 ## Priorização
 
-| Sprint | US | Meta |
-|---|---|---|
-| **1** | US-00, US-01, US-02, US-03, US-05, US-15 | Autenticação + cadastros base |
-| **2** | US-04, US-06, US-07, US-08, US-09, US-10, US-11, US-12, US-13 | Agendamento + cancelamento |
-| **2 (se sobrar)** | US-14 | Agenda geral consolidada |
+| Sprint            | US                                                            | Meta                          |
+| ----------------- | ------------------------------------------------------------- | ----------------------------- |
+| **1**             | US-00, US-01, US-02, US-03, US-05, US-15                      | Autenticação + cadastros base |
+| **2**             | US-04, US-06, US-07, US-08, US-09, US-10, US-11, US-12, US-13 | Agendamento + cancelamento    |
+| **2 (se sobrar)** | US-14                                                         | Agenda geral consolidada      |
 
-| Prioridade | US | Se o prazo apertar |
-|---|---|---|
-| **P0** | US-00, US-01, US-02, US-03, US-05, US-08, US-11 | Não corta — sustentam RN01–RN05 |
-| **P1** | US-07, US-09, US-12, US-13 | Completam a RN06 e o fluxo do atendente |
-| **P2** | US-04, US-06, US-10, US-15 | Contornáveis na demonstração |
-| **P3** | US-14 | Corta primeiro |
+| Prioridade | US                                              | Se o prazo apertar                      |
+| ---------- | ----------------------------------------------- | --------------------------------------- |
+| **P0**     | US-00, US-01, US-02, US-03, US-05, US-08, US-11 | Não corta — sustentam RN01–RN05         |
+| **P1**     | US-07, US-09, US-12, US-13                      | Completam a RN06 e o fluxo do atendente |
+| **P2**     | US-04, US-06, US-10, US-15                      | Contornáveis na demonstração            |
+| **P3**     | US-14                                           | Corta primeiro                          |
 
 ---
 
@@ -53,49 +53,21 @@ Detalhes em [ADR-003](adr/ADR-003-autenticacao.md).
 
 ### Critérios de aceite
 
-**CA1 — Login do paciente por CPF**
-**Dado** que sou um paciente com CPF `529.982.247-25` e senha `senha123`
-**Quando** eu digitar `52998224725` no campo "CPF ou E-mail" e minha senha
-**Então** o sistema deve permitir o acesso e me redirecionar para o painel do paciente
+**CA1 — Login do paciente por CPF** — **Dado** que sou um paciente com CPF `529.982.247-25` e senha `senha123`, **quando** eu digitar `52998224725` no campo "CPF ou E-mail" e minha senha, **então** o sistema deve permitir o acesso e me redirecionar para o painel do paciente
 
-**CA2 — CPF com máscara é aceito**
-**Dado** que meu CPF cadastrado é `52998224725`
-**Quando** eu digitar `529.982.247-25`
-**Então** o sistema deve reconhecer como o mesmo login e permitir o acesso
+**CA2 — CPF com máscara é aceito** — **Dado** que meu CPF cadastrado é `52998224725`, **quando** eu digitar `529.982.247-25`, **então** o sistema deve reconhecer como o mesmo login e permitir o acesso
 
-**CA3 — Login do atendente por e-mail**
-**Dado** que sou atendente com e-mail `recepcao@clinica.com` e senha `admin123`
-**Quando** eu digitar `Recepcao@Clinica.COM` e minha senha
-**Então** o sistema deve permitir o acesso, ignorando maiúsculas, e me levar ao painel do atendente
+**CA3 — Login do atendente por e-mail** — **Dado** que sou atendente com e-mail `recepcao@clinica.com` e senha `admin123`, **quando** eu digitar `Recepcao@Clinica.COM` e minha senha, **então** o sistema deve permitir o acesso, ignorando maiúsculas, e me levar ao painel do atendente
 
-**CA4 — Primeiro acesso: vinculação por CPF**
-**Dado** que o atendente me cadastrou no balcão com o CPF `529.982.247-25`, sem senha
-**Quando** eu acessar "Primeiro acesso" e digitar esse CPF
-**Então** o sistema deve constatar que o cadastro existe e não há login criado
-**E** exibir `Encontramos seu cadastro, Carlos! Crie uma senha para ativar seu login.`
-**E** ao salvar, criar o registro em `usuario` com `login = 52998224725` vinculado ao `paciente_id`
+**CA4 — Primeiro acesso: vinculação por CPF** — **Dado** que o atendente me cadastrou no balcão com o CPF `529.982.247-25`, sem senha, **quando** eu acessar "Primeiro acesso" e digitar esse CPF, **então** o sistema deve constatar que o cadastro existe e não há login criado, **e** exibir `Encontramos seu cadastro, Carlos! Crie uma senha para ativar seu login.`, **e** ao salvar, criar o registro em `usuario` com `login = 52998224725` vinculado ao `paciente_id`
 
-**CA5 — Auto-cadastro de paciente novo** *(resolve o conflito do enunciado — ADR-005)*
-**Dado** que meu CPF `123.456.789-09` não está cadastrado
-**Quando** eu acessar "Primeiro acesso", informar o CPF e preencher nome, telefone e senha
-**Então** o sistema deve criar o cadastro do paciente **e** a credencial no mesmo passo
-**E** eu já poder solicitar consulta em seguida
+**CA5 — Auto-cadastro de paciente novo** _(resolve o conflito do enunciado — ADR-005)_ — **Dado** que meu CPF `123.456.789-09` não está cadastrado, **quando** eu acessar "Primeiro acesso", informar o CPF e preencher nome, telefone e senha, **então** o sistema deve criar o cadastro do paciente **e** a credencial no mesmo passo, **e** eu já poder solicitar consulta em seguida
 
-**CA6 — CPF que já tem login**
-**Dado** que meu CPF já possui login ativo
-**Quando** eu tentar o primeiro acesso
-**Então** o sistema deve informar isso e me direcionar para a tela de login
+**CA6 — CPF que já tem login** — **Dado** que meu CPF já possui login ativo, **quando** eu tentar o primeiro acesso, **então** o sistema deve informar isso e me direcionar para a tela de login
 
-**CA7 — Credencial inválida**
-**Quando** eu informar login inexistente ou senha errada
-**Então** o sistema deve responder `Login ou senha invalidos`
-**E** a mensagem **não** deve revelar se o login existe
+**CA7 — Credencial inválida** — **Quando** eu informar login inexistente ou senha errada, **então** o sistema deve responder `Login ou senha invalidos`, **e** a mensagem **não** deve revelar se o login existe
 
-**CA8 — Proteção de rotas**
-**Dado** que estou logado como paciente
-**Quando** eu tentar acessar uma rota de atendente
-**Então** o sistema deve responder **403**
-**E** requisição sem token deve responder **401**
+**CA8 — Proteção de rotas** — **Dado** que estou logado como paciente, **quando** eu tentar acessar uma rota de atendente, **então** o sistema deve responder **403**, **e** requisição sem token deve responder **401**
 
 ### Tarefas
 
@@ -591,21 +563,21 @@ médicos com seus horários e o status de cada um (livre / consulta e qual pacie
 
 ## Resumo
 
-| US | Título | Sprint | Prior. | Regras |
-|---|---|---|---|---|
-| US-00 | Autenticação e vinculação por CPF | 1 | P0 | RN01, RN02, RN07, RN11–RN13 |
-| US-01 | Gestão de especialidades | 1 | P0 | — |
-| US-02 | Gestão de médicos | 1 | P0 | RN02, RN08 |
-| US-03 | Cadastro de pacientes | 1 | P0 | RN01, RN02, RN07, RN08 |
-| US-05 | Agenda e horários disponíveis | 1 | P0 | RN05, RN09 |
-| US-15 | Cadastro de atendentes | 1 | P2 | RN02, RN11, RN14 |
-| US-04 | Atualização cadastral | 2 | P2 | RN02, RN08, RN12 |
-| US-06 | Consulta de médicos e especialidades | 2 | P2 | — |
-| US-07 | Horários disponíveis | 2 | P1 | RN03 |
-| US-08 | Solicitação de consulta | 2 | P0 | RN03, RN06 |
-| US-09 | Cadastro de consultas (atendente) | 2 | P1 | RN03, RN05, RN06 |
-| US-10 | Consultas e histórico | 2 | P2 | RN12 |
-| US-11 | Cancelamento (paciente) | 2 | P0 | RN03, RN04, RN10, RN15 |
-| US-12 | Cancelamento (atendente) | 2 | P1 | RN03, RN10 |
-| US-13 | Confirmar e finalizar | 2 | P1 | RN06, RN10 |
-| US-14 | Agenda geral | 2 | P3 | — |
+| US    | Título                               | Sprint | Prior. | Regras                      |
+| ----- | ------------------------------------ | ------ | ------ | --------------------------- |
+| US-00 | Autenticação e vinculação por CPF    | 1      | P0     | RN01, RN02, RN07, RN11–RN13 |
+| US-01 | Gestão de especialidades             | 1      | P0     | —                           |
+| US-02 | Gestão de médicos                    | 1      | P0     | RN02, RN08                  |
+| US-03 | Cadastro de pacientes                | 1      | P0     | RN01, RN02, RN07, RN08      |
+| US-05 | Agenda e horários disponíveis        | 1      | P0     | RN05, RN09                  |
+| US-15 | Cadastro de atendentes               | 1      | P2     | RN02, RN11, RN14            |
+| US-04 | Atualização cadastral                | 2      | P2     | RN02, RN08, RN12            |
+| US-06 | Consulta de médicos e especialidades | 2      | P2     | —                           |
+| US-07 | Horários disponíveis                 | 2      | P1     | RN03                        |
+| US-08 | Solicitação de consulta              | 2      | P0     | RN03, RN06                  |
+| US-09 | Cadastro de consultas (atendente)    | 2      | P1     | RN03, RN05, RN06            |
+| US-10 | Consultas e histórico                | 2      | P2     | RN12                        |
+| US-11 | Cancelamento (paciente)              | 2      | P0     | RN03, RN04, RN10, RN15      |
+| US-12 | Cancelamento (atendente)             | 2      | P1     | RN03, RN10                  |
+| US-13 | Confirmar e finalizar                | 2      | P1     | RN06, RN10                  |
+| US-14 | Agenda geral                         | 2      | P3     | —                           |
