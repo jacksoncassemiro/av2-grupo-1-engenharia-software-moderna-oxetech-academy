@@ -3,7 +3,7 @@
 from app.exceptions.dominio import CpfDuplicado, EmailDuplicado, RecursoNaoEncontrado
 from app.models.paciente import Paciente
 from app.repositories.paciente_repository import PacienteRepository
-from app.schemas.paciente_schema import PacienteCriar, PacienteAtualizar
+from app.schemas.paciente_schema import PacienteAtualizar, PacienteCriar
 
 
 class PacienteService:

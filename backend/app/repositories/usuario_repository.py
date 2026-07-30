@@ -11,9 +11,7 @@ class UsuarioRepository(RepositorioBase[Usuario]):
         return self.db.scalars(select(Usuario).where(Usuario.login == login)).first()
 
     def buscar_por_paciente_id(self, paciente_id: int) -> Usuario | None:
-        return self.db.scalars(
-            select(Usuario).where(Usuario.paciente_id == paciente_id)
-        ).first()
+        return self.db.scalars(select(Usuario).where(Usuario.paciente_id == paciente_id)).first()
 
     def existe_atendente(self) -> bool:
         from app.models.enums import TipoUsuario

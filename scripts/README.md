@@ -48,6 +48,21 @@ gh auth login
 gh auth refresh -s project,read:project
 ```
 
+## `gerar-wiki.py`
+
+Gera as páginas de `wiki/` a partir de `docs/`, convertendo os links relativos do markdown nos
+links de página que o Wiki do GitHub espera.
+
+```bash
+python scripts/gerar-wiki.py           # gera / atualiza
+python scripts/gerar-wiki.py --check   # falha se wiki/ estiver desatualizado
+```
+
+`Home.md`, `_Sidebar.md`, `_Footer.md` e `README.md` são escritos à mão e preservados — o resto
+é gerado. Páginas geradas que não correspondem mais a nenhum documento são removidas.
+
+**Fluxo:** editar `docs/` → `python scripts/gerar-wiki.py` → `./scripts/publicar-wiki.sh`
+
 ## `publicar-wiki.sh`
 
 Publica as páginas de `wiki/` no Wiki do GitHub. O Wiki é um repositório git separado

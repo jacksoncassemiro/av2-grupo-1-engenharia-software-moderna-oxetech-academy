@@ -40,8 +40,12 @@ fi
 
 echo "==> Sincronizando paginas"
 # Remove os .md antigos (mantem .git) e copia os novos.
+# README.md de wiki/ e meta-documentacao da pasta - nao vai para o Wiki.
 find "${TMP}/wiki" -maxdepth 1 -name '*.md' -delete
-cp "${ORIGEM}"/*.md "${TMP}/wiki/"
+for pagina in "${ORIGEM}"/*.md; do
+  [[ "$(basename "${pagina}")" == "README.md" ]] && continue
+  cp "${pagina}" "${TMP}/wiki/"
+done
 
 cd "${TMP}/wiki"
 

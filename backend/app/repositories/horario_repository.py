@@ -36,7 +36,5 @@ class HorarioRepository(RepositorioBase[HorarioDisponivel]):
     def buscar_para_reserva(self, horario_id: int) -> HorarioDisponivel | None:
         """SELECT ... FOR UPDATE - evita corrida de dois pacientes no mesmo slot (US-08)."""
         return self.db.scalars(
-            select(HorarioDisponivel)
-            .where(HorarioDisponivel.id == horario_id)
-            .with_for_update()
+            select(HorarioDisponivel).where(HorarioDisponivel.id == horario_id).with_for_update()
         ).first()

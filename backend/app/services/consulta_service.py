@@ -21,9 +21,7 @@ class ConsultaService:
         self.consultas = consultas
         self.horarios = horarios
 
-    def agendar(
-        self, paciente_id: int, horario_id: int, solicitado_por: TipoUsuario
-    ) -> Consulta:
+    def agendar(self, paciente_id: int, horario_id: int, solicitado_por: TipoUsuario) -> Consulta:
         """US-08 (paciente -> SOLICITADA) e US-09 (atendente -> CONFIRMADA)."""
         slot = self._reservar_slot(horario_id)
         consulta = Consulta(

@@ -33,7 +33,11 @@ def test_ctu01_deve_bloquear_cadastro_com_cpf_duplicado():
 def test_ctu02_deve_bloquear_cadastro_com_email_duplicado():
     """RN02 - e-mail preenchido precisa ser unico."""
     existente = Paciente(
-        id=1, nome="Carlos", cpf=OUTRO_CPF_VALIDO, email="carlos@email.com", telefone="8288887777"
+        id=1,
+        nome="Carlos",
+        cpf=OUTRO_CPF_VALIDO,
+        email="carlos@email.com",
+        telefone="8288887777",
     )
     service = PacienteService(FakePacienteRepository([existente]))
 
@@ -44,7 +48,9 @@ def test_ctu02_deve_bloquear_cadastro_com_email_duplicado():
 @pytest.mark.unit
 def test_email_nulo_nao_colide_com_outro_email_nulo():
     """RN02 - paciente de balcao pode nao ter e-mail; NULL nao conta como duplicidade."""
-    sem_email = Paciente(id=1, nome="Carlos", cpf=OUTRO_CPF_VALIDO, email=None, telefone="8288887777")
+    sem_email = Paciente(
+        id=1, nome="Carlos", cpf=OUTRO_CPF_VALIDO, email=None, telefone="8288887777"
+    )
     service = PacienteService(FakePacienteRepository([sem_email]))
 
     criado = service.cadastrar(_dados(email=None))

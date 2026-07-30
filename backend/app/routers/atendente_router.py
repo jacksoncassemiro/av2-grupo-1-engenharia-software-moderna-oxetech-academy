@@ -39,9 +39,7 @@ def agendar_para_paciente(
     return ConsultaResposta.model_validate(consulta)
 
 
-@router.patch(
-    "/consultas/{consulta_id}/cancelar", response_model=ConsultaResposta, summary="US-12"
-)
+@router.patch("/consultas/{consulta_id}/cancelar", response_model=ConsultaResposta, summary="US-12")
 def cancelar(
     consulta_id: int,
     dados: ConsultaCancelar,

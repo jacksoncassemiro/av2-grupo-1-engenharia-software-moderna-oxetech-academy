@@ -1,4 +1,4 @@
-"""Hash de senha e emissao/validacao de JWT."""
+"""Hash de senha (RN11 - bcrypt) e emissao/validacao de JWT (RN13 - expiracao)."""
 
 from datetime import datetime, timedelta, timezone
 
@@ -11,6 +11,7 @@ _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def gerar_hash_senha(senha: str) -> str:
+    """RN11 - senha nunca e armazenada em texto claro."""
     return _pwd_context.hash(senha)
 
 

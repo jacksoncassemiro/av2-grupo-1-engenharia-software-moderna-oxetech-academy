@@ -89,7 +89,10 @@ def test_auto_cadastro_cria_paciente_e_credencial_no_mesmo_fluxo():
 
     token = service.vincular_ou_criar(
         PrimeiroAcesso(
-            cpf=CPF, senha="senha123", nome="Maria Souza", telefone="8298887777",
+            cpf=CPF,
+            senha="senha123",
+            nome="Maria Souza",
+            telefone="8298887777",
             email="maria@email.com",
         )
     )
@@ -102,8 +105,12 @@ def test_auto_cadastro_cria_paciente_e_credencial_no_mesmo_fluxo():
 def test_primeiro_acesso_falha_se_login_ja_existe():
     paciente = Paciente(id=1, nome="Joao", cpf=CPF, telefone="8299990000")
     usuario = Usuario(
-        id=1, nome="Joao", login=CPF, senha_hash="x",
-        tipo_usuario=TipoUsuario.PACIENTE, paciente_id=1,
+        id=1,
+        nome="Joao",
+        login=CPF,
+        senha_hash="x",
+        tipo_usuario=TipoUsuario.PACIENTE,
+        paciente_id=1,
     )
     service = AuthService(FakeUsuarioRepository([usuario]), FakePacienteRepository([paciente]))
 

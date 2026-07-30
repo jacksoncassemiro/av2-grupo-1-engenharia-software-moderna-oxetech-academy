@@ -46,7 +46,7 @@ Teste que só verifica o caminho felizes não prova que a regra existe.
 | Nível | Onde | Ferramenta | Responsável | Marcador | Quantidade |
 |---|---|---|---|---|---|
 | Unitário backend | `backend/tests/unit/` | pytest + fakes | Engenharia | `@pytest.mark.unit` | 17 |
-| Unitário frontend | `frontend/__tests__/` | Vitest + RTL | Engenharia | — | 6 |
+| Unitário frontend | `frontend/__tests__/` | Vitest + RTL | Engenharia | — | 7 |
 | Integração | `backend/tests/integration/` | pytest + TestClient | Eng + QA | `@pytest.mark.integration` | 3 |
 | Funcional manual | `08-casos-de-teste.md` | roteiro + evidência | QA | CT01–CT14 | 14 |
 | Exploratório | §6 deste documento | sessões por charter | QA | EXP-01… | 4 sessões |

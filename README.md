@@ -212,7 +212,7 @@ make lint            # ruff + eslint + tsc
 | Nível | Quantidade | Exigido | Onde |
 |---|---|---|---|
 | Unitário backend | **17** | 5 | `backend/tests/unit/` |
-| Unitário frontend | 6 | — | `frontend/__tests__/` |
+| Unitário frontend | 7 | — | `frontend/__tests__/` |
 | Integração | 3 | — | `backend/tests/integration/` |
 | Casos de teste funcionais | **14** | 10 | [`docs/08-casos-de-teste.md`](docs/08-casos-de-teste.md) |
 | Sessões exploratórias | 4 | — | [`docs/07-plano-de-testes.md`](docs/07-plano-de-testes.md) §6 |

@@ -3,7 +3,9 @@ name = "clinica-backend"
 version = "0.1.0"
 description = "Sistema de Gestao de Clinica Medica (MVP) - Backend FastAPI"
 readme = "../README.md"
-requires-python = ">=3.12"
+# O Docker e o CI rodam 3.12, mas o codigo e compativel com 3.10+ para que
+# ninguem da equipe fique travado por causa da versao instalada na maquina.
+requires-python = ">=3.10"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.32.0",
@@ -43,9 +45,12 @@ omit = ["app/seeds/*", "alembic/*"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py310"
 exclude = ["alembic/versions"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "B", "SIM"]
-ignore = ["B008"]
+ignore = [
+    "B008",   # Depends() no default de parametro e o idioma do FastAPI
+    "N818",   # excecoes do dominio sao nomeadas em portugues (CpfDuplicado), sem sufixo Error
+]

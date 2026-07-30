@@ -58,7 +58,9 @@ class FakeHorarioRepository:
         )
 
     def listar_livres(self, medico_id, data):
-        return [s for s in self._itens if s.medico_id == medico_id and s.data == data and s.disponivel]
+        return [
+            s for s in self._itens if s.medico_id == medico_id and s.data == data and s.disponivel
+        ]
 
     def salvar(self, entidade):
         if entidade not in self._itens:
@@ -100,7 +102,13 @@ class FakeConsultaRepository:
 
 @pytest.fixture
 def medico() -> Medico:
-    return Medico(id=1, nome="Dr. Silva", email="silva@clinica.com", crm="CRM123", especialidade_id=1)
+    return Medico(
+        id=1,
+        nome="Dr. Silva",
+        email="silva@clinica.com",
+        crm="CRM123",
+        especialidade_id=1,
+    )
 
 
 @pytest.fixture
