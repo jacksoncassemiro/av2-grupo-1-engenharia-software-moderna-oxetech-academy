@@ -71,9 +71,7 @@ def _tabelas(ddl: str) -> dict[str, dict[str, str]]:
                 continue
             partes = linha.split(None, 1)
             if len(partes) == 2:
-                colunas[partes[0]] = _ESPACOS.sub(
-                    " ", _LIMPAR_DEFAULT.sub("", partes[1])
-                ).strip()
+                colunas[partes[0]] = _ESPACOS.sub(" ", _LIMPAR_DEFAULT.sub("", partes[1])).strip()
         tabelas[nome] = colunas
     return tabelas
 
@@ -89,7 +87,7 @@ def test_existe_ao_menos_uma_migracao():
     revisoes = [f for f in VERSIONS.glob("*.py") if not f.name.startswith("__")]
     assert revisoes, (
         "Nenhuma migracao em alembic/versions/. "
-        "Rode: make migration m=\"descricao\" e revise o arquivo gerado."
+        'Rode: make migration m="descricao" e revise o arquivo gerado.'
     )
 
 
@@ -120,8 +118,7 @@ def test_colunas_e_tipos_batem_com_os_models(ddl_migracao):
         colunas_migracao = migracao_ddl.get(tabela, {})
         if set(colunas) != set(colunas_migracao):
             divergencias.append(
-                f"{tabela}: colunas diferentes -> "
-                f"{sorted(set(colunas) ^ set(colunas_migracao))}"
+                f"{tabela}: colunas diferentes -> {sorted(set(colunas) ^ set(colunas_migracao))}"
             )
             continue
         for coluna, tipo in colunas.items():
@@ -130,9 +127,7 @@ def test_colunas_e_tipos_batem_com_os_models(ddl_migracao):
                     f"{tabela}.{coluna}: model='{tipo}' migracao='{colunas_migracao[coluna]}'"
                 )
 
-    assert not divergencias, "Migracao divergente dos models:\n  " + "\n  ".join(
-        divergencias
-    )
+    assert not divergencias, "Migracao divergente dos models:\n  " + "\n  ".join(divergencias)
 
 
 @pytest.mark.integration
