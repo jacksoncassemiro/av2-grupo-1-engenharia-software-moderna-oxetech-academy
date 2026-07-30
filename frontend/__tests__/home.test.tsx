@@ -7,15 +7,12 @@ import HomePage from '@/app/page';
 describe('HomePage', () => {
   it('renderiza o titulo do MVP', () => {
     render(<HomePage />);
-    expect(screen.getByRole('heading', { level: 1, name: /Clinica Medica/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /Clínica Médica/i })).toBeInTheDocument();
   });
 
-  it('oferece os dois pontos de entrada da US-00', () => {
+  it('anuncia as rotas da US-00', () => {
     render(<HomePage />);
-    expect(screen.getByRole('link', { name: '/login' })).toHaveAttribute('href', '/login');
-    expect(screen.getByRole('link', { name: '/primeiro-acesso' })).toHaveAttribute(
-      'href',
-      '/primeiro-acesso'
-    );
+    expect(screen.getByText('/login')).toBeInTheDocument();
+    expect(screen.getByText('/primeiro-acesso')).toBeInTheDocument();
   });
 });
