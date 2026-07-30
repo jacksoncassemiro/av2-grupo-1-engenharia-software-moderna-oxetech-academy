@@ -1,308 +1,208 @@
 #!/usr/bin/env bash
-# Popula o quadro Kanban do GitHub Projects com as User Stories e tarefas.
+# Fecha as issues originais e recria o board com rastreabilidade completa.
+# Versao Linux/macOS/Git Bash. Le os itens de scripts/board-itens.json (mesma fonte do .ps1).
 #
-# IDEMPOTENTE: antes de criar, o script lista o que JA existe (issues do repo e
-# itens do board) e PULA qualquer titulo repetido. Pode rodar quantas vezes quiser.
-# Isso importa porque a equipe ja criou ~41 issues a partir das tarefas da Wiki
-# (US-00 a US-12); rodar sem essa protecao duplicaria tudo.
+#   ./scripts/popular-board.sh --auditar
+#   ./scripts/popular-board.sh --tudo --dry-run     # confira antes
+#   ./scripts/popular-board.sh --tudo
+#   ./scripts/popular-board.sh --criar --secao processo
 #
-# Colunas reais do board: To Do | In Dev | Code Review | In QA | UAT | Done
-#
-# DOIS MODOS:
-#   --draft   (padrao)  cria DRAFT ITEMS: vivem so no board, NAO criam Issue no repo
-#   --issues            cria Issues no repositorio e adiciona ao board
-#
-# Draft item aceita responsavel e campos customizados, mas nao aceita label.
-# Pode ser convertido em Issue depois pela interface ("Convert to issue").
-#
-# Uso:
-#   ./scripts/popular-board.sh --dry-run          # so lista o que criaria
-#   ./scripts/popular-board.sh                    # draft items
-#   ./scripts/popular-board.sh --issues           # Issues + board
-#   ./scripts/popular-board.sh --sprint 1         # so a Sprint 1
-#   ./scripts/popular-board.sh --auditar          # so mostra o que ja existe vs. o planejado
-#
-# Requisitos: gh CLI autenticado com escopo `project`
-#   gh auth login
-#   gh auth refresh -s project,read:project
+# Requisitos: gh CLI autenticado com escopo project, e python3.
+#   gh auth login && gh auth refresh -s project,read:project
 set -euo pipefail
 
 DONO="jacksoncassemiro"
 NUMERO_PROJETO=3
 REPO="jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy"
+RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ITENS_JSON="${RAIZ}/scripts/board-itens.json"
 
-MODO="draft"
-DRY_RUN=false
-SPRINT_FILTRO=""
+MODO="issues"; DRY_RUN=false; AUDITAR=false; FECHAR=false; CRIAR=false
+SPRINT=""; SECAO=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --issues)  MODO="issues"; shift ;;
+    --auditar) AUDITAR=true; shift ;;
+    --dry-run) DRY_RUN=true; shift ;;
+    --fechar)  FECHAR=true;  shift ;;
+    --criar)   CRIAR=true;   shift ;;
+    --tudo)    FECHAR=true; CRIAR=true; shift ;;
     --draft)   MODO="draft";  shift ;;
-    --dry-run) DRY_RUN=true;  shift ;;
-    --sprint)  SPRINT_FILTRO="$2"; shift 2 ;;
-    --auditar) MODO="auditar"; shift ;;
-    -h|--help) sed -n '2,25p' "$0"; exit 0 ;;
+    --issues)  MODO="issues"; shift ;;
+    --sprint)  SPRINT="$2"; shift 2 ;;
+    --secao)   SECAO="$2";  shift 2 ;;
+    -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
     *) echo "Opcao desconhecida: $1" >&2; exit 1 ;;
   esac
 done
 
-if ! ${DRY_RUN}; then
-  command -v gh >/dev/null || { echo "ERRO: gh CLI nao encontrado. https://cli.github.com" >&2; exit 1; }
-  gh auth status >/dev/null 2>&1 || { echo "ERRO: rode 'gh auth login'." >&2; exit 1; }
-  if ! gh project view "${NUMERO_PROJETO}" --owner "${DONO}" >/dev/null 2>&1; then
-    cat >&2 <<'MSG'
-ERRO: sem acesso ao Project.
-Rode:  gh auth refresh -s project,read:project
+if ! ${AUDITAR} && ! ${FECHAR} && ! ${CRIAR}; then
+  cat <<'MSG'
+Nada a fazer. Escolha uma acao:
+
+  --auditar             mostra o que existe vs. o planejado (nao escreve)
+  --tudo --dry-run      mostra o que fecharia e criaria (nao escreve)   <- comece aqui
+  --tudo                fecha as 41 originais e cria os 82 novos
+  --fechar              so fecha as originais
+  --criar               so cria os novos
+  --criar --secao processo   cria so os itens de QA/INFRA/DOCS
 MSG
-    exit 1
-  fi
-fi
-
-# ─────────────────────────────────────────────────────────────
-# Titulos que JA existem (issues do repo + itens do board)
-# ─────────────────────────────────────────────────────────────
-EXISTENTES=""
-if ! ${DRY_RUN}; then
-  echo "==> Lendo o que ja existe (para nao duplicar)..."
-  issues=$(gh issue list --repo "${REPO}" --state all --limit 500 \
-             --json title --jq '.[].title' 2>/dev/null || true)
-  itens_board=$(gh project item-list "${NUMERO_PROJETO}" --owner "${DONO}" \
-                  --limit 500 --format json --jq '.items[].content.title' 2>/dev/null || true)
-  EXISTENTES=$(printf '%s\n%s\n' "${issues}" "${itens_board}" | sed '/^$/d' | sort -u)
-  echo "    ${issues:+$(printf '%s' "${issues}" | wc -l) issues}  ${itens_board:+$(printf '%s' "${itens_board}" | wc -l) itens no board}"
-fi
-
-ja_existe() {
-  [[ -z "${EXISTENTES}" ]] && return 1
-  grep -Fxq "$1" <<< "${EXISTENTES}"
-}
-
-# ─────────────────────────────────────────────────────────────
-# Itens: SPRINT|TIPO|TITULO|CORPO
-# ─────────────────────────────────────────────────────────────
-ITENS=(
-"1|US|US-00: Autenticacao e vinculacao de conta por CPF|Como Paciente ou Atendente, quero fazer login ou ativar meu primeiro acesso usando CPF ou e-mail, para acessar a plataforma conforme meu perfil.
-
-Regras: RN01, RN02, RN07, RN11, RN12, RN13
-Criterios de aceite: docs/02-backlog.md#us-00
-Prioridade: P0"
-"1|BACKEND|[BACKEND] POST /api/auth/login com login flexivel CPF ou e-mail|US-00. Normaliza o login: apenas digitos quando nao houver @, lowercase quando houver. Devolve JWT com tipo_usuario e paciente_id. RN11, RN13."
-"1|BACKEND|[BACKEND] GET /api/auth/verificar-cpf/{cpf}|US-00. Devolve {cadastro_existe, login_ativo, nome} para a tela de primeiro acesso decidir o formulario."
-"1|BACKEND|[BACKEND] POST /api/auth/vincular-ou-criar|US-00. Ativa o login de paciente existente OU faz o auto-cadastro completo. Resolve o conflito do enunciado (ADR-005). RN01, RN02, RN07."
-"1|BACKEND|[BACKEND] Dependencias de autorizacao por perfil|US-00. usuario_atual, exigir_paciente, exigir_atendente. 401 sem token, 403 com perfil errado. RN12."
-"1|FRONTEND|[FRONTEND] Tela de login com campo unico CPF ou E-mail|US-00. Mascara dinamica de CPF quando o valor nao contem @. Erro da API via notification."
-"1|FRONTEND|[FRONTEND] Tela de primeiro acesso em duas etapas|US-00. Etapa 1 verifica o CPF; etapa 2 mostra formulario reduzido (so senha) ou completo (auto-cadastro)."
-"1|FRONTEND|[FRONTEND] Guarda de rota nos route groups (paciente) e (atendente)|US-00. Layout de cada grupo valida o tipo_usuario do token e redireciona. RF05."
-"1|US|US-15: Cadastro de atendentes|Como Atendente, quero cadastrar outros atendentes, para que a recepcao nao dependa de uma unica conta.
-
-Regras: RN02, RN11, RN14
-Origem: conflito C02 / ADR-004
-Prioridade: P2"
-"1|BACKEND|[BACKEND] POST /api/atendente/atendentes|US-15. Protegido por exigir_atendente. Nao existe rota publica de cadastro de atendente. RN14."
-"1|FRONTEND|[FRONTEND] Tela de cadastro de atendente|US-15."
-"1|US|US-01: Gestao de especialidades|Como Atendente, quero gerenciar as especialidades medicas, para organizar o portfolio de atendimento.
-
-Criterios: docs/02-backlog.md#us-01
-Prioridade: P0"
-"1|BACKEND|[BACKEND] POST e GET /api/especialidades|US-01, US-06. Bloqueia nome duplicado. GET devolve apenas ativas."
-"1|FRONTEND|[FRONTEND] Tela de cadastro e listagem de especialidades|US-01."
-"1|US|US-02: Gestao de medicos|Como Atendente, quero gerenciar os medicos da clinica, para inclui-los na grade de atendimento.
-
-Regras: RN02, RN08
-Prioridade: P0"
-"1|BACKEND|[BACKEND] POST e GET /api/medicos com filtro por especialidade|US-02, US-06. Valida e-mail e CRM unicos. RN02."
-"1|FRONTEND|[FRONTEND] Formulario de medico com Select de especialidade|US-02. Impede salvar sem especialidade."
-"1|US|US-03: Cadastro de pacientes|Como Atendente, quero cadastrar novos pacientes, para viabilizar seus futuros agendamentos.
-
-Regras: RN01, RN02, RN07, RN08
-Nota: NAO cria credencial. O login e ativado no primeiro acesso (US-00).
-Prioridade: P0"
-"1|BACKEND|[BACKEND] POST /api/pacientes com e-mail opcional|US-03. RN01 CPF unico, RN02 e-mail unico quando nao nulo, RN07 CPF valido."
-"1|FRONTEND|[FRONTEND] Formulario de paciente com mascara e validacao de CPF|US-03. RN07 no cliente, espelhando o backend."
-"1|US|US-05: Cadastro de agenda e horarios disponiveis|Como Atendente, quero cadastrar a grade horaria de um medico, para disponibilizar horarios para agendamento.
-
-Regras: RN05, RN09
-Prioridade: P0"
-"1|BACKEND|[BACKEND] POST /api/medicos/{id}/agenda com lista de horarios|US-05. RN05 unique (medico, data, horario), RN09 horario comercial 08:00-18:00."
-"1|FRONTEND|[FRONTEND] Painel de lancamento de agenda|US-05. DatePickerInput + multiplos TimeInput."
-"1|QA|[QA] Escrever CT01 a CT04|Cadastro de paciente, CPF duplicado, e-mail duplicado (inclusive nulo), primeiro acesso. docs/08-casos-de-teste.md"
-"1|QA|[QA] Escrever CT08, CT13, CT14|Alocacao dupla (RN05), horario comercial (RN09), atendente cria atendente (RN14)."
-"1|QA|[QA] Configurar branch protection em main e develop|PR obrigatorio, 1 aprovacao, quality-gate como required status check. docs/10-git-flow.md"
-"1|QA|[QA] Sessao exploratoria EXP-01 - cadastros|45 min. Charter: falhas de validacao e duplicidade em US-01 a US-04. Registrar em docs/07-plano-de-testes.md"
-"1|INFRA|[INFRA] Migracao inicial do Alembic|Revisar o autogenerate: ele NAO cria o indice parcial uq_slot_ativo nem detecta bem ENUM. Conferir docs/04-modelo-de-dados.md."
-"1|INFRA|[INFRA] Gerar e commitar o yarn.lock|Rodar yarn install no frontend e commitar o lockfile para o CI usar --frozen-lockfile."
-"2|US|US-06: Consulta de medicos e especialidades|Como Paciente, quero pesquisar medicos e especialidades, para encontrar o profissional correto.
-
-Prioridade: P2"
-"2|US|US-07: Visualizacao de horarios disponiveis|Como Paciente, quero ver os horarios disponiveis de um medico, para escolher a melhor data.
-
-Regras: RN03
-Prioridade: P1"
-"2|BACKEND|[BACKEND] GET /api/medicos/{id}/horarios-livres|US-07. Somente slots com disponivel = true. RN03."
-"2|FRONTEND|[FRONTEND] Calendario com horarios livres e estado vazio|US-07."
-"2|US|US-08: Solicitacao de consulta pelo paciente|Como Paciente, quero escolher medico, data e horario disponivel, para agendar meu atendimento.
-
-Regras: RN03, RN06 (status inicial SOLICITADA)
-Prioridade: P0"
-"2|BACKEND|[BACKEND] POST /api/consultas com SELECT FOR UPDATE|US-08. Reserva com lock pessimista + indice parcial uq_slot_ativo. Resolve a corrida descrita no CA2. RN03."
-"2|FRONTEND|[FRONTEND] Fluxo de confirmacao de agendamento|US-08. modals.openConfirmModal antes de enviar."
-"2|US|US-09: Cadastro de consultas pelo atendente|Como Atendente, quero cadastrar consultas para os pacientes, para preencher a agenda imediatamente.
-
-Regras: RN03, RN05, RN06 (status inicial CONFIRMADA)
-Prioridade: P1"
-"2|BACKEND|[BACKEND] POST /api/atendente/consultas|US-09. Status inicial CONFIRMADA, diferente da US-08."
-"2|FRONTEND|[FRONTEND] Tela de agendamento pelo atendente|US-09. Busca de paciente + selecao de medico e horario."
-"2|US|US-04: Atualizacao cadastral pelo paciente|Como Paciente, quero atualizar meus dados, para manter meu perfil correto.
-
-Regras: RN02, RN08, RN12
-Prioridade: P2"
-"2|BACKEND|[BACKEND] PUT /api/pacientes/me|US-04. paciente_id vem do token, nunca do path. RN12. CPF nao editavel."
-"2|FRONTEND|[FRONTEND] Tela de perfil do paciente|US-04. CPF em modo leitura."
-"2|US|US-10: Visualizacao de consultas e historico|Como Paciente, quero ver minhas consultas agendadas e passadas, para acompanhar meu historico.
-
-Regras: RN12
-Prioridade: P2"
-"2|BACKEND|[BACKEND] GET /api/consultas filtrando pelo token|US-10. Retorna apenas as consultas do paciente autenticado. RN12."
-"2|FRONTEND|[FRONTEND] Lista de consultas com Badge por status|US-10. SOLICITADA amarelo, CONFIRMADA teal, FINALIZADA cinza, CANCELADA vermelho."
-"2|US|US-11: Cancelamento de consulta pelo paciente|Como Paciente, quero cancelar uma consulta agendada, para liberar o horario.
-
-Regras: RN03, RN04, RN10, RN15
-Prioridade: P0"
-"2|BACKEND|[BACKEND] PATCH /api/consultas/{id}/cancelar com Strategy|US-11. CancelamentoPorPaciente valida 24h (RN04) no fuso America/Maceio (RN15). Libera o slot (RN03)."
-"2|FRONTEND|[FRONTEND] Acao de cancelar com modal e campo de motivo|US-11."
-"2|US|US-12: Cancelamento de consultas pelo atendente|Como Atendente, quero cancelar consultas, para manter a agenda atualizada em imprevistos.
-
-Regras: RN03, RN10
-Prioridade: P1"
-"2|BACKEND|[BACKEND] PATCH /api/atendente/consultas/{id}/cancelar|US-12. CancelamentoPorAtendente, sem validacao de prazo. Libera o slot."
-"2|US|US-13: Confirmacao e finalizacao de consultas|Como Atendente, quero confirmar consultas solicitadas e finalizar as realizadas, para que o status reflita a realidade da clinica.
-
-Regras: RN06, RN10
-Origem: conflito C04 - sem esta US, consulta solicitada ficaria eternamente SOLICITADA e FINALIZADA seria codigo morto.
-Prioridade: P1"
-"2|BACKEND|[BACKEND] PATCH /api/atendente/consultas/{id}/status|US-13. Valida por TRANSICOES_PERMITIDAS. RN06, RN10."
-"2|FRONTEND|[FRONTEND] Acoes de confirmar e finalizar na lista do atendente|US-13. Filtro por status para achar as pendentes."
-"2|QA|[QA] Executar CT05 a CT07|Horario ocupado (RN03), cancelamento com 48h e com 12h (RN04). Coletar evidencias."
-"2|QA|[QA] Executar CT09 a CT12|Ciclo de status (RN06), reagendar slot cancelado (RN03/RN10), 403 e 401 (RN12)."
-"2|QA|[QA] Sessao exploratoria EXP-03 - agendamento e concorrencia|45 min. Duas abas no mesmo slot, duplo clique em Confirmar, estado obsoleto."
-"2|QA|[QA] Sessao exploratoria EXP-04 - cancelamento e limites de 24h|45 min. Fronteira exata: 23h59, 24h00, 24h01. Testar em maquina com outro fuso."
-"2|QA|[QA] Relatorio final de testes e evidencias de CI|Preencher docs/08-casos-de-teste.md secao 4 e capturar o quality-gate verde + um PR bloqueado."
-"2|DOCS|[DOCS] Montar slides da apresentacao|Roteiro de 15 slides em docs/13-papeis-e-responsabilidades.md. Salvar em docs/apresentacao/."
-"2|DOCS|[DOCS] Release v1.0.0|release/1.0 -> main com --no-ff, tag anotada, merge de volta em develop. docs/10-git-flow.md secao 6."
-"2|US|US-14: Agenda geral da clinica (DESEJAVEL)|Como Atendente, quero ver a agenda consolidada de todos os medicos, para gerenciar os atendimentos do dia.
-
-Origem: conflito C08
-Prioridade: P3 - corta primeiro se o prazo apertar."
-)
-
-# ─────────────────────────────────────────────────────────────
-# Modo auditoria: mostra o que existe, o que falta, e nada mais
-# ─────────────────────────────────────────────────────────────
-if [[ "${MODO}" == "auditar" ]]; then
-  echo
-  echo "════ ITENS QUE JA EXISTEM (${REPO}) ════"
-  gh issue list --repo "${REPO}" --state all --limit 500 \
-    --json number,title,labels \
-    --template '{{range .}}#{{.number}}  {{.title}}{{if .labels}}  [{{range .labels}}{{.name}} {{end}}]{{end}}{{"\n"}}{{end}}' \
-    2>/dev/null || echo "  (falha ao listar issues)"
-
-  echo
-  echo "════ COBERTURA DAS USER STORIES ════"
-  for us in 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15; do
-    qtd=$(grep -c "US-${us}" <<< "${EXISTENTES}" || true)
-    marca="ok "
-    [[ "${qtd}" -eq 0 ]] && marca="!! FALTA"
-    printf '  %s US-%s  -> %s item(ns) mencionando\n' "${marca}" "${us}" "${qtd}"
-  done
-
-  echo
-  echo "════ ITENS PLANEJADOS SEM CORRESPONDENTE (titulo exato) ════"
-  faltando=0
-  for item in "${ITENS[@]}"; do
-    resto="${item#*|}"; tipo="${resto%%|*}"
-    resto="${resto#*|}"; titulo="${resto%%|*}"
-    if ! ja_existe "${titulo}"; then
-      printf '  [%-8s] %s\n' "${tipo}" "${titulo}"
-      faltando=$((faltando + 1))
-    fi
-  done
-  echo
-  echo "  ${faltando} de ${#ITENS[@]} itens planejados nao tem titulo identico no repo."
-  echo "  Atencao: titulo diferente nao significa que o trabalho nao esteja coberto."
-  echo "  Compare com a lista acima antes de rodar sem --auditar."
   exit 0
 fi
 
-total=0
-criados=0
-pulados=0
+[[ -f "${ITENS_JSON}" ]] || { echo "ERRO: ${ITENS_JSON} nao encontrado." >&2; exit 1; }
+command -v python3 >/dev/null || { echo "ERRO: python3 necessario para ler o JSON." >&2; exit 1; }
 
-echo "==> Modo: ${MODO}${SPRINT_FILTRO:+ (Sprint ${SPRINT_FILTRO} apenas)}"
-${DRY_RUN} && echo "==> DRY RUN - nada sera criado"
-echo
-
-for item in "${ITENS[@]}"; do
-  sprint="${item%%|*}"
-  resto="${item#*|}"
-  tipo="${resto%%|*}"
-  resto="${resto#*|}"
-  titulo="${resto%%|*}"
-  corpo="${resto#*|}"
-
-  [[ -n "${SPRINT_FILTRO}" && "${sprint}" != "${SPRINT_FILTRO}" ]] && continue
-  total=$((total + 1))
-
-  if ${DRY_RUN}; then
-    printf '  [S%s] %-8s %s\n' "${sprint}" "${tipo}" "${titulo}"
-    continue
-  fi
-
-  if ja_existe "${titulo}"; then
-    pulados=$((pulados + 1))
-    printf '  --  ja existe: %s\n' "${titulo}"
-    continue
-  fi
-
-  if [[ "${MODO}" == "draft" ]]; then
-    gh project item-create "${NUMERO_PROJETO}" \
-      --owner "${DONO}" \
-      --title "${titulo}" \
-      --body "${corpo}" >/dev/null
-  else
-    case "${tipo}" in
-      US)       labels="user-story" ;;
-      BACKEND)  labels="tarefa,backend" ;;
-      FRONTEND) labels="tarefa,frontend" ;;
-      QA)       labels="tarefa,qa" ;;
-      INFRA)    labels="tarefa,infra" ;;
-      DOCS)     labels="tarefa,documentacao" ;;
-      *)        labels="tarefa" ;;
-    esac
-    url=$(gh issue create --repo "${REPO}" \
-      --title "${titulo}" --body "${corpo}" --label "${labels}" 2>/dev/null) \
-      || url=$(gh issue create --repo "${REPO}" --title "${titulo}" --body "${corpo}")
-    gh project item-add "${NUMERO_PROJETO}" --owner "${DONO}" --url "${url}" >/dev/null
-  fi
-
-  criados=$((criados + 1))
-  printf '  ok  [S%s] %s\n' "${sprint}" "${titulo}"
-done
-
-echo
-if ${DRY_RUN}; then
-  echo "==> ${total} itens seriam avaliados (nesse modo nao ha checagem de duplicidade)."
-else
-  echo "==> ${criados} criados, ${pulados} pulados por ja existirem."
-  echo "==> Board: https://github.com/users/${DONO}/projects/${NUMERO_PROJETO}"
+if ! ${DRY_RUN}; then
+  command -v gh >/dev/null || { echo "ERRO: gh CLI nao encontrado. https://cli.github.com" >&2; exit 1; }
+  gh auth status >/dev/null 2>&1 || { echo "ERRO: rode 'gh auth login'." >&2; exit 1; }
+  gh project view "${NUMERO_PROJETO}" --owner "${DONO}" >/dev/null 2>&1 \
+    || { echo "ERRO: sem acesso ao Project. Rode: gh auth refresh -s project,read:project" >&2; exit 1; }
 fi
 
-cat <<'FIM'
+# ── Estado atual ─────────────────────────────────────────────
+TITULOS_EXISTENTES=""
+ABERTAS=""
+if ! ${DRY_RUN}; then
+  echo "==> Lendo o estado atual do repositorio..."
+  ABERTAS=$(gh issue list --repo "${REPO}" --state open --limit 500 --json number --jq '.[].number' 2>/dev/null || true)
+  todas=$(gh issue list --repo "${REPO}" --state all --limit 500 --json title --jq '.[].title' 2>/dev/null || true)
+  no_board=$(gh project item-list "${NUMERO_PROJETO}" --owner "${DONO}" --limit 500 --format json --jq '.items[].content.title' 2>/dev/null || true)
+  TITULOS_EXISTENTES=$(printf '%s\n%s\n' "${todas}" "${no_board}" | sed '/^$/d' | sort -u)
+fi
+
+ja_existe() { [[ -n "${TITULOS_EXISTENTES}" ]] && grep -Fxq "$1" <<< "${TITULOS_EXISTENTES}"; }
+esta_aberta() { [[ -n "${ABERTAS}" ]] && grep -Fxq "$1" <<< "${ABERTAS}"; }
+
+# Le o JSON e emite linhas: SECAO<TAB>SPRINT<TAB>TIPO<TAB>TITULO<TAB>CORPO_BASE64
+ler_itens() {
+  python3 - "${ITENS_JSON}" "${SPRINT}" "${SECAO}" <<'PY'
+import base64, json, sys
+caminho, sprint, secao_filtro = sys.argv[1], sys.argv[2], sys.argv[3]
+d = json.load(open(caminho, encoding="utf-8"))
+for secao in ("user_stories", "tarefas", "processo"):
+    if secao_filtro and secao_filtro != secao:
+        continue
+    for i in d[secao]:
+        if sprint and i["sprint"] != sprint:
+            continue
+        corpo = base64.b64encode(i["corpo"].encode("utf-8")).decode("ascii")
+        print("\t".join([secao, i["sprint"], i["tipo"], i["titulo"], corpo]))
+PY
+}
+
+ler_a_fechar() {
+  python3 - "${ITENS_JSON}" <<'PY'
+import json, sys
+d = json.load(open(sys.argv[1], encoding="utf-8"))
+for o in d["issues_a_fechar"]:
+    print(f"{o['numero']}\t{o['titulo']}")
+PY
+}
+
+label_de() {
+  case "$1" in
+    US) echo "user-story" ;; BACKEND) echo "tarefa,backend" ;; FRONTEND) echo "tarefa,frontend" ;;
+    QA) echo "tarefa,qa" ;;  INFRA) echo "tarefa,infra" ;;    DOCS) echo "tarefa,documentacao" ;;
+    *) echo "tarefa" ;;
+  esac
+}
+
+# ── Auditoria ────────────────────────────────────────────────
+if ${AUDITAR}; then
+  echo; echo "════ ISSUES ABERTAS HOJE ════"
+  gh issue list --repo "${REPO}" --state open --limit 500 \
+    --json number,title,labels \
+    --template '{{range .}}#{{.number}}  {{.title}}{{if .labels}}  [{{range .labels}}{{.name}} {{end}}]{{else}}  (sem label){{end}}{{"\n"}}{{end}}'
+
+  echo; echo "════ A FECHAR (originais sem rastreabilidade) ════"
+  n=0
+  while IFS=$'\t' read -r numero titulo; do
+    if esta_aberta "${numero}"; then printf '  #%-3s %s\n' "${numero}" "${titulo}"; n=$((n+1)); fi
+  done < <(ler_a_fechar)
+  echo "  -> ${n} ainda abertas"
+
+  echo; echo "════ A CRIAR ════"
+  for secao in user_stories tarefas processo; do
+    total=0; faltam=0
+    while IFS=$'\t' read -r s _ _ titulo _; do
+      [[ "${s}" == "${secao}" ]] || continue
+      total=$((total+1)); ja_existe "${titulo}" || faltam=$((faltam+1))
+    done < <(SECAO="" SPRINT="" ler_itens)
+    printf '  %-14s %3s de %3s ainda nao existem\n' "${secao}" "${faltam}" "${total}"
+  done
+  exit 0
+fi
+
+# ── Fechar ───────────────────────────────────────────────────
+if ${FECHAR}; then
+  echo; echo "════ FECHANDO AS ISSUES ORIGINAIS ════"
+  JUSTIFICATIVA=$(cat <<'MSG'
+Fechada como **substituída**, não como descartada.
+
+O escopo técnico desta issue está correto e foi **preservado integralmente** na issue
+recriada. O motivo do fechamento é rastreabilidade: a AV2 avalia a cadeia
+requisito → código → teste → evidência, e as issues originais não citavam a User Story,
+as regras de negócio cobertas, o critério de aceite nem o Definition of Done — e não
+tinham label, o que impedia usar o board para WIP e métricas.
+
+A versão recriada tem o mesmo título e a mesma descrição técnica, mais:
+
+- **US** e **RNs** cobertas, com os IDs de `docs/01-requisitos.md`
+- Link do critério de aceite em `docs/02-backlog.md`
+- **Definition of Done** por área (backend / frontend)
+- Label de área e de escopo (obrigatório / desejável)
+- Item guarda-chuva da User Story, onde o PO valida os critérios de aceite em UAT
+
+Crédito do levantamento original: @Lothriiik.
+MSG
+)
+  fechadas=0; ja=0
+  while IFS=$'\t' read -r numero titulo; do
+    if ${DRY_RUN}; then printf '  [dry] fecharia #%-3s %s\n' "${numero}" "${titulo}"; continue; fi
+    if ! esta_aberta "${numero}"; then ja=$((ja+1)); printf '  --  #%s ja esta fechada\n' "${numero}"; continue; fi
+    gh issue comment "${numero}" --repo "${REPO}" --body "${JUSTIFICATIVA}" >/dev/null
+    gh issue close   "${numero}" --repo "${REPO}" --reason 'not planned' >/dev/null
+    fechadas=$((fechadas+1)); printf '  ok  fechada #%-3s %s\n' "${numero}" "${titulo}"
+  done < <(ler_a_fechar)
+  ${DRY_RUN} || echo "  ${fechadas} fechadas, ${ja} ja estavam fechadas."
+fi
+
+# ── Criar ────────────────────────────────────────────────────
+if ${CRIAR}; then
+  echo; echo "════ CRIANDO OS ITENS (${MODO})${SPRINT:+ · Sprint ${SPRINT}}${SECAO:+ · ${SECAO}} ════"
+  ${DRY_RUN} && echo "  DRY RUN - nada sera criado"
+  criados=0; pulados=0; total=0
+  while IFS=$'\t' read -r _secao sprint tipo titulo corpo_b64; do
+    total=$((total+1))
+    corpo=$(printf '%s' "${corpo_b64}" | base64 -d)
+
+    if ${DRY_RUN}; then printf '  [dry] [S%s] %-8s %s\n' "${sprint}" "${tipo}" "${titulo}"; continue; fi
+    if ja_existe "${titulo}"; then pulados=$((pulados+1)); printf '  --  ja existe: %s\n' "${titulo}"; continue; fi
+
+    if [[ "${MODO}" == "draft" ]]; then
+      gh project item-create "${NUMERO_PROJETO}" --owner "${DONO}" --title "${titulo}" --body "${corpo}" >/dev/null
+    else
+      url=$(gh issue create --repo "${REPO}" --title "${titulo}" --body "${corpo}" --label "$(label_de "${tipo}")" 2>/dev/null) \
+        || url=$(gh issue create --repo "${REPO}" --title "${titulo}" --body "${corpo}")
+      [[ -n "${url}" ]] && gh project item-add "${NUMERO_PROJETO}" --owner "${DONO}" --url "${url}" >/dev/null
+    fi
+    criados=$((criados+1))
+    TITULOS_EXISTENTES="${TITULOS_EXISTENTES}"$'\n'"${titulo}"
+    printf '  ok  [S%s] %s\n' "${sprint}" "${titulo}"
+  done < <(ler_itens)
+
+  if ${DRY_RUN}; then echo "  ${total} itens seriam criados."
+  else
+    echo "  ${criados} criados, ${pulados} pulados por ja existirem."
+    echo "  Board: https://github.com/users/${DONO}/projects/${NUMERO_PROJETO}"
+    cat <<'FIM'
 
 Proximos passos manuais no board:
-  1. Deixar em "To Do" os itens da Sprint 1 que atendem a Definition of Ready.
-  2. Atribuir responsavel a cada item (draft item aceita assignee).
-  3. Respeitar o WIP: no maximo 2 itens por pessoa em "In Dev".
-  4. Se usou --draft e quiser rastreabilidade em PR, converta o item em Issue
-     pela interface ("Convert to issue").
+  1. Colunas: To Do -> In Dev -> Code Review -> In QA -> UAT -> Done
+  2. Mover para "In Dev" so o que a pessoa esta fazendo AGORA. WIP maximo 2 por pessoa.
+  3. Cada um se atribui ao puxar o item (quem puxa, assume).
+  4. Os itens "US-XX:" sao guarda-chuva: o PO move para UAT e valida os criterios de aceite.
 FIM
+  fi
+fi

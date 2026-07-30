@@ -50,66 +50,93 @@ O `publicar-wiki` usa apenas **git** (que você já tem).
 
 ---
 
-## `popular-board` — auditar e popular o Kanban
+## `popular-board` — fechar as originais e recriar o board
+
+Lê os itens de **`board-itens.json`** — fonte única compartilhada pelo `.ps1` e pelo `.sh`.
 
 ```powershell
-.\scripts\popular-board.ps1 -Auditar                 # ⭐ COMECE AQUI
-.\scripts\popular-board.ps1 -DryRun                  # lista o que criaria
-.\scripts\popular-board.ps1                          # cria draft items
-.\scripts\popular-board.ps1 -Modo issues             # cria Issues + adiciona ao board
-.\scripts\popular-board.ps1 -Sprint 1                # só a Sprint 1
+.\scripts\popular-board.ps1 -Auditar             # o que existe vs. o planejado
+.\scripts\popular-board.ps1 -Tudo -DryRun        # ⭐ confira antes de escrever
+.\scripts\popular-board.ps1 -Tudo               # fecha as 41 e cria os 82
+.\scripts\popular-board.ps1 -Fechar             # só fecha
+.\scripts\popular-board.ps1 -Criar              # só cria
+.\scripts\popular-board.ps1 -Criar -Secao processo   # só QA/INFRA/DOCS
+.\scripts\popular-board.ps1 -Criar -Sprint 1
 ```
 
 ```bash
 ./scripts/popular-board.sh --auditar
-./scripts/popular-board.sh --dry-run
-./scripts/popular-board.sh
-./scripts/popular-board.sh --issues
-./scripts/popular-board.sh --sprint 1
+./scripts/popular-board.sh --tudo --dry-run
+./scripts/popular-board.sh --tudo
+./scripts/popular-board.sh --criar --secao processo
 ```
 
-### ⚠️ O board já está populado
+Sem nenhuma flag, o script **não faz nada** e mostra as opções — de propósito.
 
-A equipe já criou **41 issues** a partir das tarefas da Wiki (US-00 a US-12), com títulos no
-padrão `[US-00] [BACKEND] Endpoint de Login`. O script é **idempotente** (pula título repetido),
-mas os títulos planejados aqui usam outra convenção — então rodar direto criaria itens
-*parecidos*, não idênticos.
+### O que ele faz
 
-**Rode `-Auditar` primeiro.** Ele mostra três coisas:
+**1. Fecha as 41 issues originais** (`#4` a `#45`, de @Lothriiik) com `--reason "not planned"`
+e um **comentário de justificativa** explicando que foram *substituídas*, não descartadas, e
+dando crédito pelo levantamento original. Nada é apagado: o histórico e a autoria ficam.
 
-1. Todas as issues existentes, com número e labels
-2. Cobertura de cada `US-00` a `US-15` — quais têm zero itens
-3. Quais itens planejados não têm título idêntico no repo
+**2. Cria 82 itens** com rastreabilidade completa:
 
-O que o planejamento tem e a Wiki não tinha, e portanto provavelmente **falta** no board:
-
-| Item | Por que importa |
-|---|---|
-| **US-13** confirmar/finalizar consulta | Sem ela a RN06 não é demonstrável — consulta solicitada ficaria eternamente `SOLICITADA` |
-| **US-14** agenda geral | A lista de funcionalidades pede "gerenciar a agenda geral" |
-| **US-15** cadastro de atendente | RN14 — sem ela o sistema depende de uma única conta |
-| Tarefas de **QA** | CTs, sessões exploratórias, branch protection |
-| Tarefas de **INFRA** | Revisão da migração |
-| Tarefas de **DOCS** | Slides, release `v1.0.0` |
-
-### Draft item ou Issue?
-
-| | Draft (padrão) | Issue (`-Modo issues`) |
+| Seção | Qtd | O que é |
 |---|---|---|
-| Aparece no board | ✅ | ✅ |
-| Cria Issue no repositório | ❌ | ✅ |
-| Aceita responsável | ✅ | ✅ |
-| Aceita label | ❌ | ✅ |
-| Referenciável em PR (`#12`) | ❌ | ✅ |
-| Conversível depois | ✅ *(Convert to issue)* | — |
+| `user_stories` | 16 | Guarda-chuva `US-00:` a `US-15:` — é onde o PO valida os critérios de aceite na coluna **UAT** |
+| `tarefas` | 47 | Execução, no padrão `[US-XX] [ÁREA] Título` (mesma convenção da equipe) |
+| `processo` | 19 | **QA, INFRA e DOCS** — entregáveis avaliados que não existiam no board |
 
-Recomendação: `-Modo issues` para as User Stories (você vai querer referenciar nos PRs) e draft
-para as tarefas granulares.
+Cada item ganha: **US**, **RNs cobertas** (IDs de `docs/01-requisitos.md`), link do critério de
+aceite, **Definition of Done** por área, e **label**.
+
+### Por que recriar em vez de editar
+
+As descrições originais estavam tecnicamente corretas. O que faltava era a cadeia
+**requisito → código → teste → evidência**, que é o que a AV2 avalia — e label, sem a qual o
+board não serve para WIP nem métricas.
+
+Os títulos e as descrições técnicas foram **preservados**; a issue #44, por exemplo, mantém
+"Criar rota PATCH /api/atendente/consultas/:id/cancelar…" e ganha `RN03, RN10`, o link do
+critério de aceite e o DoD.
+
+### Idempotência
+
+Roda quantas vezes quiser: pula issue já fechada e título que já existe. Se algo falhar no meio,
+rode de novo — ele continua de onde parou.
 
 ### Colunas reais do board
 
-`To Do` · `In Dev` · `Code Review` · `In QA` · `UAT` · `Done` — documentadas em
-[`../docs/10-git-flow.md`](../docs/10-git-flow.md) §7.
+`To Do` · `In Dev` · `Code Review` · `In QA` · `UAT` · `Done`
+
+O **UAT** separado de *Done* é o que dá lugar ao entregável "verificar critérios de aceite" do
+PO. Documentado em [`../docs/10-git-flow.md`](../docs/10-git-flow.md) §7.
+
+### ⚠️ Ordem correta
+
+```powershell
+.\scripts\criar-labels.ps1          # 1º — senão as issues nascem sem label
+.\scripts\popular-board.ps1 -Tudo -DryRun
+.\scripts\popular-board.ps1 -Tudo
+```
+
+---
+
+## `board-itens.json` — fonte única dos itens
+
+Editar aqui muda o comportamento dos **dois** scripts. Estrutura:
+
+```json
+{
+  "issues_a_fechar": [{ "numero": 4, "titulo": "..." }],
+  "user_stories":    [{ "sprint": "1", "tipo": "US", "titulo": "...", "corpo": "..." }],
+  "tarefas":         [{ "sprint": "1", "tipo": "BACKEND", "titulo": "...", "corpo": "..." }],
+  "processo":        [{ "sprint": "1", "tipo": "QA", "titulo": "...", "corpo": "..." }]
+}
+```
+
+`tipo` define a label: `US` → `user-story` · `BACKEND`/`FRONTEND`/`QA`/`INFRA`/`DOCS` →
+`tarefa` + área. O `corpo` aceita markdown.
 
 ---
 
@@ -124,6 +151,21 @@ para as tarefas granulares.
 ```
 
 Necessário antes de `popular-board -Modo issues`, senão as labels não existem.
+
+---
+
+## `verificar-sintaxe.py` — checa os scripts antes de rodar
+
+Um `.ps1` com chave ou parêntese desbalanceado falha em tempo de execução — e no Windows, às
+vezes **em silêncio**. Rode isto antes:
+
+```powershell
+python scripts\verificar-sintaxe.py
+```
+
+Valida balanceamento nos `.ps1` (tratando here-strings `@"..."@` e blocos `<# ... #>`
+corretamente), `bash -n` nos `.sh` e `py_compile` nos `.py`. Não substitui um parser, mas pega a
+classe de erro que trava o script.
 
 ---
 
@@ -174,16 +216,19 @@ interface web, essas alterações são perdidas. Regra da equipe: **edite em `do
 ```powershell
 # 1. liberar scripts nesta sessão
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+python scripts\verificar-sintaxe.py     # sanidade dos scripts
 
-# 2. auditar o board antes de mexer
+# 2. ver o estado atual
 .\scripts\popular-board.ps1 -Auditar
 
-# 3. criar labels e só então os itens que faltam
+# 3. labels PRIMEIRO, senão as issues nascem sem label
 .\scripts\criar-labels.ps1
-.\scripts\popular-board.ps1 -DryRun
-.\scripts\popular-board.ps1
 
-# 4. wiki
+# 4. conferir e então executar
+.\scripts\popular-board.ps1 -Tudo -DryRun
+.\scripts\popular-board.ps1 -Tudo
+
+# 5. wiki
 python scripts\gerar-wiki.py
 .\scripts\publicar-wiki.ps1 -DryRun
 .\scripts\publicar-wiki.ps1

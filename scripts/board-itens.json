@@ -1,0 +1,683 @@
+{
+ "_leia": [
+  "FONTE UNICA dos itens do board, lida pelo popular-board.ps1 e pelo .sh.",
+  "",
+  "Decisao da equipe: as 41 issues originais (#4 a #45, criadas por @Lothriiik a partir",
+  "das tarefas da Wiki) serao FECHADAS e recriadas com rastreabilidade completa.",
+  "O fechamento e feito com comentario de justificativa e `--reason 'not planned'`,",
+  "preservando o historico - nada e apagado.",
+  "",
+  "O que muda em relacao as originais: cada item agora cita a US, as RNs cobertas,",
+  "o link do criterio de aceite e um Definition of Done por area. E ganha label.",
+  "",
+  "Estrutura: user_stories (guarda-chuva, onde o PO valida em UAT) + tarefas (execucao)",
+  "+ processo (QA, INFRA, DOCS - entregaveis avaliados que nao estavam no board).",
+  "",
+  "Convencao de titulo mantida da equipe: [US-XX] [AREA] Titulo em Title Case.",
+  "Colunas do board: To Do | In Dev | Code Review | In QA | UAT | Done"
+ ],
+ "issues_a_fechar": [
+  {
+   "numero": 4,
+   "titulo": "[US-00] [BACKEND] Endpoint de Login"
+  },
+  {
+   "numero": 5,
+   "titulo": "[US-00] [BACKEND] Endpoint de Verificação de CPF"
+  },
+  {
+   "numero": 6,
+   "titulo": "[US-00] [BACKEND] Endpoint de Criação de Credenciais"
+  },
+  {
+   "numero": 7,
+   "titulo": "[US-00] [FRONTEND] Tela de Login"
+  },
+  {
+   "numero": 8,
+   "titulo": "[US-00] [FRONTEND] Tela de Primeiro Acesso"
+  },
+  {
+   "numero": 9,
+   "titulo": "[US-00] [FRONTEND] Proteção de Rotas"
+  },
+  {
+   "numero": 10,
+   "titulo": "[US-00] [BACKEND] Endpoint de Logout"
+  },
+  {
+   "numero": 11,
+   "titulo": "[US-00] [FRONTEND] Ação de Logout"
+  },
+  {
+   "numero": 12,
+   "titulo": "[US-01] [BACKEND] Rota de Cadastro de Especialidade"
+  },
+  {
+   "numero": 13,
+   "titulo": "[US-01] [FRONTEND] Formulário de Cadastro de Especialidade"
+  },
+  {
+   "numero": 14,
+   "titulo": "[US-01] [BACKEND] Rotas de Edição e Exclusão de Especialidade"
+  },
+  {
+   "numero": 15,
+   "titulo": "[US-01] [FRONTEND] Tela de Gestão de Especialidades"
+  },
+  {
+   "numero": 16,
+   "titulo": "[US-02] [BACKEND] Rota de Cadastro de Médico"
+  },
+  {
+   "numero": 17,
+   "titulo": "[US-02] [FRONTEND] Formulário de Cadastro de Médico"
+  },
+  {
+   "numero": 18,
+   "titulo": "[US-02] [BACKEND] Rotas de Edição e Inativação de Médicos"
+  },
+  {
+   "numero": 19,
+   "titulo": "[US-02] [FRONTEND] Painel de Controle de Médicos"
+  },
+  {
+   "numero": 20,
+   "titulo": "[US-03] [BACKEND] Rota de Cadastro de Paciente"
+  },
+  {
+   "numero": 21,
+   "titulo": "[US-03] [FRONTEND] Formulário de Cadastro de Paciente"
+  },
+  {
+   "numero": 22,
+   "titulo": "[US-03] [BACKEND] Rotas de Edição de Pacientes"
+  },
+  {
+   "numero": 23,
+   "titulo": "[US-03] [FRONTEND] Painel de Consulta de Pacientes"
+  },
+  {
+   "numero": 24,
+   "titulo": "[US-04] [BACKEND] Rota de Atualização Cadastral do Paciente"
+  },
+  {
+   "numero": 25,
+   "titulo": "[US-04] [FRONTEND] Tela de Perfil do Paciente"
+  },
+  {
+   "numero": 26,
+   "titulo": "[US-05] [BACKEND] Rota de Geração de Grade de Horários"
+  },
+  {
+   "numero": 27,
+   "titulo": "[US-05] [FRONTEND] Tela de Lançamento de Horários"
+  },
+  {
+   "numero": 28,
+   "titulo": "[US-05] [BACKEND] Rota de Exclusão de Horário Livre"
+  },
+  {
+   "numero": 29,
+   "titulo": "[US-05] [FRONTEND] Exclusão de Slots da Grade"
+  },
+  {
+   "numero": 30,
+   "titulo": "[US-06] [BACKEND] Rota de Listagem de Especialidades Ativas"
+  },
+  {
+   "numero": 31,
+   "titulo": "[US-06] [BACKEND] Rota de Listagem de Médicos Ativos com Filtro"
+  },
+  {
+   "numero": 32,
+   "titulo": "[US-06] [FRONTEND] Filtros de Agendamento do Paciente"
+  },
+  {
+   "numero": 33,
+   "titulo": "[US-07] [BACKEND] Rota de Busca de Horários Livres por Médico"
+  },
+  {
+   "numero": 34,
+   "titulo": "[US-07] [FRONTEND] Grade Dinâmica de Escolha de Horário"
+  },
+  {
+   "numero": 35,
+   "titulo": "[US-08] [BACKEND] Rota de Solicitação de Consulta"
+  },
+  {
+   "numero": 36,
+   "titulo": "[US-08] [FRONTEND] Fluxo de Confirmação de Agendamento"
+  },
+  {
+   "numero": 37,
+   "titulo": "[US-09] [BACKEND] Rota de Agendamento Direto"
+  },
+  {
+   "numero": 38,
+   "titulo": "[US-09] [FRONTEND] Tela de Agendamento Direto"
+  },
+  {
+   "numero": 39,
+   "titulo": "[US-10] [BACKEND] Rota de Histórico de Consultas do Paciente"
+  },
+  {
+   "numero": 41,
+   "titulo": "[US-10] [FRONTEND] Painel de Histórico do Paciente"
+  },
+  {
+   "numero": 42,
+   "titulo": "[US-11] [BACKEND] Rota de Cancelamento do Paciente"
+  },
+  {
+   "numero": 43,
+   "titulo": "[US-11] [FRONTEND] Ação de Cancelar Consulta pelo Paciente"
+  },
+  {
+   "numero": 44,
+   "titulo": "[US-12] [BACKEND] Rota de Cancelamento do Atendente"
+  },
+  {
+   "numero": 45,
+   "titulo": "[US-12] [FRONTEND] Ação de Cancelamento pelo Atendente"
+  }
+ ],
+ "user_stories": [
+  {
+   "sprint": "1",
+   "tipo": "US",
+   "titulo": "US-00: Autenticação e vinculação de conta por CPF",
+   "corpo": "**Como** Paciente ou Atendente\n**Quero** fazer login ou ativar meu primeiro acesso usando CPF ou e-mail\n**Para** acessar a plataforma conforme o meu perfil\n\nRegras: RN01, RN02, RN07, RN11, RN12, RN13\nCritérios de aceite: `docs/02-backlog.md` §US-00\nPrioridade: **P0**\n\nItem-guarda-chuva: serve para o PO validar os critérios de aceite em UAT. As tarefas de implementação são as issues #4 a #11."
+  },
+  {
+   "sprint": "1",
+   "tipo": "US",
+   "titulo": "US-01: Gestão de especialidades",
+   "corpo": "**Como** Atendente\n**Quero** gerenciar as especialidades médicas da clínica\n**Para** organizar o portfólio de atendimento\n\nCritérios de aceite: `docs/02-backlog.md` §US-01\nPrioridade: **P0**\n\nTarefas: issues #12 a #15."
+  },
+  {
+   "sprint": "1",
+   "tipo": "US",
+   "titulo": "US-02: Gestão de médicos",
+   "corpo": "**Como** Atendente\n**Quero** gerenciar os médicos da clínica\n**Para** incluí-los na grade de atendimento\n\nRegras: RN02, RN08\nCritérios de aceite: `docs/02-backlog.md` §US-02\nPrioridade: **P0**\n\nTarefas: issues #16 a #19."
+  },
+  {
+   "sprint": "1",
+   "tipo": "US",
+   "titulo": "US-03: Cadastro de pacientes",
+   "corpo": "**Como** Atendente\n**Quero** cadastrar novos pacientes no sistema\n**Para** viabilizar seus futuros agendamentos\n\nRegras: RN01, RN02, RN07, RN08\nNota: **não** cria credencial. O login é ativado no primeiro acesso (US-00).\nCritérios de aceite: `docs/02-backlog.md` §US-03\nPrioridade: **P0**\n\nTarefas: issues #20 a #23."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-04: Atualização cadastral pelo paciente",
+   "corpo": "**Como** Paciente\n**Quero** atualizar meus dados cadastrais\n**Para** manter meu perfil correto\n\nRegras: RN02, RN08, RN12 (o `paciente_id` vem do token, nunca do path)\nCritérios de aceite: `docs/02-backlog.md` §US-04\nPrioridade: **P2**\n\nTarefas: issues #24 e #25."
+  },
+  {
+   "sprint": "1",
+   "tipo": "US",
+   "titulo": "US-05: Cadastro de agenda e horários disponíveis",
+   "corpo": "**Como** Atendente\n**Quero** cadastrar a grade horária de atendimento de um médico\n**Para** disponibilizar horários para agendamento\n\nRegras: RN05 (sem alocação dupla), RN09 (08:00–18:00)\nCritérios de aceite: `docs/02-backlog.md` §US-05\nPrioridade: **P0**\n\nTarefas: issues #26 a #29."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-06: Consulta de médicos e especialidades",
+   "corpo": "**Como** Paciente\n**Quero** pesquisar os médicos e as especialidades da clínica\n**Para** encontrar o profissional correto\n\nCritérios de aceite: `docs/02-backlog.md` §US-06\nPrioridade: **P2**\n\nTarefas: issues #30 a #32."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-07: Visualização de horários disponíveis",
+   "corpo": "**Como** Paciente\n**Quero** ver os horários de consulta disponíveis de um médico\n**Para** escolher a melhor data para mim\n\nRegras: RN03 — horário cancelado volta a aparecer como livre\nCritérios de aceite: `docs/02-backlog.md` §US-07\nPrioridade: **P1**\n\nTarefas: issues #33 e #34."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-08: Solicitação de consulta pelo paciente",
+   "corpo": "**Como** Paciente\n**Quero** escolher médico, data e horário disponível\n**Para** solicitar meu atendimento\n\nRegras: RN03, RN06 (status inicial `SOLICITADA`)\nAtenção ao critério de concorrência: dois pacientes confirmando o mesmo slot ao mesmo tempo — o primeiro passa, o segundo recebe 409.\nCritérios de aceite: `docs/02-backlog.md` §US-08\nPrioridade: **P0**\n\nTarefas: issues #35 e #36."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-09: Cadastro de consultas pelo atendente",
+   "corpo": "**Como** Atendente\n**Quero** cadastrar consultas diretamente para os pacientes\n**Para** preencher a agenda da clínica imediatamente\n\nRegras: RN03, RN05, RN06 (status inicial `CONFIRMADA` — diferente da US-08, porque aqui é a própria clínica agendando)\nCritérios de aceite: `docs/02-backlog.md` §US-09\nPrioridade: **P1**\n\nTarefas: issues #37 e #38."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-10: Visualização de consultas e histórico",
+   "corpo": "**Como** Paciente\n**Quero** ver minhas consultas agendadas e passadas\n**Para** acompanhar meu histórico de atendimento\n\nRegras: RN12 — vejo apenas as minhas consultas\nCritérios de aceite: `docs/02-backlog.md` §US-10\nPrioridade: **P2**\n\nTarefas: issues #39 e #41."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-11: Cancelamento de consulta pelo paciente",
+   "corpo": "**Como** Paciente\n**Quero** cancelar uma consulta agendada\n**Para** liberar o horário\n\nRegras: RN04 (≥ 24h), RN15 (fuso `America/Maceio`), RN03 (libera o slot), RN10 (não cancela FINALIZADA)\nCritérios de aceite: `docs/02-backlog.md` §US-11\nPrioridade: **P0**\n\nTarefas: issues #42 e #43."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-12: Cancelamento de consultas pelo atendente",
+   "corpo": "**Como** Atendente\n**Quero** cancelar consultas registradas\n**Para** manter a agenda atualizada em caso de imprevistos\n\nRegras: RN03, RN10. Atendente cancela **sem** restrição de prazo (Strategy diferente da US-11).\nCritérios de aceite: `docs/02-backlog.md` §US-12\nPrioridade: **P1**\n\nTarefas: issues #44 e #45."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-13: Confirmação e finalização de consultas",
+   "corpo": "**Como** Atendente\n**Quero** confirmar consultas solicitadas e finalizar as realizadas\n**Para** que o status da agenda reflita a realidade da clínica\n\nRegras: RN06, RN10\nOrigem: conflito **C04** de `docs/14-conflitos-e-decisoes.md`\nPrioridade: **P1**\n\n⚠️ **Por que esta US existe:** sem ela, uma consulta solicitada pelo paciente (US-08) ficaria eternamente `SOLICITADA` e o status `FINALIZADA` seria código morto — a RN06 não seria demonstrável."
+  },
+  {
+   "sprint": "2",
+   "tipo": "US",
+   "titulo": "US-14: Agenda geral da clínica",
+   "corpo": "**Como** Atendente\n**Quero** ver a agenda consolidada de todos os médicos\n**Para** gerenciar os atendimentos do dia sem abrir um médico por vez\n\nOrigem: conflito **C08** — a lista de funcionalidades pede \"cadastrar **e gerenciar** a agenda geral\"; a US-05 cobre só o cadastro.\nPrioridade: **P3 — DESEJÁVEL**, corta primeiro se o prazo apertar."
+  },
+  {
+   "sprint": "1",
+   "tipo": "US",
+   "titulo": "US-15: Cadastro de atendentes",
+   "corpo": "**Como** Atendente\n**Quero** cadastrar outros atendentes\n**Para** que a recepção não dependa de uma única conta\n\nRegras: RN02, RN11, **RN14** (só ATENDENTE cria ATENDENTE; não existe rota pública)\nOrigem: conflito **C02** / [ADR-004](../docs/adr/ADR-004-bootstrap-atendente.md)\nPrioridade: **P2**\n\n⚠️ Sem esta US, o sistema depende para sempre da única conta criada pelo seed — sem caminho de recuperação e sem a funcionalidade para demonstrar."
+  }
+ ],
+ "tarefas": [
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-00] [BACKEND] Endpoint de Login",
+   "corpo": "Criar `POST /api/auth/login`. Recebe `login` (que pode ser CPF ou e-mail) e `senha`, e devolve JWT.\n\nNormalizacao obrigatoria: se o valor **nao** contem `@`, reduzir a apenas digitos (aceita `529.982.247-25` e `52998224725` como o mesmo login); se contem `@`, aplicar lowercase.\n\n**US:** US-00 · **Regras:** RN02, RN11, RN13 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\nO token carrega `sub`, `tipo_usuario` e `paciente_id`. Mensagem de erro **nao** revela se o login existe.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-00] [BACKEND] Endpoint de Verificacao de CPF",
+   "corpo": "Criar `GET /api/auth/verificar-cpf/{cpf}`. Devolve `{cadastro_existe, login_ativo, nome}`.\n\nE o que permite a tela de primeiro acesso decidir entre pedir so a senha (cadastro existe) ou o formulario completo (auto-cadastro).\n\n**US:** US-00 · **Regras:** RN07 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-00] [BACKEND] Endpoint de Criacao de Credenciais",
+   "corpo": "Criar `POST /api/auth/vincular-ou-criar`. Dois caminhos no mesmo endpoint:\n\n1. CPF **existe** em `paciente` -> cria so a credencial e vincula ao `paciente_id`\n2. CPF **nao existe** -> cria cadastro + credencial no mesmo passo (auto-cadastro)\n\n**US:** US-00 · **Regras:** RN01, RN02, RN07, RN11 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\nE este endpoint que resolve o conflito do enunciado: o Case pede que o paciente se cadastre, a lista de funcionalidades da o cadastro ao atendente. Ver [ADR-005](../blob/develop/docs/adr/ADR-005-cadastro-paciente.md).\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-00] [BACKEND] Endpoint de Logout",
+   "corpo": "Criar `POST /api/auth/logout`.\n\nCom JWT **stateless** nao ha sessao no servidor para invalidar - o logout real e o cliente descartar o token. O endpoint existe por simetria de API e como ponto de extensao caso um dia entre blocklist de token.\n\n**US:** US-00 · **Regras:** RN13 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\nAlternativa se o time preferir enxugar: remover o endpoint e fazer o logout so no cliente (`limparToken()`).\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-00] [FRONTEND] Tela de Login",
+   "corpo": "Tela com **um unico campo** \"CPF ou E-mail\" + senha.\n\nAplicar mascara de CPF dinamicamente usando `pareceEmail()` de `src/lib/cpf.ts`: se o valor nao tem `@`, formata como CPF. Enviar sempre sem mascara.\n\n**US:** US-00 · **Regras:** RN07 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-00] [FRONTEND] Tela de Primeiro Acesso",
+   "corpo": "Fluxo em **duas etapas**:\n\n1. Informar o CPF -> chama `verificar-cpf`\n2a. Cadastro existe -> exibir `Encontramos seu cadastro, <nome>! Crie uma senha para ativar seu login.` e pedir so a senha\n2b. Cadastro nao existe -> formulario completo (nome, telefone, e-mail opcional) + senha\n2c. Login ja ativo -> redirecionar para `/login`\n\n**US:** US-00 · **Regras:** RN01, RN07 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-00] [FRONTEND] Protecao de Rotas",
+   "corpo": "Guarda por perfil nos route groups `(paciente)` e `(atendente)`, no `layout.tsx` de cada grupo.\n\n**Nao** criar `middleware.ts` - no Next 16 virou `proxy.ts` e nao precisamos dele. A autorizacao de verdade e do backend (RN12); o guard e experiencia de uso.\n\n**US:** US-00 · **Regras:** RN12 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-00] [FRONTEND] Acao de Logout",
+   "corpo": "Botao de sair no shell autenticado: limpa o token com `limparToken()` e redireciona para `/login`.\n\n**US:** US-00 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-00\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-01] [BACKEND] Rota de Cadastro de Especialidade",
+   "corpo": "Criar `POST /api/especialidades`, protegida por `exigir_atendente`. Bloqueia nome duplicado.\n\n**US:** US-01 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-01\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-01] [FRONTEND] Formulario de Cadastro de Especialidade",
+   "corpo": "Formulario com nome e descricao opcional, usando `@mantine/form`.\n\n**US:** US-01 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-01\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-01] [BACKEND] Rotas de Edicao e Exclusao de Especialidade",
+   "corpo": "Criar `PUT /api/especialidades/{id}` e a desativacao (soft delete via `ativo = false`).\n\n**US:** US-01 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-01\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-01] [FRONTEND] Tela de Gestao de Especialidades",
+   "corpo": "Listagem com acoes de editar e desativar.\n\n**US:** US-01 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-01\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-02] [BACKEND] Rota de Cadastro de Medico",
+   "corpo": "Criar `POST /api/medicos` com nome, e-mail, CRM e `especialidade_id`. E-mail e CRM unicos.\n\n**US:** US-02 · **Regras:** RN02 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-02\n\nMedico e entidade de **cadastro**, nao usuario do sistema: nao tem credencial nem login no MVP. Ver [ADR-003](../blob/develop/docs/adr/ADR-003-autenticacao.md).\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-02] [FRONTEND] Formulario de Cadastro de Medico",
+   "corpo": "Formulario com `Select` de especialidade. Impede salvar sem especialidade, com a mensagem `Selecione uma especialidade`.\n\n**US:** US-02 · **Regras:** RN08 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-02\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-02] [BACKEND] Rotas de Edicao e Inativacao de Medicos",
+   "corpo": "Criar `PUT /api/medicos/{id}` e a inativacao. Medico inativo sai das listagens do paciente, mas o historico de consultas dele permanece.\n\n**US:** US-02 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-02\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-02] [FRONTEND] Painel de Controle de Medicos",
+   "corpo": "Listagem com filtro, edicao e desativacao.\n\n**US:** US-02 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-02\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-03] [BACKEND] Rota de Cadastro de Paciente",
+   "corpo": "Criar `POST /api/pacientes`, protegida por `exigir_atendente`. Campo `email` **opcional**.\n\n**Nao cria credencial** - o login e ativado depois pelo proprio paciente no fluxo de primeiro acesso (US-00). Assim o atendente nunca conhece a senha do paciente.\n\n**US:** US-03 · **Regras:** RN01, RN02, RN07, RN08 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-03\n\nAtencao a RN02: `email` e nullable e em PostgreSQL `UNIQUE` permite multiplos `NULL` - dois pacientes sem e-mail devem coexistir. E o caso que pega implementacao ingenua.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-03] [FRONTEND] Formulario de Cadastro de Paciente",
+   "corpo": "Formulario com mascara e validacao de CPF por digitos verificadores no cliente, espelhando o backend (`src/lib/cpf.ts`).\n\n**US:** US-03 · **Regras:** RN07, RN08 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-03\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-03] [BACKEND] Rotas de Edicao de Pacientes",
+   "corpo": "Criar `PUT /api/pacientes/{id}` e a inativacao, para uso do atendente.\n\n**US:** US-03 · **Regras:** RN02 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-03\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-03] [FRONTEND] Painel de Consulta de Pacientes",
+   "corpo": "Listagem com busca por nome ou CPF.\n\n**US:** US-03 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-03\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-04] [BACKEND] Rota de Atualizacao Cadastral do Paciente",
+   "corpo": "Criar `PUT /api/pacientes/me`. O paciente alvo vem do `paciente_id` **do token**, nunca de parametro da requisicao.\n\nSem isso, qualquer paciente altera os dados de outro trocando um numero na URL.\n\n**US:** US-04 · **Regras:** RN02, RN08, RN12 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-04\n\nCPF **nao** e editavel pelo paciente. Atualizar mantendo o proprio e-mail nao deve dar erro de duplicidade.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-04] [FRONTEND] Tela de Perfil do Paciente",
+   "corpo": "Formulario de perfil com CPF em modo leitura.\n\n**US:** US-04 · **Regras:** RN08 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-04\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-05] [BACKEND] Rota de Geracao de Grade de Horarios",
+   "corpo": "Criar `POST /api/medicos/{id}/agenda`, recebendo uma data e uma **lista** de horarios.\n\n**US:** US-05 · **Regras:** RN05, RN09 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-05\n\nRN05 vem de `UniqueConstraint(medico_id, data, horario)` na tabela **e** de validacao no `AgendaService`, para devolver mensagem de negocio em vez de erro de banco cru. RN09 valida `08:00 <= h < 18:00` no schema Pydantic.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-05] [FRONTEND] Tela de Lancamento de Horarios",
+   "corpo": "Painel com `DatePickerInput` + multiplos `TimeInput` para lancar varios slots do mesmo dia de uma vez.\n\n**US:** US-05 · **Regras:** RN09 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-05\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-05] [BACKEND] Rota de Exclusao de Horario Livre",
+   "corpo": "Criar `DELETE /api/agenda/{id}`, permitido **apenas** para slot ainda livre.\n\n**US:** US-05 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-05\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-05] [FRONTEND] Exclusao de Slots da Grade",
+   "corpo": "Acao de excluir slot livre, com modal de confirmacao.\n\n**US:** US-05 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-05\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-06] [BACKEND] Rota de Listagem de Especialidades Ativas",
+   "corpo": "Criar `GET /api/especialidades`, devolvendo apenas `ativo = true`.\n\n**US:** US-06 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-06\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-06] [BACKEND] Rota de Listagem de Medicos Ativos com Filtro",
+   "corpo": "Criar `GET /api/medicos?especialidade_id=X`, devolvendo apenas medicos ativos.\n\n**US:** US-06 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-06\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-06] [FRONTEND] Filtros de Agendamento do Paciente",
+   "corpo": "Tela de busca com filtro por especialidade. Buscar `Cardiologia` deve retornar apenas os medicos daquela especialidade.\n\n**US:** US-06 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-06\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-07] [BACKEND] Rota de Busca de Horarios Livres por Medico",
+   "corpo": "Criar `GET /api/medicos/{id}/horarios-livres?data=AAAA-MM-DD`, devolvendo apenas slots com `disponivel = true`.\n\n**US:** US-07 · **Regras:** RN03 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-07\n\nConsulta cancelada devolve o slot para a agenda: depois de um cancelamento, o horario tem de voltar a aparecer aqui.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-07] [FRONTEND] Grade Dinamica de Escolha de Horario",
+   "corpo": "Calendario com os horarios livres da data escolhida, com estado vazio claro quando o medico nao tem agenda naquele dia (mensagem, nao erro).\n\n**US:** US-07 · **Regras:** RN03 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-07\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-08] [BACKEND] Rota de Solicitacao de Consulta",
+   "corpo": "Criar `POST /api/consultas`. O `paciente_id` vem do token. Status inicial `SOLICITADA`.\n\n**Concorrencia:** a reserva usa `SELECT ... FOR UPDATE` (`HorarioRepository.buscar_para_reserva`) mais o indice parcial `uq_slot_ativo`. Dois pacientes confirmando ao mesmo tempo: o primeiro passa, o segundo recebe **409 Horario indisponivel**.\n\n**US:** US-08 · **Regras:** RN03, RN06 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-08\n\nNao remova nenhuma das duas defesas: o lock resolve a corrida, o indice e a garantia de ultimo recurso no banco.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-08] [FRONTEND] Fluxo de Confirmacao de Agendamento",
+   "corpo": "Fluxo escolher medico -> data -> horario -> confirmar, com `modals.openConfirmModal` antes de enviar. Apos confirmar, o horario sai da lista de livres.\n\n**US:** US-08 · **Regras:** RN03 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-08\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-09] [BACKEND] Rota de Agendamento Direto",
+   "corpo": "Criar `POST /api/atendente/consultas`, recebendo `paciente_id` no corpo. Status inicial **`CONFIRMADA`**.\n\nDiferente da US-08 de proposito: quando o atendente agenda, e a propria clinica falando, entao nao precisa de confirmacao posterior.\n\n**US:** US-09 · **Regras:** RN03, RN05, RN06 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-09\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-09] [FRONTEND] Tela de Agendamento Direto",
+   "corpo": "Tela do atendente com busca de paciente + selecao de medico e horario livre.\n\n**US:** US-09 · **Regras:** RN03 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-09\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-10] [BACKEND] Rota de Historico de Consultas do Paciente",
+   "corpo": "Criar `GET /api/consultas`, filtrando pelo `paciente_id` **do token**. Nunca aceitar o id por parametro.\n\n**US:** US-10 · **Regras:** RN12 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-10\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-10] [FRONTEND] Painel de Historico do Paciente",
+   "corpo": "Lista das consultas com `Badge` por status: SOLICITADA `yellow`, CONFIRMADA `teal`, FINALIZADA `gray`, CANCELADA `red`. Detalhe exibe medico, especialidade, data, horario, status e o motivo quando cancelada. Estado vazio convida a agendar.\n\n**US:** US-10 · **Regras:** RN06, RN12 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-10\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-11] [BACKEND] Rota de Cancelamento do Paciente",
+   "corpo": "Criar `PATCH /api/consultas/{id}/cancelar`.\n\nA regra de prazo vem da **Strategy** `CancelamentoPorPaciente`, nao de um `if perfil ==`. Menos de 24h -> **422**. Ao cancelar: status vai para `CANCELADA` e o slot volta a `disponivel = true`.\n\n**US:** US-11 · **Regras:** RN03, RN04, RN10, RN15 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-11\n\nO prazo vem de `settings.CANCELAMENTO_ANTECEDENCIA_HORAS` - **nunca** hardcode 24. O calculo usa o fuso `America/Maceio` (RN15) e recebe `agora` por parametro, para o teste ser deterministico.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-11] [FRONTEND] Acao de Cancelar Consulta pelo Paciente",
+   "corpo": "Botao de cancelar com modal de confirmacao e campo de motivo opcional. O 422 da RN04 vira notification com a mensagem do backend.\n\n**US:** US-11 · **Regras:** RN04 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-11\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-12] [BACKEND] Rota de Cancelamento do Atendente",
+   "corpo": "Criar `PATCH /api/atendente/consultas/{id}/cancelar`. Muda o status para `CANCELADA` e libera o slot (`disponivel = true`), **ignorando** a regra de 24h.\n\nA diferenca em relacao a US-11 e resolvida por Strategy (`CancelamentoPorAtendente`), nao por condicional no service.\n\n**US:** US-12 · **Regras:** RN03, RN10 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-12\n\nConsulta `FINALIZADA` **nao** pode ser cancelada, nem pelo atendente (RN10 - estado terminal).\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-12] [FRONTEND] Acao de Cancelamento pelo Atendente",
+   "corpo": "Acao de cancelamento administrativo na lista de consultas, com campo de motivo. O motivo fica visivel para o paciente.\n\n**US:** US-12 · **Regras:** RN10 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-12\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-13] [BACKEND] Rota de Confirmacao e Finalizacao de Consulta",
+   "corpo": "Criar `PATCH /api/atendente/consultas/{id}/status`. Valida a transicao contra `TRANSICOES_PERMITIDAS`:\n\n- `SOLICITADA` -> `CONFIRMADA` ok\n- `CONFIRMADA` -> `FINALIZADA` ok\n- `SOLICITADA` -> `FINALIZADA` **422**\n- `CANCELADA` e `FINALIZADA` sao terminais **422**\n\n**US:** US-13 · **Regras:** RN06, RN10 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-13\n\n**Por que esta US existe:** sem ela, consulta solicitada pelo paciente ficaria eternamente `SOLICITADA` e `FINALIZADA` seria codigo morto - a RN06 nao seria demonstravel. Origem: conflito C04.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-13] [FRONTEND] Acoes de Confirmar e Finalizar na Lista do Atendente",
+   "corpo": "Botoes Confirmar e Finalizar habilitados conforme o status atual, com filtro por status para achar as pendentes de confirmacao.\n\n**US:** US-13 · **Regras:** RN06, RN10 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-13\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "BACKEND",
+   "titulo": "[US-14] [BACKEND] Rota de Agenda Geral Consolidada",
+   "corpo": "Criar `GET /api/atendente/agenda?data=&medico_id=&especialidade_id=`. Devolve todos os medicos com seus horarios da data e o status de cada slot (livre, ou consulta e qual paciente).\n\n**US:** US-14 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-14\n\nOrigem: conflito C08 - a lista de funcionalidades pede \"cadastrar **e gerenciar** a agenda geral\"; a US-05 cobre so o cadastro.\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "2",
+   "tipo": "FRONTEND",
+   "titulo": "[US-14] [FRONTEND] Painel de Agenda Geral da Clinica",
+   "corpo": "Visao em tabela medico x horario, com filtro por data, medico e especialidade. Consulta cancelada aparece com o horario livre novamente.\n\n**US:** US-14 · **Escopo:** DESEJAVEL\n**Criterios de aceite:** `docs/02-backlog.md` secao US-14\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "BACKEND",
+   "titulo": "[US-15] [BACKEND] Rota de Cadastro de Atendente",
+   "corpo": "Criar `POST /api/atendente/atendentes`, protegida por `exigir_atendente` (**RN14**).\n\n**Nao existe rota publica** para isso: paciente recebe 403, requisicao sem token recebe 401. Rota publica de cadastro de atendente seria escalonamento de privilegio.\n\n**US:** US-15 · **Regras:** RN02, RN11, RN14 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-15\n\nO primeiro atendente vem do seed idempotente. Sem esta US o sistema depende para sempre daquela unica conta. Ver [ADR-004](../blob/develop/docs/adr/ADR-004-bootstrap-atendente.md).\n\n### Definition of Done\n- [ ] Camadas respeitadas: Router -> Service -> Repository -> Model\n- [ ] Regra de negocio no Service, nunca no Router\n- [ ] Excecao de dominio tipada (nunca `HTTPException` no Service)\n- [ ] Teste unitario citando o ID da RN no nome\n- [ ] `ruff check` e `ruff format --check` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  },
+  {
+   "sprint": "1",
+   "tipo": "FRONTEND",
+   "titulo": "[US-15] [FRONTEND] Tela de Cadastro de Atendente",
+   "corpo": "Formulario com nome, e-mail e senha, dentro do route group `(atendente)`. O 409 de e-mail duplicado vira notification.\n\n**US:** US-15 · **Regras:** RN02 · **Escopo:** OBRIGATORIO\n**Criterios de aceite:** `docs/02-backlog.md` secao US-15\n\n### Definition of Done\n- [ ] `'use client'` onde ha interatividade; sem compound component em Server Component\n- [ ] HTTP so via `src/lib/api.ts`; zero `fetch` direto\n- [ ] Erro da API tratado com `notifications.show`, nunca `alert`\n- [ ] Zero `any`, zero `console.log`\n- [ ] `yarn lint && yarn typecheck && yarn test` limpos\n- [ ] PR aprovado por 1 pessoa, `Quality Gate` verde"
+  }
+ ],
+ "processo": [
+  {
+   "sprint": "1",
+   "tipo": "QA",
+   "titulo": "[QA] Plano de Testes e Matriz de Cobertura das RNs",
+   "corpo": "Entregável avaliado. `docs/07-plano-de-testes.md`\n\nEscopo, pirâmide de testes, ambientes, gestão de defeitos, critérios de entrada e saída.\n\n**Critério:** toda RN01–RN15 precisa ter ao menos um caso de teste que **viola** a regra e espera bloqueio. Teste só do caminho felizes não prova que a regra existe.\n\nResponsável: **Jackson**"
+  },
+  {
+   "sprint": "1",
+   "tipo": "QA",
+   "titulo": "[QA] Escrever Casos de Teste CT01 a CT04",
+   "corpo": "`docs/08-casos-de-teste.md`. Escrever **antes** do código existir, para não enviesar o teste pela implementação.\n\n- CT01 cadastrar paciente válido (RN07)\n- CT02 bloquear CPF duplicado (RN01)\n- CT03 bloquear e-mail duplicado **e** permitir dois e-mails nulos (RN02)\n- CT04 primeiro acesso ativa o login (RN11)\n\nResponsável: **Jackson** · Prazo: dia 3 da Sprint 1"
+  },
+  {
+   "sprint": "1",
+   "tipo": "QA",
+   "titulo": "[QA] Escrever Casos de Teste CT08, CT13 e CT14",
+   "corpo": "- CT08 bloquear alocação dupla do mesmo médico (RN05)\n- CT13 bloquear horário fora de 08:00–18:00 (RN09)\n- CT14 atendente cadastra atendente; paciente recebe 403 (RN14)\n\nResponsável: **Jackson** · Prazo: dia 3 da Sprint 1"
+  },
+  {
+   "sprint": "1",
+   "tipo": "QA",
+   "titulo": "[QA] Executar CT01 a CT04 com Evidências",
+   "corpo": "Executar e registrar em `docs/evidencias/CT0X/`.\n\nCada pasta precisa de `README.md` citando CT, US, RN, ambiente, data, executor e veredito. O print tem de mostrar a **mensagem de erro exata** — é ela que prova que a RN foi aplicada.\n\nResponsável: **Jackson**"
+  },
+  {
+   "sprint": "1",
+   "tipo": "QA",
+   "titulo": "[QA] Executar CT08 e CT13 com Evidências",
+   "corpo": "RN05 (alocação dupla) e RN09 (horário comercial). Testar as fronteiras de CT13: 07:59, 08:00, 17:59, 18:00, 19:30.\n\nResponsável: **Jackson**"
+  },
+  {
+   "sprint": "1",
+   "tipo": "QA",
+   "titulo": "[QA] Sessão Exploratória EXP-01 - Cadastros",
+   "corpo": "Time-boxed em **45 min**, com charter escrito antes.\n\n**Charter:** explorar US-01 a US-04 buscando falhas de validação e duplicidade.\n\nHeurísticas: CPF com/sem máscara e incompleto; nome com 1 caractere; e-mail sem TLD; unicode (acento, ç, emoji); e-mail em maiúsculas; campos vazios.\n\nRegistrar em `docs/07-plano-de-testes.md` §6 — sessão sem achado também é registrada.\n\nResponsável: **Felipe**"
+  },
+  {
+   "sprint": "1",
+   "tipo": "QA",
+   "titulo": "[QA] Sessão Exploratória EXP-02 - Lançamento de Agenda",
+   "corpo": "45 min. **Charter:** explorar US-05 e US-07 buscando conflito de horário.\n\nHeurísticas: mesmo slot duas vezes; data no passado; grade vazia; médico inexistente; horários limite (07:59, 18:00, 18:01).\n\nResponsável: **Felipe**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "QA",
+   "titulo": "[QA] Executar CT05 a CT07 com Evidências",
+   "corpo": "- CT05 bloquear agendamento em horário ocupado (RN03)\n- CT06 paciente cancela com ≥ 48h → slot volta a ficar livre (RN04 + RN03)\n- CT07 paciente **não** cancela com ~12h (RN04)\n\n⚠️ Para montar a pré-condição do CT07 sem esperar, reduza `CANCELAMENTO_ANTECEDENCIA_HORAS` no `.env` **e registre no relatório qual método usou**.\n\nResponsável: **Jackson**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "QA",
+   "titulo": "[QA] Executar CT09 e CT10 com Evidências",
+   "corpo": "- CT09 ciclo completo de status SOLICITADA → CONFIRMADA → FINALIZADA, e cancelar FINALIZADA falha com 422 (RN06 / RN10)\n- CT10 reagendar o horário liberado por um cancelamento (RN03)\n\n⚠️ **CT10 é o caso que prova a decisão do [ADR-006](../docs/adr/ADR-006-design-patterns.md)**: com `UNIQUE` simples em vez de índice parcial, o passo 2 falharia. Confira no banco que existem duas linhas para o mesmo `horario_disponivel_id` — uma CANCELADA, uma CONFIRMADA.\n\nResponsável: **Jackson**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "QA",
+   "titulo": "[QA] Executar CT11, CT12 e CT14 com Evidências",
+   "corpo": "Autorização e segurança (RN12, RN13, RN14).\n\n- CT11 paciente em rota de atendente → 403; `GET /api/consultas` com `paciente_id` de outro → só retorna as próprias\n- CT12 sem token → 401; token inválido → 401; senha errada → 401 sem revelar se o login existe\n- CT14 atendente cadastra atendente; rota pública não existe\n\nResponsável: **Jackson**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "QA",
+   "titulo": "[QA] Sessão Exploratória EXP-03 - Agendamento e Concorrência",
+   "corpo": "45 min. **Charter:** explorar US-08 e US-09 buscando falhas de estado e concorrência.\n\nHeurísticas: duas abas no mesmo slot; duplo clique rápido em Confirmar; deixar a lista de horários aberta, cancelar em outra aba e tentar agendar; voltar/avançar do browser no meio do fluxo; trocar `paciente_id` no body.\n\nResponsável: **Felipe**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "QA",
+   "titulo": "[QA] Sessão Exploratória EXP-04 - Cancelamento e Limite de 24h",
+   "corpo": "45 min. **Charter:** explorar US-11, US-12 e US-13 nos limites da regra de 24h.\n\nHeurísticas: fronteira exata 23h59 / 24h00 / 24h01; cancelar consulta já cancelada; cancelar FINALIZADA; **rodar em máquina com outro fuso** para validar a RN15.\n\nResponsável: **Felipe**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "QA",
+   "titulo": "[QA] Relatório Final de Testes e Evidências de CI",
+   "corpo": "Entregável avaliado.\n\n- Preencher o relatório de execução de `docs/08-casos-de-teste.md` §4\n- Capturar o **quality-gate verde** e também **um PR bloqueado por quality-gate vermelho** — o segundo prova que o gate funciona, e vale mais que o primeiro\n- Log do job `docker` mostrando o seed rodando 2× com a segunda execução em no-op (idempotência do ADR-004)\n- Salvar em `docs/evidencias/CI/`\n\nResponsável: **Felipe**"
+  },
+  {
+   "sprint": "1",
+   "tipo": "INFRA",
+   "titulo": "[INFRA] Configurar Branch Protection em main e develop",
+   "corpo": "Entregável avaliado (estratégia de entrega). `Settings → Branches → Add rule`, para `main` e `develop`:\n\n- [x] Require a pull request before merging\n- [x] Require approvals: **1**\n- [x] Dismiss stale approvals on new commits\n- [x] Require status checks: **`Quality Gate`**\n- [x] Require branches to be up to date\n- [x] Require conversation resolution\n- [ ] Allow force pushes — desmarcado\n- [ ] Allow deletions — desmarcado\n\nSem o `Quality Gate` como required check, a proteção é decorativa. Detalhes em `docs/10-git-flow.md` §2.\n\nResponsável: **Antonio**"
+  },
+  {
+   "sprint": "1",
+   "tipo": "INFRA",
+   "titulo": "[INFRA] Revisar a Migração Inicial do Alembic",
+   "corpo": "O `alembic revision --autogenerate` **não** detecta índice parcial. Conferir que `0001_esquema_inicial.py` tem:\n\n- `uq_slot_ativo` com `postgresql_where=sa.text(\"status IN ('SOLICITADA', 'CONFIRMADA')\")` (RN03)\n- `UniqueConstraint(medico_id, data, horario)` (RN05)\n- `TIMESTAMP WITH TIME ZONE` nas datas (RN15)\n- ENUM criado **uma única vez** — não chamar `.create()` na mão junto com `op.create_table`\n\n⚠️ `alembic upgrade head` **passa em silêncio** quando `versions/` está vazia e não cria tabela nenhuma; o erro só aparece depois, no seed, como `UndefinedTable`. `backend/tests/integration/test_migracoes.py` compara model × migração e falha no PR.\n\nResponsável: **Jonatha**"
+  },
+  {
+   "sprint": "1",
+   "tipo": "INFRA",
+   "titulo": "[INFRA] Validar o Pipeline de CI com os 4 Jobs",
+   "corpo": "Entregável avaliado. `.github/workflows/ci.yml`\n\n| Job | Valida |\n|---|---|\n| `backend` | ruff · ruff format · alembic upgrade + current · pytest unit e integração |\n| `frontend` | eslint · next typegen + tsc · vitest · next build |\n| `docker` | compose sobe · healthcheck · migração · **seed 2×** |\n| `quality-gate` | agrega os três — é o required status check |\n\nResponsável: **Felipe**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "DOCS",
+   "titulo": "[DOCS] Publicar a Wiki a partir de docs/",
+   "corpo": "`docs/` é a fonte da verdade; a Wiki é espelho gerado.\n\n```powershell\npython scripts\\gerar-wiki.py\n.\\scripts\\publicar-wiki.ps1 -DryRun\n.\\scripts\\publicar-wiki.ps1\n```\n\n22 páginas geradas + Home, _Sidebar e _Footer escritas à mão. **Não editar pela interface web** — a próxima publicação sobrescreve.\n\nResponsável: **Uanderson**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "DOCS",
+   "titulo": "[DOCS] Slides da Apresentação Final",
+   "corpo": "Entregável avaliado do PO. Roteiro de 15 slides em `docs/13-papeis-e-responsabilidades.md`. Salvar em `docs/apresentacao/`.\n\nSlides que mais pesam na avaliação:\n- 7 — 3 práticas de Clean Code com exemplo ruim/bom\n- 8 — 2 Design Patterns com diagrama e justificativa\n- 9 — conflitos do enunciado e ADRs (o diferencial do grupo)\n- 12 — print do quality gate verde **e** de um PR bloqueado\n- 13 — demonstração ao vivo\n\nResponsável: **Ronaldo**"
+  },
+  {
+   "sprint": "2",
+   "tipo": "DOCS",
+   "titulo": "[DOCS] Release v1.0.0",
+   "corpo": "```bash\ngit switch -c release/1.0 develop\n# PR release/1.0 -> main, revisado e aprovado\ngit switch main && git merge --no-ff release/1.0\ngit tag -a v1.0.0 -m \"MVP Clinica Medica - AV2 Equipe 01\"\ngit switch develop && git merge --no-ff release/1.0\ngit push origin main develop --tags\n```\n\n`--no-ff` preserva o ponto de integração no grafo — é o que mostra o Git Flow durante a apresentação. Detalhes em `docs/10-git-flow.md` §6.\n\nResponsável: **Antonio**"
+  }
+ ]
+}
