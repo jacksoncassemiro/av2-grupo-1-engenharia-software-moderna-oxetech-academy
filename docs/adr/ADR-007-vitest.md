@@ -26,6 +26,15 @@ pede Vitest.
    `<MantineProvider theme={theme} env="test">`. Todo teste importa de `@test-utils`, nunca de
    `@testing-library/react` direto.
 
+O arquivo de setup é **`vitest.setup.ts`**, não `.mjs` como no guia do Mantine. Isso é
+deliberado: o `import '@testing-library/jest-dom/vitest'` faz duas coisas — registra os matchers
+em runtime **e** aumenta a interface `Assertion` do Vitest com os tipos deles. O aumento de tipo
+só vale se o arquivo estiver no `include` do `tsconfig.json`, o que exige extensão `.ts`.
+
+Com `.mjs`, o `yarn test` passava mas o `tsc --noEmit` quebrava no CI com
+`Property 'toBeInTheDocument' does not exist on type 'Assertion<HTMLElement>'` — exatamente o
+tipo de erro que só aparece quando lint, teste e typecheck rodam separados no pipeline.
+
 O Next.js suporta Vitest oficialmente — a recomendação de Jest do Mantine é sobre conveniência
 de bundler, não sobre incompatibilidade.
 
@@ -53,7 +62,7 @@ de bundler, não sobre incompatibilidade.
 
 - Se um componente Mantine novo exigir outra API do browser, o erro aparece como
   `TypeError: x is not a function` dentro do teste. A correção é adicionar o mock em
-  `vitest.setup.mjs` — anotado no `CLAUDE.md`.
+  `vitest.setup.ts` — anotado no `CLAUDE.md`.
 
 - Duas fontes de configuração para manter (Next + Mantine). Ambas versionadas e comentadas com
   o link da fonte.

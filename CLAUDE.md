@@ -162,6 +162,14 @@ Justificativa: `docs/06-design-patterns.md` e `docs/adr/ADR-006-design-patterns.
   `eslint.config.mjs` com `eslint-config-next/core-web-vitals` + `/typescript` em flat config.
 - `yarn typecheck` é `next typegen && tsc --noEmit`. O `next typegen` gera `next-env.d.ts` e os
   tipos de rota — sem ele o `tsc` falha no CI.
+- **`params` e `searchParams` são `Promise` no Next 16** (a compatibilidade síncrona da v15 foi
+  removida). Use os helpers gerados: `PageProps<'/consultas/[id]'>`, `LayoutProps<'/(paciente)'>`.
+  Vale também para `cookies()`, `headers()`, `draftMode()`.
+- Guarda de rota fica no `layout.tsx` do route group. **Não** crie `middleware.ts` — no Next 16
+  virou `proxy.ts`, e não precisamos dele.
+- Turbopack é o bundler padrão: não passe `--turbopack` em `dev`/`build`.
+- Setup do Vitest é `vitest.setup.ts` (**TypeScript**, não `.mjs`) — é o que faz o `tsc` ver os
+  tipos dos matchers do jest-dom (`toBeInTheDocument`, `toHaveAttribute`).
 
 Consulta de dúvida de API do Mantine: `https://mantine.dev/llms.txt`.
 

@@ -129,6 +129,36 @@ describe('FormularioPaciente', () => {
 `async` Server Components não são testáveis no Vitest (ADR-007) — mantenha a lógica
 testável em Client Components ou em funções puras de `src/lib/`.
 
+## Next 16 — o que muda na prática
+
+| Mudança | O que fazer |
+|---|---|
+| **`params` e `searchParams` são `Promise`** | `const { id } = await props.params`. Compatibilidade síncrona foi **removida** na v16. |
+| **Helpers de tipo por rota** | Prefira `PageProps<'/consultas/[id]'>`, `LayoutProps<'/(paciente)'>`, `RouteContext<'/api/x'>` — gerados por `next typegen`, tipados pela rota real |
+| `cookies()`, `headers()`, `draftMode()` | Também assíncronos |
+| **`next lint` removido** | `eslint .` (ver abaixo) |
+| **`middleware.ts` → `proxy.ts`** | Não usamos. Guarda de rota fica no `layout.tsx` do route group |
+| **Turbopack é o padrão** | Não passe `--turbopack` em `dev`/`build` |
+| `serverRuntimeConfig`/`publicRuntimeConfig` removidos | Use `NEXT_PUBLIC_*` |
+| Parallel routes exigem `default.tsx` | Não usamos parallel routes |
+| `next/image`: `qualities` agora é `[75]`, IP local bloqueado | Se usar imagem externa, configure `images.remotePatterns` |
+
+```tsx
+// ❌ Errado no Next 16
+export default function Page({ params }: { params: { id: string } }) {
+  return <Consulta id={params.id} />;
+}
+
+// ✅ Certo
+export default async function Page(props: PageProps<'/consultas/[id]'>) {
+  const { id } = await props.params;
+  return <Consulta id={id} />;
+}
+```
+
+Página assíncrona é Server Component — então o componente interativo dentro dela precisa ser um
+Client Component separado (é também o que torna o teste com Vitest possível, ver ADR-007).
+
 ## Lint e typecheck no Next 16
 
 `next lint` foi **removido** na v16, junto com a opção `eslint` do `next.config`.

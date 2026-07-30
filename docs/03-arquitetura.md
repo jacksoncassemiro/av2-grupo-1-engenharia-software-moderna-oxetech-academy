@@ -163,7 +163,7 @@ exige tocar em nenhum router.
 │   ├── next.config.mjs             # rewrite /api + optimizePackageImports
 │   ├── postcss.config.cjs          # postcss-preset-mantine
 │   ├── vitest.config.mts           # setup oficial Next + Vitest
-│   ├── vitest.setup.mjs            # mocks exigidos pelo Mantine
+│   ├── vitest.setup.ts             # mocks do Mantine + tipos do jest-dom
 │   ├── test-utils/                 # render com MantineProvider
 │   └── src/
 │       ├── theme.ts                # tema Mantine da clínica
