@@ -65,21 +65,18 @@ yarn dev
 
 ## 👥 Equipe
 
-> ⚠️ **Pendente de confirmação.** O enunciado pede **2 pessoas por papel** (6 no total), mas
-> este README listava 7 nomes em 1 PO / 4 Eng / 2 QA. Ver
-> [`docs/13-papeis-e-responsabilidades.md`](docs/13-papeis-e-responsabilidades.md) e decidir no
-> Sprint Planning.
-
 | Papel | Pessoa | Foco |
 |---|---|---|
-| 👑 **PO-A** | Uanderson Henrique | Backlog, User Stories, critérios de aceite |
-| 👑 **PO-B** | *(a definir)* | Cerimônias, board, apresentação |
-| 💻 **ENG-A** | Jonatha da Silva | Backend, arquitetura, Clean Code, Design Patterns |
-| 💻 **ENG-B** | João Vitor | Frontend Next.js + Mantine |
-| 🧪 **QA-A** | Jackson Douglas | Plano e casos de teste, execução, evidências |
-| 🧪 **QA-B** | Felipe da Silva | CI/CD, testes exploratórios |
+| 👑 **Product Owner** | Uanderson Henrique Batista da Silva | Backlog, User Stories, critérios de aceite, ciclo de desenvolvimento |
+| 💻 **Engenharia** | Jonatha da Silva Fernandes | Arquitetura MVC, Clean Code, Design Patterns |
+| 💻 **Engenharia** | Antonio Andrade Gomes Júnior | Git Flow, autenticação, autorização, seed |
+| 💻 **Engenharia** | João Vitor Mandu de Lira | Frontend Next.js + Mantine, testes unitários |
+| 💻 **Engenharia** | Ronaldo de Melo Sabino Filho | Frontend, cerimônias Scrum, apresentação |
+| 🧪 **QA** | Jackson Douglas da Silva Cassemiro | Plano e casos de teste, execução, evidências |
+| 🧪 **QA** | Felipe da Silva Araújo | CI/CD, testes exploratórios, relatório final |
 
-A alocar: Ronaldo de Melo, Antonio Andrade.
+Alocação detalhada de cada entregável avaliado em
+[`docs/13-papeis-e-responsabilidades.md`](docs/13-papeis-e-responsabilidades.md).
 
 ---
 
@@ -132,7 +129,7 @@ frontend/src/
 | # | Padrão | Onde | Problema resolvido |
 |---|---|---|---|
 | 1 | **Strategy** | `services/cancelamento_strategy.py` | A regra de cancelamento muda por perfil — sem Strategy seria `if perfil ==`, violando OCP |
-| 2 | **Repository** | `repositories/` | Isola SQLAlchemy das regras — é o que permite 20 testes unitários em ~3s sem banco |
+| 2 | **Repository** | `repositories/` | Isola SQLAlchemy das regras — é o que permite 17 testes unitários em ~3s sem banco |
 
 Justificativa completa, diagramas e alternativas recusadas em
 [`docs/06-design-patterns.md`](docs/06-design-patterns.md).
@@ -213,7 +210,7 @@ make lint            # ruff + eslint + tsc
 |---|---|---|---|
 | Unitário backend | **17** | 5 | `backend/tests/unit/` |
 | Unitário frontend | 7 | — | `frontend/__tests__/` |
-| Integração | 3 | — | `backend/tests/integration/` |
+| Integração | **15** | — | `backend/tests/integration/` |
 | Casos de teste funcionais | **14** | 10 | [`docs/08-casos-de-teste.md`](docs/08-casos-de-teste.md) |
 | Sessões exploratórias | 4 | — | [`docs/07-plano-de-testes.md`](docs/07-plano-de-testes.md) §6 |
 
@@ -226,7 +223,7 @@ o caminho felizes não prova que a regra existe.
 |---|---|
 | `backend` | ruff · ruff format · alembic upgrade · pytest unit + integração + cobertura |
 | `frontend` | eslint · tsc --noEmit · vitest --coverage · next build |
-| `docker` | compose sobe · healthcheck · migração · **seed rodado 2× (prova a idempotência)** |
+| `docker` | compose sobe · healthcheck · migração + checagem de revisão aplicada · **seed rodado 2× (prova a idempotência)** |
 | `quality-gate` | Agrega os três — é o *required status check* de `main` e `develop` |
 
 ---

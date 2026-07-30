@@ -277,7 +277,7 @@ class PacienteService:
         self.repositorio = repositorio
 ```
 
-Por isso os 20 testes unitários rodam em ~3 segundos sem PostgreSQL, usando os fakes de
+Por isso os 17 testes unitários rodam em ~3 segundos sem PostgreSQL, usando os fakes de
 `tests/conftest.py`. Nos routers, o FastAPI injeta a implementação real via `Depends`.
 
 ---

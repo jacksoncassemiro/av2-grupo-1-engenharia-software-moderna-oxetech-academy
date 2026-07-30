@@ -288,7 +288,7 @@ class FakePacienteRepository:
         return next((p for p in self._itens if p.cpf == cpf), None)
 ```
 
-Resultado real, medido: **20 testes unitários em ~3 segundos, sem PostgreSQL**.
+Resultado real, medido: **17 testes unitários em ~3 segundos, sem PostgreSQL**.
 
 ```
 tests/unit/test_agenda_service.py ...       [ 17%]

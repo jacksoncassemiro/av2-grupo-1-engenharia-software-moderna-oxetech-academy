@@ -38,8 +38,8 @@ Teste que só verifica o caminho felizes não prova que a regra existe.
       ╱────╲        Funcional     ── CT01–CT14 manuais com evidência (QA)
      ╱      ╲                        cobre a jornada ponta a ponta
     ╱────────╲      Integração    ── TestClient + PostgreSQL (Eng + QA)
-   ╱          ╲                      contrato da API, autorização
-  ╱────────────╲    Unitário      ── 20 pytest + Vitest (Engenharia)
+   ╱          ╲                      contrato da API, autorização, migrações
+  ╱────────────╲    Unitário      ── 17 pytest + 7 Vitest (Engenharia)
                                      regras de negócio isoladas, sem banco
 ```
 
@@ -47,12 +47,12 @@ Teste que só verifica o caminho felizes não prova que a regra existe.
 |---|---|---|---|---|---|
 | Unitário backend | `backend/tests/unit/` | pytest + fakes | Engenharia | `@pytest.mark.unit` | 17 |
 | Unitário frontend | `frontend/__tests__/` | Vitest + RTL | Engenharia | — | 7 |
-| Integração | `backend/tests/integration/` | pytest + TestClient | Eng + QA | `@pytest.mark.integration` | 3 |
+| Integração | `backend/tests/integration/` | pytest + TestClient | Eng + QA | `@pytest.mark.integration` | 15 |
 | Funcional manual | `08-casos-de-teste.md` | roteiro + evidência | QA | CT01–CT14 | 14 |
 | Exploratório | §6 deste documento | sessões por charter | QA | EXP-01… | 4 sessões |
 | Regressão | CI | GitHub Actions | automático | — | toda push/PR |
 
-O exigido pelo enunciado é **5 testes unitários** e **10 casos de teste**. Entregamos 20 e 14 —
+O exigido pelo enunciado é **5 testes unitários** e **10 casos de teste**. Entregamos 17 e 14 —
 porque a matriz de rastreabilidade da §4 exigiu cobrir RN07 a RN15, que o mínimo não alcançava.
 
 ---

@@ -61,7 +61,9 @@ jobs:
         run: ruff format --check .
 
       - name: Aplicar migracoes
-        run: alembic upgrade head
+        run: |
+          alembic upgrade head
+          alembic current
 
       - name: Testes unitarios (RN01-RN06)
         run: pytest tests/unit -m unit --cov=app --cov-report=term-missing --cov-report=xml
@@ -94,6 +96,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
 
       - name: Instalar dependencias
         # --frozen-lockfile e o modo correto e sera usado a partir do momento em
@@ -152,11 +156,22 @@ jobs:
           done
           echo "API nao respondeu"; docker compose logs backend; exit 1
 
-      - name: Migracoes + seed idempotente
+      - name: Migracoes
         run: |
           docker compose exec -T backend alembic upgrade head
+          # Alembic passa em silencio quando versions/ esta vazia e nao cria tabela
+          # nenhuma. Este check falha alto em vez de deixar o erro estourar no seed.
+          revisao=$(docker compose exec -T backend alembic current 2>/dev/null | tail -1)
+          if [ -z "$revisao" ]; then
+            echo "::error::Nenhuma revisao aplicada - alembic/versions/ esta vazia?"
+            exit 1
+          fi
+          echo "Revisao aplicada: $revisao"
+
+      - name: Seed idempotente (roda 2x de proposito - ADR-004)
+        run: |
           docker compose exec -T backend python -m app.seeds.seed
-          docker compose exec -T backend python -m app.seeds.seed  # 2a vez: deve ser no-op
+          docker compose exec -T backend python -m app.seeds.seed
 
       - name: Derrubar
         if: always()

@@ -121,7 +121,7 @@ Testes pytest + Vitest · CI GitHub Actions · Docker Compose
 |---|---|---|
 | Testes unitários backend | **17** | 5 |
 | Testes unitários frontend | 7 | — |
-| Testes de integração | 3 | — |
+| Testes de integração | **15** | — |
 | Casos de teste funcionais | **14** | 10 |
 | Práticas de Clean Code | **3** | 3 |
 | Design Patterns | **2** | 2 |
