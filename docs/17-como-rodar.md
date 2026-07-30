@@ -238,10 +238,23 @@ winget install --id Python.Python.3.12
 (Docker), para publicar a Wiki (`publicar-wiki`, que usa só git) e para criar as labels
 (`criar-labels`, que usa só `gh`), não é preciso.
 
-### `syntax error near unexpected token $'do\r'` ao rodar um `.sh`
+### `syntax error near unexpected token $'do\r'` nos `.sh`
 
-Fim de linha **CRLF**. O Git no Windows converte LF → CRLF no checkout, e o bash lê o `\r` como
-parte do comando.
+Isto tem **duas causas diferentes**. Antes de mexer em git, confira qual é a sua:
+
+```powershell
+py -3 -c "import pathlib; d=pathlib.Path('scripts/popular-board.sh').read_bytes(); print('CRLF' if b'\r\n' in d else 'LF (arquivo esta OK)')"
+```
+
+**Se disser `LF (arquivo esta OK)`** — o arquivo está certo e o problema era do próprio
+`verificar-sintaxe.py`. Ele mandava o conteúdo para o `bash` com `subprocess.run(..., text=True)`,
+e no Windows o modo texto traduz cada `\n` de volta para `\r\n` ao escrever no pipe. O bash
+recebia CRLF mesmo com o arquivo limpo. **Corrigido**: o envio agora é binário. Se você ainda vê
+o erro, sua cópia do script está desatualizada — `git pull`.
+
+**Se disser `CRLF`** — aí sim o arquivo no disco está com fim de linha do Windows, porque o Git
+converteu no checkout (`core.autocrlf=true`). O `.gitattributes` do repositório já força
+`eol=lf` para `*.sh`, mas ele só age em arquivos que o Git ainda vai escrever:
 
 ```powershell
 git add --renormalize .
@@ -249,8 +262,16 @@ git checkout -- scripts/
 py -3 scripts\verificar-sintaxe.py
 ```
 
-O `.gitattributes` já força `eol=lf` para `*.sh` e `crlf` para `*.ps1`; o `--renormalize` é o que
-manda o Git aplicar isso ao que já está no disco.
+Se persistir, force para este repositório:
+
+```powershell
+git config core.autocrlf false
+git rm --cached -r . ; git reset --hard
+```
+
+> Fim de linha só afeta quem **executa** os `.sh` (Git Bash, WSL, Linux, macOS e o CI). No
+> PowerShell você usa os `.ps1`, que devem mesmo ficar em CRLF — o `.gitattributes` cuida dos
+> dois casos.
 
 ### Os scripts `.ps1` não fazem nada no Windows
 

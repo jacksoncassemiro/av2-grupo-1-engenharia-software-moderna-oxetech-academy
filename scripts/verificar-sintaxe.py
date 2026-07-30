@@ -129,14 +129,22 @@ def analisar_bash(caminho: Path) -> list[str]:
         # mas nao a sintaxe.
         return problemas
 
-    conteudo = bruto.replace(b"\r\n", b"\n").decode("utf-8", errors="replace")
+    conteudo = bruto.replace(b"\r\n", b"\n")
 
     try:
+        # ATENCAO: modo BINARIO de proposito — sem `text=True`.
+        #
+        # Com `text=True`, o subprocess embrulha o stdin num TextIOWrapper com
+        # traducao de newline. No Windows isso converte cada `\n` de volta para
+        # `\r\n` ao escrever no pipe. Resultado: por mais limpo que o arquivo
+        # esteja, o bash recebe CRLF e acusa
+        #     syntax error near unexpected token `$'do\r'`
+        # O bug so aparece no Windows (em Linux/macOS `os.linesep` ja e `\n`),
+        # o que o torna especialmente traicoeiro.
         processo = subprocess.run(
             ["bash", "-n"],
             input=conteudo,
             capture_output=True,
-            text=True,
             check=False,
         )
     except OSError as erro:
@@ -145,7 +153,8 @@ def analisar_bash(caminho: Path) -> list[str]:
 
     if processo.returncode != 0:
         # O bash conta as linhas do stdin, que batem com as do arquivo.
-        detalhe = processo.stderr.strip().replace("bash: line", f"{caminho.name}: linha")
+        detalhe = processo.stderr.decode("utf-8", errors="replace").strip()
+        detalhe = detalhe.replace("bash: line", f"{caminho.name}: linha")
         problemas.append(detalhe)
 
     return problemas
