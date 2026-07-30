@@ -76,16 +76,16 @@ Sem nenhuma flag, o script **não faz nada** e mostra as opções — de propós
 ### O que ele faz
 
 **1. Fecha as 41 issues originais** (`#4` a `#45`, de @Lothriiik) com `--reason "not planned"`
-e um **comentário de justificativa** explicando que foram *substituídas*, não descartadas, e
+e um **comentário de justificativa** explicando que foram _substituídas_, não descartadas, e
 dando crédito pelo levantamento original. Nada é apagado: o histórico e a autoria ficam.
 
 **2. Cria 82 itens** com rastreabilidade completa:
 
-| Seção | Qtd | O que é |
-|---|---|---|
-| `user_stories` | 16 | Guarda-chuva `US-00:` a `US-15:` — é onde o PO valida os critérios de aceite na coluna **UAT** |
-| `tarefas` | 47 | Execução, no padrão `[US-XX] [ÁREA] Título` (mesma convenção da equipe) |
-| `processo` | 19 | **QA, INFRA e DOCS** — entregáveis avaliados que não existiam no board |
+| Seção          | Qtd | O que é                                                                                        |
+| -------------- | --- | ---------------------------------------------------------------------------------------------- |
+| `user_stories` | 16  | Guarda-chuva `US-00:` a `US-15:` — é onde o PO valida os critérios de aceite na coluna **UAT** |
+| `tarefas`      | 47  | Execução, no padrão `[US-XX] [ÁREA] Título` (mesma convenção da equipe)                        |
+| `processo`     | 19  | **QA, INFRA e DOCS** — entregáveis avaliados que não existiam no board                         |
 
 Cada item ganha: **US**, **RNs cobertas** (IDs de `docs/01-requisitos.md`), link do critério de
 aceite, **Definition of Done** por área, e **label**.
@@ -109,7 +109,7 @@ rode de novo — ele continua de onde parou.
 
 `To Do` · `In Dev` · `Code Review` · `In QA` · `UAT` · `Done`
 
-O **UAT** separado de *Done* é o que dá lugar ao entregável "verificar critérios de aceite" do
+O **UAT** separado de _Done_ é o que dá lugar ao entregável "verificar critérios de aceite" do
 PO. Documentado em [`../docs/10-git-flow.md`](../docs/10-git-flow.md) §7.
 
 ### ⚠️ Ordem correta
@@ -128,10 +128,14 @@ Editar aqui muda o comportamento dos **dois** scripts. Estrutura:
 
 ```json
 {
-  "issues_a_fechar": [{ "numero": 4, "titulo": "..." }],
-  "user_stories":    [{ "sprint": "1", "tipo": "US", "titulo": "...", "corpo": "..." }],
-  "tarefas":         [{ "sprint": "1", "tipo": "BACKEND", "titulo": "...", "corpo": "..." }],
-  "processo":        [{ "sprint": "1", "tipo": "QA", "titulo": "...", "corpo": "..." }]
+	"issues_a_fechar": [{ "numero": 4, "titulo": "..." }],
+	"user_stories": [
+		{ "sprint": "1", "tipo": "US", "titulo": "...", "corpo": "..." }
+	],
+	"tarefas": [
+		{ "sprint": "1", "tipo": "BACKEND", "titulo": "...", "corpo": "..." }
+	],
+	"processo": [{ "sprint": "1", "tipo": "QA", "titulo": "...", "corpo": "..." }]
 }
 ```
 
@@ -201,9 +205,9 @@ O Wiki é um repositório git separado (`<repo>.wiki.git`). O script clona, sinc
 **Se o clone falhar:**
 
 - O Wiki precisa ter ao menos uma página criada pela interface web. Neste repositório já existe.
-- O script usa **SSH** (`git@github.com:...`). Teste com `ssh -T git@github.com`. Se você usa
-  HTTPS, troque a variável `$WikiUrl` (no `.ps1`) ou `WIKI_URL` (no `.sh`) por
-  `https://github.com/<owner>/<repo>.wiki.git`.
+- O script usa **HTTPS** por padrão (`https://github.com/...`). Se você preferir SSH, troque
+  a variável `$WikiUrl` (no `.ps1`) ou `WIKI_URL` (no `.sh`) por
+  `git@github.com:<owner>/<repo>.wiki.git`.
 
 ⚠️ O script **substitui** os `.md` do Wiki pelos de `wiki/`. Se alguém editou direto na
 interface web, essas alterações são perdidas. Regra da equipe: **edite em `docs/`, gere com

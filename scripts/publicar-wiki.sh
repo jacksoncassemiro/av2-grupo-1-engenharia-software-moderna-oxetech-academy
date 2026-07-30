@@ -9,7 +9,7 @@
 set -euo pipefail
 
 REPO="jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy"
-WIKI_URL="git@github.com:${REPO}.wiki.git"
+WIKI_URL="https://github.com/${REPO}.wiki.git"
 RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ORIGEM="${RAIZ}/wiki"
 TMP="$(mktemp -d)"
@@ -32,8 +32,10 @@ ERRO: nao foi possivel clonar o wiki.
 Causas comuns:
   1. O Wiki nunca foi inicializado. Crie a primeira pagina pela interface web
      (Wiki -> Create the first page) e rode este script de novo.
-  2. Sua chave SSH nao tem acesso ao repositorio. Teste com:
-       ssh -T git@github.com
+  2. O Git nao conseguiu autenticar o clone via HTTPS. Verifique se voce tem
+     acesso ao repositorio e tente novamente.
+     Se voce preferir SSH, troque a variavel WIKI_URL deste script por:
+       git@github.com:${REPO}.wiki.git
 MSG
   exit 1
 fi

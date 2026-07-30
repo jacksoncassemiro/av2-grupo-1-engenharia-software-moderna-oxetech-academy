@@ -18,7 +18,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $Repo    = 'jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy'
-$WikiUrl = "git@github.com:$Repo.wiki.git"
+$WikiUrl = "https://github.com/$Repo.wiki.git"
 $Raiz    = Split-Path -Parent $PSScriptRoot
 $Origem  = Join-Path $Raiz 'wiki'
 $Tmp     = Join-Path ([System.IO.Path]::GetTempPath()) ("wiki-" + [guid]::NewGuid().ToString('N').Substring(0, 8))
@@ -50,12 +50,12 @@ try {
 ERRO: nao foi possivel clonar o wiki.
 
 Causas comuns:
-  1. O Wiki nunca foi inicializado. Crie a primeira pagina pela interface web
-     (aba Wiki -> Create the first page) e rode este script de novo.
-  2. Sua chave SSH nao tem acesso ao repositorio. Teste com:
-       ssh -T git@github.com
-     Se voce usa HTTPS em vez de SSH, troque a variavel `$WikiUrl` deste script por:
-       https://github.com/$Repo.wiki.git
+    1. O Wiki nunca foi inicializado. Crie a primeira pagina pela interface web
+         (aba Wiki -> Create the first page) e rode este script de novo.
+    2. O Git nao conseguiu autenticar o clone via HTTPS. Verifique se voce tem
+         acesso ao repositorio e tente novamente.
+         Se voce preferir SSH, troque a variavel `$WikiUrl` deste script por:
+             git@github.com:$Repo.wiki.git
 "@ -ForegroundColor Red
         exit 1
     }
