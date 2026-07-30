@@ -1,0 +1,140 @@
+name: ✨ Solicitação de Funcionalidade
+description: Capacidade que ainda NÃO existe no sistema. Passa pelo PO antes de virar tarefa.
+title: "[Feature] [Área] "
+labels: ["funcionalidade"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Título no formato:** `[Feature] [Área] Verbo no infinitivo + nome da funcionalidade`
+        Exemplo: `[Feature] [Agenda] Exibir agenda consolidada da clínica`
+
+        ⚠️ **Leia antes de abrir.** O escopo do MVP está congelado no
+        [ADR-008](../../docs/adr/ADR-008-rebaseline-escopo.md): são as 13 funcionalidades do
+        enunciado mais autenticação, e nada além disso até **10/08**.
+
+        Isso **não** significa que a ideia é ruim. Significa que ela provavelmente entra em
+        [`docs/15-melhorias-futuras.md`](../../docs/15-melhorias-futuras.md) com versão-alvo,
+        em vez de entrar na sprint. Quem decide é o PO, na Planning.
+
+        **Se a funcionalidade já existe e você quer melhorá-la**, use o template de Melhoria.
+
+  - type: dropdown
+    id: no_enunciado
+    attributes:
+      label: Está na lista de funcionalidades do enunciado?
+      description: Se a resposta for "Não", o destino natural é o backlog de melhorias futuras.
+      options:
+        - "Sim — consta na lista de Paciente ou Atendente"
+        - "Não — é adição da equipe"
+        - "Parcialmente — o enunciado sugere, mas não é explícito"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: prioridade
+    attributes:
+      label: Prioridade sugerida
+      options:
+        - Crítica (bloqueia a entrega de 10/08)
+        - Alta (esta sprint)
+        - Média (próxima sprint)
+        - Baixa (melhoria futura)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área afetada
+      options:
+        - Backend (API)
+        - Frontend (interface)
+        - Backend e Frontend
+        - Infra / CI
+        - Documentação
+    validations:
+      required: true
+
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema atual
+      description: Qual limitação existe HOJE? Descreva a dor, não a solução.
+    validations:
+      required: true
+
+  - type: textarea
+    id: historia
+    attributes:
+      label: User Story
+      value: |
+        **Como** <Paciente | Atendente | Sistema>
+        **Quero** <ação>
+        **Para** <benefício>
+    validations:
+      required: true
+
+  - type: textarea
+    id: valor
+    attributes:
+      label: Valor para o produto e para a avaliação
+      description: |
+        Por que isto importa? Se ajuda a demonstrar um conceito avaliado (MVC, Clean Code,
+        Design Pattern, cobertura de RN), diga qual — é o que aumenta a prioridade neste projeto.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Critérios de aceite (Gherkin)
+      description: |
+        Regras testáveis. É por aqui que o PO valida na coluna UAT e o QA escreve o caso de teste.
+        Não confunda com valor de negócio: aqui vai o comportamento verificável.
+      value: |
+        **CA1** — **Dado que** ..., **quando** ..., **então** ...
+        **CA2** — **Dado que** ..., **quando** ..., **então** ...
+        **CA3 (caso negativo)** — **Quando** ..., **então** o sistema deve recusar com ...
+    validations:
+      required: true
+
+  - type: input
+    id: regras
+    attributes:
+      label: Regras de negócio envolvidas
+      description: IDs de `docs/01-requisitos.md`. Se a funcionalidade exigir uma RN nova, diga qual.
+      placeholder: "RN03, RN06 · exige RN nova sobre reagendamento"
+
+  - type: dropdown
+    id: esforco
+    attributes:
+      label: Esforço estimado
+      options:
+        - "P — cabe em um encontro"
+        - "M — cabe em uma sprint"
+        - "G — não cabe até 10/08"
+    validations:
+      required: true
+
+  - type: textarea
+    id: impacto
+    attributes:
+      label: O que sai para isto entrar
+      description: |
+        A capacidade da equipe está cheia. Se esta funcionalidade entrar na sprint, qual User
+        Story sai? Responder isto é o que separa uma proposta de um pedido.
+    validations:
+      required: true
+
+  - type: input
+    id: dependencias
+    attributes:
+      label: Dependências
+      placeholder: "Depende de #12 · Bloqueia #30"
+
+  - type: textarea
+    id: anexos
+    attributes:
+      label: Anexos
+      description: Mockups, referências, prints. Arraste os arquivos para cá.

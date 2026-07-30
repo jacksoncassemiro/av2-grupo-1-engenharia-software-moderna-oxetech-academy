@@ -55,7 +55,7 @@ Route groups por perfil, com guarda no `layout.tsx` do grupo (RF18):
 src/app/login/page.tsx              US-00
 src/app/primeiro-acesso/page.tsx    US-00 (ativar login / auto-cadastro)
 src/app/(paciente)/…                US-04, US-06, US-07, US-08, US-10, US-11
-src/app/(atendente)/…               US-01, US-02, US-03, US-05, US-09, US-12, US-13, US-14
+src/app/(atendente)/…               US-01, US-02, US-03, US-05, US-09, US-12, US-13
 ```
 
 Mapa completo em `frontend/src/app/README.md`.

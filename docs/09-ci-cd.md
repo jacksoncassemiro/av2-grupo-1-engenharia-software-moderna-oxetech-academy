@@ -141,7 +141,7 @@ Baixar em *Actions → run → Artifacts*.
 
 ## 5. Evidência para a apresentação
 
-O QA-B deve capturar, para os slides:
+Felipe (QA/CI) deve capturar, para os slides:
 
 1. Lista de runs verdes em `develop`
 2. Detalhe de um run mostrando os quatro jobs em verde
@@ -162,7 +162,7 @@ Guardar em `docs/evidencias/CI/`.
 | Blue-green / canary / rollback | Pressupõem produção — Módulo 6 trata, mas sem aplicação aqui |
 | SonarQube / SonarCloud | Exigiria conta e configuração externa; `ruff` + cobertura cobrem o essencial no prazo |
 | Observabilidade (logs/metrics/traces) | Sem produção para observar |
-| Dependabot | Projeto de 2 semanas; sem janela para atualização de dependência |
+| Dependabot | Projeto de 11 dias; sem janela para atualização de dependência |
 | Matriz de versões (3.11/3.12, Node 20/22) | Versão única fixada pelo Docker; matriz só consumiria minutos |
 
 Registrado para deixar claro que a ausência é escolha, não esquecimento — as práticas do

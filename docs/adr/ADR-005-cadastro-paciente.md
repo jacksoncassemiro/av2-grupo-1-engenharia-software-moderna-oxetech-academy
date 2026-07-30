@@ -42,8 +42,9 @@ Tela "Primeiro acesso" → paciente informa CPF
 Consequência de modelagem: `POST /api/pacientes` (atendente, US-03) **não** cria credencial.
 Ele registra apenas os dados cadastrais. O paciente define a própria senha depois.
 
-O crédito da solução é do PO — está no backlog do Wiki como US-00. Nós apenas identificamos
-que ela resolve o conflito e registramos por quê.
+**O crédito da solução é do PO (Uanderson)** — o fluxo de duas etapas veio do backlog escrito
+por ele, como US-00. A contribuição deste ADR foi identificar que ele resolve o conflito entre
+as duas fontes do enunciado e registrar por quê.
 
 ## Consequências
 

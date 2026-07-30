@@ -1,0 +1,132 @@
+name: 🔧 Solicitação de Melhoria
+description: Otimizar algo que JÁ existe — usabilidade, performance, clareza de código.
+title: "[Melhoria] [Área] "
+labels: ["melhoria"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Título no formato:** `[Melhoria] [Área] Verbo no infinitivo + o que será melhorado`
+        Exemplo: `[Melhoria] [Login] Aplicar máscara de CPF conforme o usuário digita`
+
+        **Feature ou Melhoria?**
+        | | Feature | Melhoria |
+        |---|---|---|
+        | A capacidade já existe? | ❌ Não | ✅ Sim |
+        | Objetivo | Criar algo novo | Otimizar o que existe |
+        | Exemplo | "Adicionar cancelamento pelo atendente" | "Fazer o cancelamento pedir confirmação" |
+
+        Se for dívida técnica (código que funciona mas está ruim), marque também a label
+        `tech-debt`.
+
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo de melhoria
+      options:
+        - Usabilidade / UX
+        - Performance
+        - Qualidade de código (Clean Code / refatoração)
+        - Cobertura de testes
+        - Documentação
+        - Acessibilidade
+    validations:
+      required: true
+
+  - type: dropdown
+    id: prioridade
+    attributes:
+      label: Prioridade
+      options:
+        - Crítica (bloqueia a entrega de 10/08)
+        - Alta (esta sprint)
+        - Média (próxima sprint)
+        - Baixa (melhoria futura)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área afetada
+      options:
+        - Backend (API)
+        - Frontend (interface)
+        - Backend e Frontend
+        - Infra / CI
+        - Documentação
+    validations:
+      required: true
+
+  - type: dropdown
+    id: esforco
+    attributes:
+      label: Esforço
+      options:
+        - "P — menos de 1h"
+        - "M — algumas horas"
+        - "G — mais de um dia"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema atual
+      description: O que está lento, confuso ou frágil hoje? Seja específico — "melhorar a tela" não é problema.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solucao
+    attributes:
+      label: Solução proposta
+      description: Como resolver. Se houver mais de um caminho, liste os dois e diga qual prefere.
+    validations:
+      required: true
+
+  - type: textarea
+    id: beneficio
+    attributes:
+      label: Benefício esperado
+      description: |
+        Qual o ganho, de preferência mensurável.
+        Se a melhoria demonstra um conceito avaliado (uma das 3 práticas de Clean Code, um dos 2
+        Design Patterns, cobertura de RN), **diga qual** — isso sobe a prioridade neste projeto.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Critérios de aceite
+      description: Comportamento exato que precisa funcionar para considerarmos pronto. Nada vago.
+      value: |
+        - [ ]
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+
+  - type: input
+    id: rastreabilidade
+    attributes:
+      label: Rastreabilidade
+      description: User Story, regras e casos de teste que esta melhoria toca.
+      placeholder: "US-11 · RN04 · CT06, CT07"
+
+  - type: textarea
+    id: risco
+    attributes:
+      label: Impacto e risco
+      description: |
+        Que outras partes podem quebrar? Refatoração em Service exige rodar os testes unitários
+        das RNs envolvidas antes de abrir o PR.
+    validations:
+      required: true
+
+  - type: input
+    id: dependencias
+    attributes:
+      label: Dependências
+      placeholder: "Depende de #12 · Relacionado a #30"

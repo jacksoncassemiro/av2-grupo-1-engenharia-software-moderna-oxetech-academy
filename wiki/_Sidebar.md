@@ -2,10 +2,14 @@
 
 **[🏠 Home](Home)**
 
+**Começar**
+- [🚀 Como Rodar](Como-Rodar)
+
 **Produto**
 - [Visão do Produto](Visao-do-Produto)
 - [Requisitos](Requisitos)
 - [Backlog e User Stories](Backlog-e-User-Stories)
+- [Melhorias Futuras](Melhorias-Futuras)
 
 **Engenharia**
 - [Arquitetura](Arquitetura)
@@ -33,6 +37,7 @@
 - [ADR-005 Cadastro Paciente](ADR-005-Cadastro-de-Paciente)
 - [ADR-006 Design Patterns](ADR-006-Design-Patterns)
 - [ADR-007 Vitest](ADR-007-Vitest)
+- [ADR-008 Rebaseline de Escopo](ADR-008-Rebaseline-de-Escopo)
 
 ---
 [📦 Repositório](https://github.com/jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy) ·

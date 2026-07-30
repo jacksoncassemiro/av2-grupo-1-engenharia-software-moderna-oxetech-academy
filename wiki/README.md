@@ -5,12 +5,12 @@ Estas páginas são **geradas** a partir de `docs/` e publicadas no Wiki do GitH
 ## Fluxo
 
 ```bash
-python scripts/gerar-wiki.py            # 1. regenera wiki/ a partir de docs/
+python3 scripts/gerar-wiki.py           # 1. regenera wiki/ a partir de docs/  (Windows: .\scripts\gerar-wiki.ps1)
 ./scripts/publicar-wiki.sh --dry-run    # 2. confere o que mudaria
 ./scripts/publicar-wiki.sh              # 3. publica no Wiki do GitHub
 ```
 
-`python scripts/gerar-wiki.py --check` falha se `wiki/` estiver fora de sincronia com `docs/` —
+`python3 scripts/gerar-wiki.py --check` (Windows: `.\scripts\gerar-wiki.ps1 -Check`) falha se `wiki/` estiver fora de sincronia com `docs/` —
 útil como verificação antes de abrir PR.
 
 ## ⚠️ Regra da equipe

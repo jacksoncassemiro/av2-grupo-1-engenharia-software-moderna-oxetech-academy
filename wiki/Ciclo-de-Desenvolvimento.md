@@ -14,7 +14,7 @@ O material do curso trata os dois casos: o case da plataforma educacional mostra
 waterfall com requisitos pouco claros e prazo curto gerou *"funcionalidades que não atendiam
 o que o cliente queria, retrabalho constante, time desmotivado, nenhuma entrega utilizável"*
 após 3 semanas. O nosso contexto é o mesmo: requisitos ambíguos (ver
-[14-conflitos-e-decisoes.md](Conflitos-e-Decisoes)), prazo de 2 semanas, equipe com
+[14-conflitos-e-decisoes.md](Conflitos-e-Decisoes)), prazo até 10/08 (11 dias corridos), equipe com
 níveis técnicos diferentes.
 
 Por outro lado, o case do sistema de matrícula mostra que prazo fixo e necessidade de
@@ -38,9 +38,9 @@ os casos de teste no dia 2–3, antes do código, e executa ao longo da sprint.
 
 | Papel Scrum | Quem | Observação |
 |---|---|---|
-| Product Owner | PO-A e PO-B | PO-A dono do backlog; PO-B conduz cerimônias |
-| Scrum Master | PO-B | Acumula, dado o tamanho da equipe |
-| Developers | ENG-A, ENG-B, QA-A, QA-B | No Scrum, "Developers" inclui QA |
+| Product Owner | Uanderson (dono do backlog) · Ronaldo (PO de apoio, conduz cerimônias) | Divisão registrada em [13](Papeis-e-Responsabilidades) |
+| Scrum Master | Ronaldo | Acumula, dado o tamanho da equipe (6 pessoas) |
+| Developers | Antonio (backend) · João Vitor e Ronaldo (frontend) · Jackson e Felipe (QA) | No Scrum, "Developers" inclui QA |
 
 Detalhes em [13-papeis-e-responsabilidades.md](Papeis-e-Responsabilidades).
 
@@ -95,6 +95,14 @@ Item só vai para *Done* se:
 - [ ] Caso de teste do QA executado com evidência (quando aplicável)
 - [ ] **Critérios de aceite validados pelo PO**
 - [ ] Merge em `develop`
+
+**Para uma User Story, some a isto:**
+
+- [ ] O fluxo funciona **ponta a ponta pela interface**, não só pelo Swagger
+
+Backend sem tela não é Done. Sem fluxo navegável o QA não executa caso de teste nem produz
+evidência — e evidência é entregável avaliado. Se o prazo apertar, a User Story sai **inteira**
+([ADR-008](ADR-008-Rebaseline-de-Escopo) §2).
 
 "Funciona na minha máquina" não é Done — daí o job `docker` no CI.
 
@@ -197,17 +205,22 @@ Ordem de implementação **de dentro para fora** (Model → Service → Router),
 
 Registrar aqui a cada cerimônia.
 
-### Sprint 1 — Planning
+> **Calendário real:** Sprint 1 de 31/07 a 05/08 · Sprint 2 de 05/08 a 10/08. Encontros às
+> segundas, quartas, sextas e sábados. Detalhe dia a dia em [`12-cronograma.md`](Cronograma).
 
-- **Data:** DD/MM · **Participantes:**
+### Sprint 1 — Planning (kickoff)
+
+- **Data:** 31/07 (sexta) · **Participantes:**
+- **Pauta obrigatória:** apresentar o rebaseline de escopo ([ADR-008](ADR-008-Rebaseline-de-Escopo))
+  e confirmar a redistribuição dos entregáveis de Jonatha
 - **Meta da sprint:** *Autenticação funcionando e todos os cadastros base operacionais.*
-- **Itens selecionados:** US-00, US-01, US-02, US-03, US-05, US-15
+- **Itens selecionados:** US-00, US-01, US-02, US-03, US-05
 - **Riscos levantados:**
 - **Decisões:**
 
 ### Sprint 1 — Review
 
-- **Data:** DD/MM · **Participantes:**
+- **Data:** 05/08 (quarta) · **Participantes:**
 - **Demonstrado:**
 - **Critérios de aceite aprovados:**
 - **Rejeitados e por quê:**
@@ -220,13 +233,22 @@ Registrar aqui a cada cerimônia.
 
 ### Sprint 2 — Planning
 
+- **Data:** 05/08 (quarta), logo após a Review 1
 - **Meta da sprint:** *Ciclo completo de agendamento e cancelamento, com evidências e CI verde.*
 - **Itens selecionados:** US-04, US-06, US-07, US-08, US-09, US-10, US-11, US-12, US-13
-  (+ US-14 se houver folga)
+
 
 ### Sprint 2 — Review
 
+- **Data:** 10/08 (segunda) — dia da entrega
+- **Demonstrado:**
+- **Critérios de aceite aprovados:**
+
 ### Sprint 2 — Retrospectiva
+
+- **Funcionou:**
+- **Não funcionou:**
+- **O que faríamos diferente:** *(entra no slide de retrospectiva)*
 
 
 ---

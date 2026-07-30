@@ -29,11 +29,15 @@ $labels = @(
     @{ Nome = 'qa';           Cor = '006B75'; Desc = 'Testes, evidencias, CI' }
     @{ Nome = 'infra';        Cor = 'C5DEF5'; Desc = 'Docker, ambiente, configuracao' }
     @{ Nome = 'documentacao'; Cor = '0075CA'; Desc = 'Documentacao e ADR' }
-    @{ Nome = 'bug';          Cor = 'D73A4A'; Desc = 'Defeito encontrado em teste ou uso' }
-    @{ Nome = 'tech-debt';    Cor = 'E99695'; Desc = 'Debito tecnico / antipadrao a refatorar' }
-    @{ Nome = 'blocked';      Cor = 'B60205'; Desc = 'Impedimento registrado' }
-    @{ Nome = 'obrigatorio';  Cor = 'B60205'; Desc = 'Escopo obrigatorio do MVP' }
-    @{ Nome = 'desejavel';    Cor = 'BFDADC'; Desc = 'Escopo desejavel - corta primeiro' }
+    @{ Nome = 'bug';             Cor = 'D73A4A'; Desc = 'Defeito encontrado em teste ou uso' }
+    @{ Nome = 'funcionalidade';  Cor = 'A2EEEF'; Desc = 'Capacidade nova solicitada - passa pelo PO' }
+    @{ Nome = 'melhoria';        Cor = '7057FF'; Desc = 'Otimizacao de algo que ja existe' }
+    @{ Nome = 'tech-debt';       Cor = 'E99695'; Desc = 'Debito tecnico / antipadrao a refatorar' }
+    @{ Nome = 'blocked';         Cor = 'B60205'; Desc = 'Impedimento registrado' }
+    @{ Nome = 'p0';              Cor = 'B60205'; Desc = 'Nao corta - sustenta RN obrigatoria' }
+    @{ Nome = 'p1';              Cor = 'FBCA04'; Desc = 'Completa fluxo - corta depois' }
+    @{ Nome = 'p2';              Cor = 'BFDADC'; Desc = 'Corta primeiro se o prazo apertar' }
+    @{ Nome = 'melhoria-futura'; Cor = 'D4C5F9'; Desc = 'Fora do MVP - ver docs/15-melhorias-futuras.md' }
 )
 
 Write-Host "==> Criando labels em $Repo" -ForegroundColor Cyan

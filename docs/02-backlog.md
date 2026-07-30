@@ -1,28 +1,36 @@
 # Product Backlog
 
-Entregável do PO. US-00 a US-12 vêm do backlog original da Wiki; **US-13, US-14 e US-15** foram
-adicionadas para cobrir lacunas identificadas em
+Entregável do PO. US-00 a US-12 vêm do backlog original da Wiki; **US-13** foi adicionada para
+cobrir a lacuna dos quatro status da RN06, identificada em
 [14-conflitos-e-decisoes.md](14-conflitos-e-decisoes.md).
 
 Formato: _Como… Quero… Para…_ com critérios de aceite em Gherkin e tarefas marcadas
-`[BACKEND]` / `[FRONTEND]` / `[QA]` e `[OBRIGATÓRIO]` / `[DESEJÁVEL]`.
+`[BACKEND]` / `[FRONTEND]` / `[QA]`.
+
+> **Escopo do MVP (rebaseline de 30/07).** São **14 User Stories, US-00 a US-13** — exatamente
+> as 13 funcionalidades dos dois perfis do enunciado, mais autenticação. As antigas US-14
+> (agenda geral) e US-15 (cadastro de atendente pela interface) saíram do MVP e viraram MF01 e
+> MF02 em [`15-melhorias-futuras.md`](15-melhorias-futuras.md). Justificativa completa no
+> [ADR-008](adr/ADR-008-rebaseline-escopo.md).
 
 ---
 
 ## Priorização
 
-| Sprint            | US                                                            | Meta                          |
-| ----------------- | ------------------------------------------------------------- | ----------------------------- |
-| **1**             | US-00, US-01, US-02, US-03, US-05, US-15                      | Autenticação + cadastros base |
-| **2**             | US-04, US-06, US-07, US-08, US-09, US-10, US-11, US-12, US-13 | Agendamento + cancelamento    |
-| **2 (se sobrar)** | US-14                                                         | Agenda geral consolidada      |
+| Sprint | US | Meta |
+| ------ | -- | ---- |
+| **1** (31/07 – 05/08) | US-00, US-01, US-02, US-03, US-05 | Acesso + cadastros base |
+| **2** (05/08 – 10/08) | US-04, US-06, US-07, US-08, US-09, US-10, US-11, US-12, US-13 | Agendamento + cancelamento |
 
-| Prioridade | US                                              | Se o prazo apertar                      |
-| ---------- | ----------------------------------------------- | --------------------------------------- |
-| **P0**     | US-00, US-01, US-02, US-03, US-05, US-08, US-11 | Não corta — sustentam RN01–RN05         |
-| **P1**     | US-07, US-09, US-12, US-13                      | Completam a RN06 e o fluxo do atendente |
-| **P2**     | US-04, US-06, US-10, US-15                      | Contornáveis na demonstração            |
-| **P3**     | US-14                                           | Corta primeiro                          |
+| Prioridade | US | Se o prazo apertar |
+| ---------- | -- | ------------------ |
+| **P0** | US-00, US-01, US-02, US-03, US-05, US-08, US-11 | Não corta — sustentam RN01–RN05 |
+| **P1** | US-07, US-09, US-12, US-13 | Completam a RN06 e o fluxo do atendente |
+| **P2** | US-04, US-06, US-10 | Corta primeiro; contornáveis na demonstração |
+
+**Regra de corte:** a User Story sai **inteira**. Não se entrega backend sem tela — sem fluxo
+navegável o QA não produz evidência, e evidência é entregável avaliado
+([ADR-008](adr/ADR-008-rebaseline-escopo.md) §2).
 
 ---
 
@@ -88,34 +96,6 @@ Detalhes em [ADR-003](adr/ADR-003-autenticacao.md).
 
 ---
 
-## US-15 — Cadastro de atendentes
-
-> **Como** Atendente
-> **Quero** cadastrar outros atendentes
-> **Para** que a recepção não dependa de uma única conta
-
-**Sprint 1 · P2 · Regras:** RN02, RN11, RN14 · **Origem:** conflito C02 / [ADR-004](adr/ADR-004-bootstrap-atendente.md)
-
-### Critérios de aceite
-
-**CA1** — **Dado** que estou logado como atendente, **quando** eu cadastrar
-`Maria Recepcao / maria@clinica.com / senha`, **então** o atendente deve ser criado e poder logar
-
-**CA2** — **Dado** que `maria@clinica.com` já existe, **quando** eu tentar cadastrar de novo,
-**então** o sistema deve responder **409** `E-mail em uso`
-
-**CA3 (RN14)** — **Quando** um paciente tentar acessar essa funcionalidade, **então** deve
-receber **403**; **e** sem token, **401**. Não existe rota pública de cadastro de atendente.
-
-### Tarefas
-
-- `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/atendente/atendentes` protegido por `exigir_atendente`
-- `[FRONTEND]` `[OBRIGATÓRIO]` Tela de cadastro de atendente
-- `[BACKEND]` `[DESEJÁVEL]` Listar e desativar atendentes (nunca o próprio nem o último ativo)
-- `[QA]` CT14
-
----
-
 # Épico 1 — Cadastros base
 
 ## US-01 — Gestão de especialidades
@@ -142,8 +122,9 @@ especialidade deve ser criada e aparecer como opção nos formulários
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/especialidades`
 - `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/especialidades` (ativas)
 - `[FRONTEND]` `[OBRIGATÓRIO]` Tela de cadastro e listagem
-- `[BACKEND]` `[DESEJÁVEL]` `PUT` e desativação
-- `[FRONTEND]` `[DESEJÁVEL]` Edição e desativação
+
+> Editar e excluir especialidade **não** fazem parte do MVP — ver MF03 em
+> [`15-melhorias-futuras.md`](15-melhorias-futuras.md).
 
 ---
 
@@ -173,8 +154,9 @@ dele permanece
 
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/medicos` com validação de e-mail e CRM únicos
 - `[FRONTEND]` `[OBRIGATÓRIO]` Formulário com `Select` de especialidade
-- `[BACKEND]` `[DESEJÁVEL]` `PUT` e inativação
-- `[FRONTEND]` `[DESEJÁVEL]` Painel de listagem, edição e desativação
+
+> Editar e inativar médico **não** fazem parte do MVP — ver MF04 em
+> [`15-melhorias-futuras.md`](15-melhorias-futuras.md).
 
 ---
 
@@ -213,8 +195,10 @@ e-mail, **então** ambos devem coexistir (`NULL` não conta como duplicidade)
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/pacientes` — salva em `paciente`, e-mail opcional.
   **Não cria credencial** — o login é ativado pelo fluxo de primeiro acesso da US-00
 - `[FRONTEND]` `[OBRIGATÓRIO]` Formulário com máscara e validação de CPF
-- `[BACKEND]` `[DESEJÁVEL]` `PUT` e inativação
-- `[FRONTEND]` `[DESEJÁVEL]` Listagem com busca por nome ou CPF
+
+> Editar dados do paciente pelo atendente **não** faz parte do MVP — ver MF05 em
+> [`15-melhorias-futuras.md`](15-melhorias-futuras.md). O paciente atualiza os próprios
+> dados na US-04.
 - `[QA]` CT01, CT02, CT03
 
 ---
@@ -282,8 +266,9 @@ responder **404**
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/medicos/{id}/agenda` recebendo lista de horários
 - `[BACKEND]` `[OBRIGATÓRIO]` `UniqueConstraint(medico_id, data, horario)` na migração
 - `[FRONTEND]` `[OBRIGATÓRIO]` Painel com `DatePickerInput` + múltiplos `TimeInput`
-- `[BACKEND]` `[DESEJÁVEL]` `DELETE /api/agenda/{id}` apenas para slot livre
-- `[FRONTEND]` `[DESEJÁVEL]` Ação de excluir slot livre
+
+> Excluir slot livre **não** faz parte do MVP — ver MF06 em
+> [`15-melhorias-futuras.md`](15-melhorias-futuras.md).
 - `[QA]` CT08, CT13
 
 ---
@@ -428,7 +413,6 @@ convite para agendar
 - `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/consultas` filtrando pelo token
 - `[FRONTEND]` `[OBRIGATÓRIO]` Lista com `Badge` por status (SOLICITADA amarelo, CONFIRMADA
   verde-água, FINALIZADA cinza, CANCELADA vermelho)
-- `[FRONTEND]` `[DESEJÁVEL]` Filtro por status e ordenação por data
 
 ---
 
@@ -466,7 +450,7 @@ máquina do servidor
 - `[BACKEND]` `[OBRIGATÓRIO]` `PATCH /api/consultas/{id}/cancelar`
 - `[BACKEND]` `[OBRIGATÓRIO]` `CancelamentoPorPaciente` (Strategy) com prazo de `settings`
 - `[FRONTEND]` `[OBRIGATÓRIO]` Ação de cancelar com modal de confirmação e campo de motivo
-- `[QA]` CT06, CT07 · `[QA]` EXP-04
+- `[QA]` CT06, CT07 · `[QA]` EXP-03
 
 ---
 
@@ -493,7 +477,7 @@ a restrição das 24h), alterar o status para `CANCELADA` (RN06) **e** liberar o
 - `[BACKEND]` `[OBRIGATÓRIO]` `PATCH /api/atendente/consultas/{id}/cancelar`
 - `[BACKEND]` `[OBRIGATÓRIO]` `CancelamentoPorAtendente` (Strategy, sem validação de prazo)
 - `[FRONTEND]` `[OBRIGATÓRIO]` Ação de cancelamento administrativo
-- `[QA]` EXP-04
+- `[QA]` EXP-03
 
 ---
 
@@ -534,33 +518,6 @@ de confirmação
 
 ---
 
-## US-14 — Agenda geral da clínica
-
-> **Como** Atendente
-> **Quero** ver a agenda consolidada de todos os médicos
-> **Para** gerenciar os atendimentos do dia sem abrir um médico por vez
-
-**Sprint 2 (se houver folga) · P3 · Origem:** conflito C08
-
-> A lista de funcionalidades pede "cadastrar **e gerenciar** a agenda geral". A US-05 cobre o
-> cadastro; a visão consolidada não tinha US.
-
-### Critérios de aceite
-
-**CA1** — **Quando** eu acessar a agenda geral e escolher uma data, **então** devo ver todos os
-médicos com seus horários e o status de cada um (livre / consulta e qual paciente)
-
-**CA2** — Posso filtrar por médico e por especialidade
-
-**CA3** — Consulta cancelada aparece com o horário como livre novamente
-
-### Tarefas
-
-- `[BACKEND]` `[DESEJÁVEL]` `GET /api/atendente/agenda?data=&medico_id=&especialidade_id=`
-- `[FRONTEND]` `[DESEJÁVEL]` Visão em tabela por médico × horário
-
----
-
 ## Resumo
 
 | US    | Título                               | Sprint | Prior. | Regras                      |
@@ -570,7 +527,6 @@ médicos com seus horários e o status de cada um (livre / consulta e qual pacie
 | US-02 | Gestão de médicos                    | 1      | P0     | RN02, RN08                  |
 | US-03 | Cadastro de pacientes                | 1      | P0     | RN01, RN02, RN07, RN08      |
 | US-05 | Agenda e horários disponíveis        | 1      | P0     | RN05, RN09                  |
-| US-15 | Cadastro de atendentes               | 1      | P2     | RN02, RN11, RN14            |
 | US-04 | Atualização cadastral                | 2      | P2     | RN02, RN08, RN12            |
 | US-06 | Consulta de médicos e especialidades | 2      | P2     | —                           |
 | US-07 | Horários disponíveis                 | 2      | P1     | RN03                        |
@@ -580,4 +536,3 @@ médicos com seus horários e o status de cada um (livre / consulta e qual pacie
 | US-11 | Cancelamento (paciente)              | 2      | P0     | RN03, RN04, RN10, RN15      |
 | US-12 | Cancelamento (atendente)             | 2      | P1     | RN03, RN10                  |
 | US-13 | Confirmar e finalizar                | 2      | P1     | RN06, RN10                  |
-| US-14 | Agenda geral                         | 2      | P3     | —                           |

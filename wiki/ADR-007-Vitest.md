@@ -19,9 +19,10 @@ pede Vitest.
 1. **Setup do Next.js** (`nextjs.org/docs/app/guides/testing/vitest`):
    `vitest` + `@vitejs/plugin-react` + `vite-tsconfig-paths` + `jsdom`, com
    `vitest.config.mts`.
-2. **Mocks do Mantine** (`mantine.dev/guides/vitest`): `vitest.setup.mjs` com
-   `window.matchMedia`, `ResizeObserver`, `document.fonts` e `scrollIntoView` — APIs que o
-   jsdom não tem e vários componentes Mantine exigem.
+2. **Mocks do Mantine** (`mantine.dev/guides/vitest`): arquivo de setup com `window.matchMedia`,
+   `ResizeObserver`, `document.fonts` e `scrollIntoView` — APIs que o jsdom não tem e vários
+   componentes Mantine exigem. *(O guia do Mantine chama esse arquivo de `vitest.setup.mjs`;
+   aqui ele é `.ts`, pelo motivo explicado logo abaixo.)*
 3. **Custom render** em `test-utils/render.tsx`, envolvendo com
    `<MantineProvider theme={theme} env="test">`. Todo teste importa de `@test-utils`, nunca de
    `@testing-library/react` direto.

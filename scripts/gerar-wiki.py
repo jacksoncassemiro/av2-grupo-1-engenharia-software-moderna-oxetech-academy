@@ -43,6 +43,8 @@ PAGINAS = {
     "12-cronograma.md": "Cronograma",
     "13-papeis-e-responsabilidades.md": "Papeis-e-Responsabilidades",
     "14-conflitos-e-decisoes.md": "Conflitos-e-Decisoes",
+    "15-melhorias-futuras.md": "Melhorias-Futuras",
+    "17-como-rodar.md": "Como-Rodar",
 }
 
 ADRS = {
@@ -53,6 +55,7 @@ ADRS = {
     "ADR-005-cadastro-paciente.md": "ADR-005-Cadastro-de-Paciente",
     "ADR-006-design-patterns.md": "ADR-006-Design-Patterns",
     "ADR-007-vitest.md": "ADR-007-Vitest",
+    "ADR-008-rebaseline-escopo.md": "ADR-008-Rebaseline-de-Escopo",
 }
 
 RODAPE = (

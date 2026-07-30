@@ -55,11 +55,20 @@ uvicorn app.main:app --reload
 <summary>Rodar o frontend fora do Docker</summary>
 
 ```bash
+docker compose up -d postgres backend
 cd frontend
-yarn install     # comite o yarn.lock gerado
+corepack enable                  # habilita o yarn 1.22.22 do packageManager
+yarn install --frozen-lockfile
 yarn dev
 ```
+
+⚠️ **Use `yarn`, nunca `npm` nem `pnpm`.** O `yarn.lock` está versionado e é o mesmo que o CI
+usa.
 </details>
+
+> 🆘 **Travou em alguma etapa?** [`docs/17-como-rodar.md`](docs/17-como-rodar.md) tem o guia
+> completo para Windows, os problemas conhecidos com log e solução, e o checklist de ambiente
+> do primeiro encontro.
 
 ---
 
@@ -68,10 +77,9 @@ yarn dev
 | Papel | Pessoa | Foco |
 |---|---|---|
 | 👑 **Product Owner** | Uanderson Henrique Batista da Silva | Backlog, User Stories, critérios de aceite, ciclo de desenvolvimento |
-| 💻 **Engenharia** | Jonatha da Silva Fernandes | Arquitetura MVC, Clean Code, Design Patterns |
-| 💻 **Engenharia** | Antonio Andrade Gomes Júnior | Git Flow, autenticação, autorização, seed |
-| 💻 **Engenharia** | João Vitor Mandu de Lira | Frontend Next.js + Mantine, testes unitários |
-| 💻 **Engenharia** | Ronaldo de Melo Sabino Filho | Frontend, cerimônias Scrum, apresentação |
+| 💻 **Engenharia** | Antonio Andrade Gomes Júnior | Backend inteiro: arquitetura MVC, Clean Code, Design Patterns, auth, Git Flow |
+| 💻 **Engenharia** | João Vitor Mandu de Lira | Frontend do paciente, testes Vitest, Clean Code do frontend |
+| 💻 **Engenharia** | Ronaldo de Melo Sabino Filho | Frontend do atendente, cerimônias Scrum, apresentação |
 | 🧪 **QA** | Jackson Douglas da Silva Cassemiro | Plano e casos de teste, execução, evidências |
 | 🧪 **QA** | Felipe da Silva Araújo | CI/CD, testes exploratórios, relatório final |
 
@@ -96,14 +104,25 @@ Alocação detalhada de cada entregável avaliado em
 
 ## 🏗️ Arquitetura
 
-Monólito modular em camadas, com o MVC mapeado assim:
+**São duas aplicações**, não uma. Mesmo repositório, processos e stacks separados.
+
+**Backend — MVC em camadas.** É o MVC que a AV2 avalia, e ele se fecha dentro de `backend/`:
 
 ```
-View (Next.js) → Controller (routers) → Service → Repository → Model → PostgreSQL
+Controller (routers) → Service → Repository → Model → PostgreSQL
+       ↑
+   View = schemas Pydantic (serialização da resposta)
 ```
 
 A dependência é **sempre para dentro**: o Service não conhece HTTP nem SQL, o que torna as
-regras de negócio testáveis sem banco. Diagramas e contratos em
+regras de negócio testáveis sem banco.
+
+**Frontend — componentes e rotas.** Não é MVC e não tenta ser. Tem arquitetura própria: rotas
+do App Router, componentes de apresentação e um cliente HTTP único (`lib/api.ts`), que é o
+único ponto do app que conhece a URL da API.
+
+As duas se falam por um contrato HTTP documentado. Diagramas, contrato e a justificativa de por
+que o app React **não** é "a View do MVC" em
 [`docs/03-arquitetura.md`](docs/03-arquitetura.md).
 
 ```
@@ -164,10 +183,13 @@ Com exemplos ruim/bom e SOLID em [`docs/05-clean-code.md`](docs/05-clean-code.md
 - Agendar consultas para pacientes (nasce como `CONFIRMADA`)
 - Confirmar e finalizar consultas
 - Cancelar consultas sem restrição de prazo
-- Cadastrar outros atendentes
-- Gerenciar a agenda geral *(desejável)*
 
 Detalhamento em [`docs/02-backlog.md`](docs/02-backlog.md).
+
+> **Escopo congelado.** São exatamente as 13 funcionalidades do enunciado mais autenticação —
+> 14 User Stories, US-00 a US-13. O que ficou de fora está em
+> [`docs/15-melhorias-futuras.md`](docs/15-melhorias-futuras.md), com motivo e versão-alvo.
+> Justificativa: [`ADR-008`](docs/adr/ADR-008-rebaseline-escopo.md).
 
 ---
 
@@ -189,7 +211,7 @@ Detalhamento em [`docs/02-backlog.md`](docs/02-backlog.md).
 `RN07` CPF válido por dígitos verificadores · `RN08` e-mail em formato válido ·
 `RN09` horário comercial 08:00–18:00 · `RN10` transições de status unidirecionais ·
 `RN11` senha com hash bcrypt · `RN12` autorização por perfil no token ·
-`RN13` expiração do JWT · `RN14` só ATENDENTE cria ATENDENTE ·
+`RN13` expiração do JWT · `RN14` sem rota pública de cadastro de atendente ·
 `RN15` regras temporais no fuso `America/Maceio`
 
 Todas em [`docs/01-requisitos.md`](docs/01-requisitos.md), com matriz de rastreabilidade
@@ -209,10 +231,10 @@ make lint            # ruff + eslint + tsc
 | Nível | Quantidade | Exigido | Onde |
 |---|---|---|---|
 | Unitário backend | **17** | 5 | `backend/tests/unit/` |
-| Unitário frontend | 7 | — | `frontend/__tests__/` |
-| Integração | **15** | — | `backend/tests/integration/` |
+| Unitário frontend | **11** | 5 | `frontend/__tests__/` |
+| Integração | **11** | — | `backend/tests/integration/` |
 | Casos de teste funcionais | **14** | 10 | [`docs/08-casos-de-teste.md`](docs/08-casos-de-teste.md) |
-| Sessões exploratórias | 4 | — | [`docs/07-plano-de-testes.md`](docs/07-plano-de-testes.md) §6 |
+| Sessões exploratórias | 3 | — | [`docs/07-plano-de-testes.md`](docs/07-plano-de-testes.md) §6 |
 
 Toda regra RN01–RN15 tem no mínimo um teste que **viola** a regra e espera bloqueio — testar só
 o caminho felizes não prova que a regra existe.
@@ -235,7 +257,7 @@ o caminho felizes não prova que a regra existe.
 | [`CLAUDE.md`](CLAUDE.md) | Instruções para a equipe e para agentes de IA |
 | [`docs/`](docs/README.md) | Índice completo da documentação |
 | [`docs/14-conflitos-e-decisoes.md`](docs/14-conflitos-e-decisoes.md) | **13 divergências no enunciado e como resolvemos** |
-| [`docs/adr/`](docs/adr/) | 7 Architecture Decision Records |
+| [`docs/adr/`](docs/adr/) | 8 Architecture Decision Records |
 | [Wiki](https://github.com/jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy/wiki) | Espelho navegável da documentação |
 | [Projects](https://github.com/users/jacksoncassemiro/projects/3) | Quadro Kanban |
 
@@ -312,7 +334,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # 1x por sessão
 .\scripts\popular-board.ps1 -Auditar     # audita o Kanban antes de mexer
 .\scripts\criar-labels.ps1               # labels dos templates de Issue
 .\scripts\publicar-wiki.ps1 -DryRun      # publica a Wiki
-python scripts\gerar-wiki.py              # regenera wiki/ a partir de docs/
+.\scripts\gerar-wiki.ps1                  # regenera wiki/ a partir de docs/
 ```
 
 Rodar o `.sh` no PowerShell **não faz nada** — e sem o `Set-ExecutionPolicy` o `.ps1` falha em

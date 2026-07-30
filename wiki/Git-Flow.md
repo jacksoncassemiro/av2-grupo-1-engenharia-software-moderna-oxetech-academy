@@ -25,8 +25,8 @@ develop ──●───●────●────●────●──
 | `feature/*` | `develop` | `develop` | qualquer dev | ❌ |
 | `fix/*` | `develop` | `develop` | qualquer dev | ❌ |
 | `docs/*` | `develop` | `develop` | qualquer um | ❌ |
-| `release/*` | `develop` | `main` + `develop` | ENG-A | ❌ |
-| `hotfix/*` | `main` | `main` + `develop` | ENG-A | ❌ |
+| `release/*` | `develop` | `main` + `develop` | Antonio | ❌ |
+| `hotfix/*` | `main` | `main` + `develop` | Antonio | ❌ |
 
 **Nomenclatura:** `<tipo>/us<NN>-<slug-curto>`
 

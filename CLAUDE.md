@@ -8,7 +8,13 @@ Contexto para qualquer agente de IA (Claude Code, Cowork, Antigravity, Copilot) 
 ## 1. O que é este projeto
 
 MVP de um **Sistema de Gestão de Clínica Médica**, entrega da **AV2** da disciplina
-*Engenharia de Software Moderna* (Oxetech Academy) — **Equipe 01**. Prazo: **2 semanas / 2 sprints**.
+*Engenharia de Software Moderna* (Oxetech Academy) — **Equipe 01** (6 pessoas).
+**Entrega: 10/08/2026.** Duas sprints curtas: 31/07–05/08 e 05/08–10/08.
+
+**Escopo congelado** pelo [ADR-008](docs/adr/ADR-008-rebaseline-escopo.md): 14 User Stories
+(US-00 a US-13) — as 13 funcionalidades dos dois perfis do enunciado mais autenticação.
+Nada além disso entra sem aprovação do PO. O que ficou de fora está em
+`docs/15-melhorias-futuras.md` com motivo e versão-alvo.
 
 O projeto é avaliado pela **aplicação dos conceitos**, não pela quantidade de features.
 Toda decisão técnica precisa ser justificável a partir dos módulos do curso
@@ -34,7 +40,24 @@ Sem acentos em identificadores de código; com acentos em documentação e texto
 
 ---
 
-## 3. Estrutura do repositório
+## 3. Duas aplicações, não uma
+
+O repositório é um monorepo, mas `backend/` e `frontend/` são **aplicações separadas**, com
+stacks, builds e arquiteturas internas diferentes. Não misture o vocabulário das duas.
+
+| | Backend | Frontend |
+|---|---|---|
+| Estilo arquitetural | **MVC em camadas** (é o MVC que a AV2 avalia) | Componentes + rotas do App Router |
+| View | `app/schemas/` — DTOs Pydantic | JSX dos componentes |
+| Testes | pytest | Vitest |
+
+**O app React não é "a View do MVC".** Ele tem roteamento, estado e build próprios, e apenas
+consome a API. O MVC se fecha dentro de `backend/`, com os schemas Pydantic no papel de View —
+mesma leitura do Django REST Framework. Ver `docs/03-arquitetura.md` §2 e §3.
+
+---
+
+## 4. Estrutura do repositório
 
 ```
 backend/          # FastAPI — camadas Model / Controller / Service / Repository
@@ -52,7 +75,7 @@ Não crie pastas novas na raiz. Não recrie `documentation/` — foi unificada e
 
 ---
 
-## 4. Arquitetura em camadas — a regra mais importante
+## 5. Arquitetura em camadas do backend — a regra mais importante
 
 O fluxo é **sempre** nesta ordem, e **nunca** salta uma camada:
 
@@ -78,7 +101,7 @@ Se uma regra de negócio parece precisar de HTTP, ela pertence a uma exceção e
 
 ---
 
-## 5. Regras de negócio — sempre referencie o ID
+## 6. Regras de negócio — sempre referencie o ID
 
 Toda regra tem um ID (`RN01`…`RN15`). Ao implementar ou testar uma regra, **cite o ID em comentário**
 e no nome do teste. Isso é o que dá rastreabilidade requisito → código → teste → evidência.
@@ -108,7 +131,7 @@ Nunca hardcode `24` para o prazo de cancelamento — use
 
 ---
 
-## 6. Clean Code — as 3 práticas que a AV2 exige
+## 7. Clean Code — as 3 práticas que a AV2 exige
 
 Estas três são **entregáveis avaliados**. Aplique e não desfaça:
 
@@ -127,7 +150,7 @@ Detalhes e exemplos ruim/bom: `docs/05-clean-code.md`.
 
 ---
 
-## 7. Design Patterns — os 2 escolhidos
+## 8. Design Patterns — os 2 escolhidos (backend)
 
 Não introduza um terceiro padrão "porque é bonito". Estes dois são os avaliados:
 
@@ -142,7 +165,7 @@ Justificativa: `docs/06-design-patterns.md` e `docs/adr/ADR-006-design-patterns.
 
 ---
 
-## 8. Frontend — regras do Mantine
+## 9. Frontend — regras do Mantine
 
 - **Mantine v9**, App Router. `MantineProvider` + `ColorSchemeScript` já estão em
   `src/app/layout.tsx` — não duplicar.
@@ -179,7 +202,7 @@ Consulta de dúvida de API do Mantine: `https://mantine.dev/llms.txt`.
 
 ---
 
-## 9. Git Flow e commits
+## 10. Git Flow e commits
 
 - Branches: `main` (protegida) ← `release/*` ← `develop` ← `feature/*` | `fix/*` | `docs/*`
 - Nunca commite direto em `main` ou `develop`. Sempre PR com ≥ 1 aprovação e CI verde.
@@ -197,7 +220,7 @@ Consulta de dúvida de API do Mantine: `https://mantine.dev/llms.txt`.
 
 ---
 
-## 10. Comandos
+## 11. Comandos
 
 ```bash
 make bootstrap      # sobe tudo + migra + seed → sistema navegável
@@ -220,11 +243,42 @@ Detalhes em `scripts/README.md`.
 Frontend: http://localhost:3000 · Swagger: http://localhost:8000/docs
 Login inicial: `recepcao@clinica.com` / `admin123` (do `.env`)
 
+Guia completo de execução, com os problemas conhecidos: `docs/17-como-rodar.md`.
+
+**Board (GitHub Projects):** a fonte dos itens é `scripts/gerar-board-itens.py`, que gera
+`scripts/board-itens.json`. **Não edite o JSON à mão.**
+
+```powershell
+# Windows — os .ps1 localizam o Python sozinhos
+.\scripts\gerar-board-itens.ps1
+.\scripts\popular-board.ps1 -Auditar
+.\scripts\popular-board.ps1 -Tudo -DryRun
+.\scripts\popular-board.ps1 -Tudo
+```
+
+```bash
+# Linux / macOS / Git Bash
+python3 scripts/gerar-board-itens.py
+python3 scripts/popular-board.py --auditar
+python3 scripts/popular-board.py --tudo --dry-run
+python3 scripts/popular-board.py --tudo
+```
+
+⚠️ **Windows:** se aparecer `Python was not found; run without arguments to install from the
+Microsoft Store`, o que está no PATH é o atalho falso da loja, não o Python. Rode
+`winget install --id Python.Python.3.12` e confira com `py -3 --version`.
+Detalhes em `scripts/README.md`.
+
 ---
 
-## 11. Coisas que NÃO fazer
+## 12. Coisas que NÃO fazer
 
 - ❌ Criar rota pública de cadastro de atendente (RN14 — falha de segurança).
+- ❌ Adicionar funcionalidade fora das US-00 a US-13. O escopo está congelado (ADR-008).
+  Ideia nova vai para `docs/15-melhorias-futuras.md`, não para o código.
+- ❌ Chamar o app React de "View do MVC" na documentação ou nos slides.
+- ❌ Duplicar regra de negócio no frontend. As 24h da RN04 são calculadas no backend, que
+  devolve `pode_cancelar`; o React só obedece.
 - ❌ Usar `npm` ou `pnpm` no frontend.
 - ❌ Adicionar biblioteca de UI além do Mantine.
 - ❌ Colocar regra de negócio em router ou em componente React.
@@ -241,10 +295,12 @@ Login inicial: `recepcao@clinica.com` / `admin123` (do `.env`)
 
 ---
 
-## 12. Ao encerrar uma tarefa
+## 13. Ao encerrar uma tarefa
 
 1. `make lint && make test` passando.
 2. Regras tocadas têm teste citando o ID (`RN0X`).
 3. `docs/` atualizado se o comportamento mudou; migração revisada à mão se mexeu em model
    (o autogenerate não cria índice parcial).
 4. Item movido no board (GitHub Projects) e PR aberto com o template preenchido.
+5. A User Story só vai para UAT quando o fluxo funciona **ponta a ponta pela interface** —
+   backend sem tela não conta (ADR-008 §2).

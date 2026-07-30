@@ -1,129 +1,162 @@
 # Cronograma
 
-2 sprints de 5 dias úteis. Base zero: o planejamento, o scaffold, o Docker, o CI e a
-documentação de arquitetura já estão prontos — as sprints começam com o ambiente funcionando.
+**Entrega final: segunda-feira, 10/08/2026.**
+Primeira reunião: **sexta-feira, 31/07/2026**. A equipe se encontra **segundas, quartas, sextas
+e sábados** — nos demais dias o trabalho é assíncrono, com atualização no board.
 
-Ajustem as datas na primeira Planning.
+São **11 dias corridos** entre a primeira reunião e a entrega, com **7 encontros**. O
+planejamento abaixo cabe nesse tempo; o escopo foi reduzido exatamente para isso
+([ADR-008](ADR-008-Rebaseline-de-Escopo)).
+
+Ponto de partida: scaffold, Docker, CI, migrações, autenticação de backend e documentação de
+arquitetura **já estão prontos**. As sprints começam com o ambiente funcionando.
 
 ---
 
-## Visão geral
+## Calendário
+
+| Data | Dia | Encontro | O que acontece |
+|---|---|---|---|
+| **31/07** | Sexta | ✅ **Kickoff + Planning 1** | Alinhar rebaseline, distribuir papéis, todos rodam o ambiente, puxar os primeiros itens |
+| 01/08 | Sábado | ✅ Sincronização | Desbloquear ambiente, revisar PRs abertos |
+| 02/08 | Domingo | — | Assíncrono |
+| 03/08 | Segunda | ✅ Sincronização | Meia-sprint: o que está travado? |
+| 04/08 | Terça | — | Assíncrono |
+| **05/08** | Quarta | ✅ **Review 1 + Retro + Planning 2** | PO valida os critérios de aceite da Sprint 1 |
+| 06/08 | Quinta | — | Assíncrono |
+| 07/08 | Sexta | ✅ Sincronização | **Congelamento de escopo**: o que não estiver em Code Review sai |
+| 08/08 | Sábado | ✅ Sincronização | Ensaio da demonstração; fechar evidências |
+| 09/08 | Domingo | — | Ajustes finais, slides |
+| **10/08** | Segunda | ✅ **Review 2 + Entrega** | Release `v1.0.0`, apresentação |
 
 ```mermaid
 gantt
     dateFormat YYYY-MM-DD
     axisFormat %d/%m
-    title Cronograma - 2 Sprints
+    title Sprint 1 (31/07-05/08) e Sprint 2 (05/08-10/08)
 
-    section Sprint 1 - Autenticação e cadastros
-    Planning + setup do time          :s1a, 2026-08-03, 1d
-    US-00 Autenticação                :s1b, 2026-08-03, 2d
-    US-15 Cadastro de atendente       :s1c, after s1b, 1d
-    US-01 Especialidades              :s1d, 2026-08-04, 1d
-    US-02 Médicos                     :s1e, after s1d, 1d
-    US-03 Cadastro de pacientes       :s1f, 2026-08-05, 2d
-    US-05 Agenda de horários          :s1g, 2026-08-06, 2d
-    CT01-CT04, CT08, CT13, CT14       :s1h, 2026-08-04, 4d
-    Review + Retrospectiva            :milestone, 2026-08-07, 1d
+    section Sprint 1 - Acesso e cadastros
+    Kickoff + Planning 1               :milestone, m1, 2026-07-31, 0d
+    US-00 Autenticacao ponta a ponta   :s1a, 2026-07-31, 3d
+    US-01 Especialidades               :s1b, 2026-08-02, 2d
+    US-02 Medicos                      :s1c, 2026-08-03, 2d
+    US-03 Cadastro de pacientes        :s1d, 2026-08-02, 3d
+    US-05 Agenda de horarios           :s1e, 2026-08-03, 3d
+    CT01-CT04 CT08 CT13 CT14           :s1f, 2026-08-01, 4d
+    Review 1 + Retro + Planning 2      :milestone, m2, 2026-08-05, 0d
 
-    section Sprint 2 - Agendamento e cancelamento
-    Planning                          :s2a, 2026-08-10, 1d
-    US-06 Consulta de médicos         :s2b, 2026-08-10, 1d
-    US-07 Horários livres             :s2c, 2026-08-10, 1d
-    US-08 Solicitar consulta          :s2d, 2026-08-11, 2d
-    US-09 Agendar pelo atendente      :s2e, 2026-08-11, 1d
-    US-04 Atualizar dados             :s2f, 2026-08-12, 1d
-    US-10 Histórico                   :s2g, 2026-08-12, 1d
-    US-11 US-12 Cancelamento          :s2h, 2026-08-12, 2d
-    US-13 Confirmar e finalizar       :s2i, 2026-08-13, 1d
-    CT05-CT07, CT09-CT12              :s2j, 2026-08-12, 2d
-    Slides + release v1.0.0           :s2k, 2026-08-13, 2d
-    Apresentação final                :milestone, 2026-08-14, 1d
+    section Sprint 2 - Agendamento e entrega
+    US-06 US-07 Busca e horarios       :s2a, 2026-08-05, 2d
+    US-08 Solicitar consulta           :s2b, 2026-08-06, 2d
+    US-09 Agendar pelo atendente       :s2c, 2026-08-06, 2d
+    US-11 US-12 Cancelamento           :s2d, 2026-08-07, 2d
+    US-13 Confirmar e finalizar        :s2e, 2026-08-08, 1d
+    US-04 US-10 Perfil e historico     :s2f, 2026-08-07, 2d
+    CT05-CT07 CT09-CT12                :s2g, 2026-08-06, 3d
+    Congelamento de escopo             :milestone, m3, 2026-08-07, 0d
+    Slides ensaio e release            :s2h, 2026-08-08, 2d
+    Entrega final                      :milestone, m4, 2026-08-10, 0d
 ```
 
 ---
 
-## Sprint 1 — Autenticação e cadastros base
+## Sprint 1 — Acesso e cadastros base
 
-**Meta:** *ao fim da semana, é possível logar e cadastrar especialidade, médico, paciente e
-agenda.*
+**31/07 (sex) a 05/08 (qua) · 6 dias corridos**
 
-| Dia | PO-A | PO-B | ENG-A (backend) | ENG-B (frontend) | QA-A | QA-B |
+**Meta:** *é possível entrar no sistema com os dois perfis, e o atendente consegue cadastrar
+especialidade, médico, paciente e a agenda de horários.*
+
+**User Stories:** US-00, US-01, US-02, US-03, US-05
+**Casos de teste:** CT01, CT02, CT03, CT04, CT08, CT13, CT14
+**Sessão exploratória:** EXP-01 (cadastros)
+
+| Encontro | Uanderson (PO) | Antonio (Backend) | João Vitor (Frontend) | Ronaldo (Frontend + processo) | Jackson (QA) | Felipe (QA/CI) |
 |---|---|---|---|---|---|---|
-| **1** Seg | Revisar backlog; validar US-13/14/15 adicionadas | Planning; popular o board | Migração inicial + revisar índice parcial | Layout, tema, `AppShell`, cliente HTTP | Revisar plano de testes | Configurar branch protection + rodar CI |
-| **2** Ter | Refinar critérios da US-01/02/03 | Daily; ata | US-00 auth (login, verificar-cpf, vincular-ou-criar) | Tela de login + primeiro acesso | Escrever CT01–CT04 | Escrever CT08, CT13, CT14 |
-| **3** Qua | Validar US-00 | Acompanhar WIP | US-15 cadastro de atendente + US-01 especialidades | Guards por perfil; tela de especialidades | Executar CT04 + evidência | EXP-01 (cadastros) |
-| **4** Qui | Validar US-01/US-15 | Ata | US-02 médicos + US-03 pacientes (RN01, RN02, RN07) | Formulários de médico e paciente | Executar CT01–CT03 | Executar CT14 |
-| **5** Sex | **Review**: validar critérios | **Retrospectiva** + ações | US-05 agenda (RN05, RN09) + testes unitários | Painel de lançamento de agenda | Executar CT08, CT13 | Consolidar evidências Sprint 1 |
+| **31/07 sex** — Kickoff | Apresentar rebaseline; validar backlog cortado | Rodar ambiente; revisar migração inicial | Rodar ambiente; `AppShell`, tema, layout | Rodar ambiente; `lib/api.ts` e componentes base | Revisar plano de testes com o escopo novo | Validar CI e ativar branch protection |
+| **01/08 sáb** | Refinar critérios de US-01/02/03 | US-00 backend: revisar auth pronta e cobrir lacunas | US-00 frontend: tela de login | US-00 frontend: primeiro acesso | Escrever CT01–CT04 | Escrever CT08, CT13, CT14 |
+| **03/08 seg** | Validar US-00 na coluna UAT | US-01 + US-02 backend | US-00: guarda de rota por perfil | US-01 frontend: especialidades | Executar CT04 com evidência | EXP-01 (cadastros) |
+| **05/08 qua** — Review 1 | **Validar critérios de aceite**; conduzir Retro | US-03 + US-05 backend (RN01, RN02, RN05, RN09) + testes unitários | US-02 frontend: médicos | US-03 frontend: pacientes | Executar CT01–CT03, CT08, CT13 | Executar CT14; consolidar evidências |
 
-**Entregas da sprint:** US-00, US-01, US-02, US-03, US-05, US-15 · CT01–CT04, CT08, CT13, CT14 ·
-EXP-01 · CI verde.
-
-**Riscos:** US-00 é a mais complexa (dois caminhos no `vincular-ou-criar`) e bloqueia todo o
-resto. Se atrasar, adie US-05 para a Sprint 2 — nunca US-00.
+**Risco principal:** US-00 bloqueia todo o resto. O backend dela **já existe** — se algo atrasar,
+será o frontend. Mitigação: João Vitor e Ronaldo atacam login e primeiro acesso em paralelo já
+no primeiro dia.
 
 ---
 
 ## Sprint 2 — Agendamento, cancelamento e entrega
 
-**Meta:** *ciclo completo de agendamento e cancelamento funcionando, com evidências e release
-marcada.*
+**05/08 (qua) a 10/08 (seg) · 5 dias corridos**
 
-| Dia | PO-A | PO-B | ENG-A (backend) | ENG-B (frontend) | QA-A | QA-B |
+**Meta:** *o paciente marca e cancela consulta, o atendente agenda, cancela, confirma e
+finaliza — com evidência de teste e release marcada.*
+
+**User Stories:** US-04, US-06, US-07, US-08, US-09, US-10, US-11, US-12, US-13
+**Casos de teste:** CT05, CT06, CT07, CT09, CT10, CT11, CT12
+**Sessões exploratórias:** EXP-02 (agendamento e concorrência), EXP-03 (cancelamento e 24h)
+
+| Encontro | Uanderson (PO) | Antonio (Backend) | João Vitor (Frontend) | Ronaldo (Frontend + processo) | Jackson (QA) | Felipe (QA/CI) |
 |---|---|---|---|---|---|---|
-| **6** Seg | Planning; repriorizar carryover | Planning; atualizar board | US-06 + US-07 (RN03) | Tela de médicos com filtro; calendário de horários | Revisar matriz de cobertura | Ajustar CI se necessário |
-| **7** Ter | Validar US-06/07 | Daily; ata | US-08 solicitar (`FOR UPDATE`) + US-09 atendente | Fluxo de agendamento (paciente e atendente) | Executar CT05 | EXP-03 (agendamento, concorrência) |
-| **8** Qua | Validar US-08/09 | Acompanhar WIP | US-11 + US-12 cancelamento (Strategy, RN04) + US-04 | Ação de cancelar; tela de perfil | Executar CT06, CT07 | Executar CT11, CT12 |
-| **9** Qui | Iniciar revisão da documentação | **Montar slides** | US-13 status + US-10 histórico + fechar cobertura | Painel de consultas com badges de status | Executar CT09, CT10 | EXP-04 (cancelamento) |
-| **10** Sex | **Review** final; validar tudo | **Apresentação** | Release `v1.0.0`; merge em `main` | Polimento visual; acessibilidade | Relatório de execução | Relatório final + print do CI verde |
+| **05/08 qua** — Planning 2 | Repriorizar carryover; travar ordem de corte | US-06 + US-07 backend (RN03) | Filtro de médicos por especialidade | Grade de horários livres | Revisar matriz de cobertura | Ajustar CI se necessário |
+| **07/08 sex** — Congelamento | Validar US-06/07/08; **congelar escopo** | US-08 (`FOR UPDATE`) + US-09 backend | Fluxo de agendamento do paciente | Tela de agendamento do atendente | Executar CT05 | EXP-02 (concorrência) |
+| **08/08 sáb** — Ensaio | Revisar documentação; ensaiar demo | US-11 + US-12 (Strategy, RN04) + US-13 backend | Ação de cancelar + badges de status | US-04 e US-10: perfil e histórico | Executar CT06, CT07, CT09, CT10 | EXP-03; executar CT11, CT12 |
+| **09/08 dom** — assíncrono | Revisar slides | Fechar cobertura de testes | Polimento e acessibilidade | **Montar slides** | Relatório de execução | Relatório final + print do CI verde |
+| **10/08 seg** — Entrega | **Review final** | Release `v1.0.0`; merge em `main` | Apoio na demo | **Apresentação** | Apoio na demo | Apoio na demo |
 
-**Entregas da sprint:** US-04, US-06 a US-13 · CT05–CT07, CT09–CT12 · EXP-03, EXP-04 ·
-slides · tag `v1.0.0`.
-
-**Riscos:** os dias 9–10 concentram documentação, slides e release. Mitigação: US-14 é
-*Desejável* e sai primeiro; slides começam no dia 9, não no dia 10.
+**Risco principal:** 08 e 09/08 concentram teste, slides e release. Mitigação: o congelamento de
+escopo em **07/08** é obrigatório — item que não estiver em *Code Review* nessa data sai do MVP
+e vira melhoria futura.
 
 ---
 
 ## Marcos
 
-| Marco | Quando | Critério |
+| Marco | Quando | Critério objetivo |
 |---|---|---|
-| Ambiente do time funcionando | Dia 1 | Todos rodaram `make bootstrap` com sucesso |
-| Branch protection ativa | Dia 1 | PR sem `quality-gate` verde não é mergeável |
-| Autenticação completa | Dia 3 | Login e primeiro acesso funcionando nos dois perfis |
-| Cadastros base completos | Dia 5 | Especialidade, médico, paciente e agenda operacionais |
-| Agendamento completo | Dia 8 | Paciente solicita; atendente agenda |
-| Ciclo completo | Dia 9 | Todos os quatro status alcançáveis |
-| Todos os CTs executados | Dia 10 | Relatório de execução preenchido |
-| Release `v1.0.0` | Dia 10 | Tag criada, `main` atualizada |
+| Ambiente de todos funcionando | 31/07 | As 6 pessoas abriram `localhost:3000` e `localhost:8000/docs` |
+| Branch protection ativa | 31/07 | PR sem `quality-gate` verde não é mergeável |
+| Acesso completo | 03/08 | Login e primeiro acesso funcionando nos dois perfis |
+| Cadastros base completos | 05/08 | Especialidade, médico, paciente e agenda operacionais pela interface |
+| Agendamento completo | 07/08 | Paciente solicita; atendente agenda |
+| **Congelamento de escopo** | **07/08** | Nada novo entra; o que está em To Do sai do MVP |
+| Ciclo de status completo | 08/08 | Os quatro status da RN06 alcançáveis pela interface |
+| Todos os CTs executados | 09/08 | Relatório de execução preenchido com evidência |
+| Release `v1.0.0` | 10/08 | Tag criada, `main` atualizada, CI verde |
+
+---
+
+## Capacidade e realismo
+
+**6 pessoas · 11 dias corridos · 7 encontros.**
+
+Estimativa conservadora de **~3h úteis por pessoa por dia** dá cerca de **200h de equipe** nas
+duas sprints. Descontando cerimônias (~7h), revisão de PR (~15%) e imprevistos (~20%), sobram
+aproximadamente **140h de trabalho efetivo**.
+
+O escopo enxuto — 14 User Stories, com o backend de autenticação já pronto — cabe nessa conta.
+Os 82 itens do planejamento anterior não cabiam, e é essa a razão do rebaseline.
+
+**Não planejem 100% da capacidade.** A folga de ~20% é o que absorve o PR que volta na revisão
+e o bug que aparece no teste exploratório.
 
 ---
 
 ## Priorização (se o prazo apertar)
 
-Corte nesta ordem, de baixo para cima:
+Corte nesta ordem, de baixo para cima. A regra é **cortar a User Story inteira**, nunca entregar
+backend sem tela ([ADR-008](ADR-008-Rebaseline-de-Escopo) §2) — sem fluxo navegável o QA não
+produz evidência, e evidência é entregável avaliado.
 
-| Prioridade | Itens | Justificativa |
+| Prioridade | User Stories | Justificativa |
 |---|---|---|
 | **P0 — não corta** | US-00, US-01, US-02, US-03, US-05, US-08, US-11 | Sem isso não há RN01–RN05 demonstrável |
-| **P1** | US-09, US-12, US-13, US-07 | Completam RN06 e o fluxo do atendente |
-| **P2** | US-04, US-06, US-10, US-15 | Importantes, mas contornáveis na demo |
-| **P3 — corta primeiro** | US-14 agenda geral, refinamentos visuais, tarefas `[DESEJÁVEL]` | Não afetam nenhuma RN obrigatória |
+| **P1** | US-07, US-09, US-12, US-13 | Completam a RN06 e o fluxo do atendente |
+| **P2 — corta primeiro** | US-04, US-06, US-10 | Importantes, contornáveis na demonstração |
 
-Nunca corte: teste unitário de RN, evidência de CT, ou o job `docker` do CI. É o que a
-avaliação examina.
+O que for cortado vira item em [`15-melhorias-futuras.md`](Melhorias-Futuras) com o motivo
+escrito, e entra no slide de retrospectiva.
 
----
-
-## Capacidade
-
-4 pessoas em desenvolvimento (ENG-A, ENG-B, QA-A, QA-B) + 2 em PO/processo.
-5 dias × ~6h úteis = **~30h por pessoa por sprint**, descontando cerimônias
-(~2h/semana) e imprevistos.
-
-Não planejem 100% da capacidade. Deixem ~20% de folga: no case da plataforma educacional do
-material, planejar tudo cheio foi o que gerou o retrabalho.
+**Nunca corte:** teste unitário de RN, evidência de caso de teste, ou o job `docker` do CI.
 
 
 ---

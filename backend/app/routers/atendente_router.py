@@ -1,4 +1,4 @@
-"""Controller administrativo do atendente (US-09, US-12, US-13, US-14)."""
+"""Controller administrativo do atendente (US-09, US-12, US-13)."""
 
 from typing import Annotated
 

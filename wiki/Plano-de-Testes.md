@@ -3,11 +3,19 @@
 Entregável de QA. Base: *Módulo 5 — Qualidade, Testes e Segurança* (pirâmide de testes,
 cobertura, quality gates).
 
+> **Duas stacks, duas suítes.** `backend/` (pytest) e `frontend/` (Vitest) são aplicações
+> separadas ([`03-arquitetura.md`](Arquitetura)) e têm suítes, ferramentas e contagens
+> próprias. O mínimo de **5 testes unitários** exigido pelo enunciado é atendido **em cada
+> stack**, não somando as duas.
+>
+> **Escopo do rebaseline (ADR-008):** 14 User Stories, US-00 a US-13. As antigas US-14 e US-15
+> saíram do MVP e **não** são testadas.
+
 ---
 
 ## 1. Objetivo
 
-Garantir que o MVP atende aos requisitos funcionais (RF01–RF24) e não funcionais (RNF01–RNF15),
+Garantir que o MVP atende aos requisitos funcionais (RF01–RF22) e não funcionais (RNF01–RNF15),
 com foco em **provar que as regras de negócio RN01–RN15 são efetivamente aplicadas** — inclusive
 quando alguém tenta violá-las.
 
@@ -20,12 +28,13 @@ Teste que só verifica o caminho felizes não prova que a regra existe.
 
 | Dentro do escopo | Fora do escopo | Por quê |
 |---|---|---|
-| RF01–RF24 nos perfis Paciente e Atendente | Teste de carga e estresse | Sem requisito de volume no MVP |
+| RF01–RF22 nos perfis Paciente e Atendente | Teste de carga e estresse | Sem requisito de volume no MVP |
 | RN01–RN15, com casos positivos e negativos | Pentest / análise de vulnerabilidade | Fora do prazo e do escopo da AV2 |
 | Autorização por perfil (401/403) | Compatibilidade cross-browser exaustiva | Testamos em Chrome/Edge, os alvos |
 | Validação de formulários (front e back) | Teste de responsividade em todos os breakpoints | Verificação visual em desktop e mobile |
 | Concorrência na reserva de horário | Recuperação de desastre / backup | Não há operação em produção |
 | Migrações Alembic e idempotência do seed | Integração com sistemas externos | Não existe integração no MVP |
+| — | Itens de `15-melhorias-futuras.md` | Fora do MVP por decisão do ADR-008 |
 | Auditoria WCAG completa | | Mantine já é acessível por padrão (RNF15) |
 
 ---
@@ -39,21 +48,30 @@ Teste que só verifica o caminho felizes não prova que a regra existe.
      ╱      ╲                        cobre a jornada ponta a ponta
     ╱────────╲      Integração    ── TestClient + PostgreSQL (Eng + QA)
    ╱          ╲                      contrato da API, autorização, migrações
-  ╱────────────╲    Unitário      ── 17 pytest + 7 Vitest (Engenharia)
+  ╱────────────╲    Unitário      ── 17 pytest + 11 Vitest (Engenharia)
                                      regras de negócio isoladas, sem banco
 ```
 
 | Nível | Onde | Ferramenta | Responsável | Marcador | Quantidade |
 |---|---|---|---|---|---|
 | Unitário backend | `backend/tests/unit/` | pytest + fakes | Engenharia | `@pytest.mark.unit` | 17 |
-| Unitário frontend | `frontend/__tests__/` | Vitest + RTL | Engenharia | — | 7 |
-| Integração | `backend/tests/integration/` | pytest + TestClient | Eng + QA | `@pytest.mark.integration` | 15 |
+| Unitário frontend | `frontend/__tests__/` | Vitest + RTL | Engenharia | — | 11 |
+| Integração | `backend/tests/integration/` | pytest + TestClient | Eng + QA | `@pytest.mark.integration` | 11 |
 | Funcional manual | `08-casos-de-teste.md` | roteiro + evidência | QA | CT01–CT14 | 14 |
-| Exploratório | §6 deste documento | sessões por charter | QA | EXP-01… | 4 sessões |
+| Exploratório | §6 deste documento | sessões por charter | QA | EXP-01…EXP-03 | 3 sessões |
 | Regressão | CI | GitHub Actions | automático | — | toda push/PR |
 
-O exigido pelo enunciado é **5 testes unitários** e **10 casos de teste**. Entregamos 17 e 14 —
-porque a matriz de rastreabilidade da §4 exigiu cobrir RN07 a RN15, que o mínimo não alcançava.
+O exigido pelo enunciado é **5 testes unitários** e **10 casos de teste**.
+
+| Entregável | Mínimo | Entregue |
+|---|---|---|
+| Testes unitários — **backend** (pytest) | 5 | 17 |
+| Testes unitários — **frontend** (Vitest) | 5 | 11 (cresce junto com as telas) |
+| Casos de teste funcionais | 10 | 14 |
+
+Passamos do mínimo porque a matriz de rastreabilidade da §4 exigiu cobrir RN07 a RN15, que o
+mínimo não alcançava. **Cada stack presta contas da própria contagem** — somar as duas para
+chegar a "5" mascararia uma suíte fraca com a outra forte.
 
 ---
 
@@ -106,10 +124,13 @@ Time-boxed em **45 min** por sessão, com charter escrito **antes** de começar.
 
 | ID | Charter | Área | Sprint |
 |---|---|---|---|
-| EXP-01 | Explorar cadastros buscando falhas de validação e duplicidade | US-01 a US-04 | 1 |
-| EXP-02 | Explorar lançamento de agenda buscando conflito de horário | US-05, US-07 | 1 |
-| EXP-03 | Explorar agendamento buscando falhas de estado e concorrência | US-08, US-09 | 2 |
-| EXP-04 | Explorar cancelamento e limites da regra de 24h | US-11, US-12, US-13 | 2 |
+| EXP-01 | Explorar cadastros buscando falhas de validação e duplicidade | US-01, US-02, US-03, US-05 | 1 |
+| EXP-02 | Explorar agendamento buscando falhas de estado e concorrência | US-07, US-08, US-09 | 2 |
+| EXP-03 | Explorar cancelamento e os limites da regra de 24h | US-11, US-12, US-13 | 2 |
+
+Eram quatro sessões no planejamento anterior. Com o calendário real (11 dias, 7 encontros) as
+duas primeiras foram fundidas: cadastro e lançamento de agenda são o mesmo tipo de formulário e
+as heurísticas se repetiam.
 
 ### Heurísticas para este MVP
 

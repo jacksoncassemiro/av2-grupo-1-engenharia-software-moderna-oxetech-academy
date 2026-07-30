@@ -1,37 +1,32 @@
 # Papéis e responsabilidades
 
-## Composição real da equipe — 7 pessoas
+## Composição da equipe — 6 pessoas
 
 | Papel | Pessoas |
 |---|---|
 | 👑 **Product Owner** | Uanderson Henrique Batista da Silva |
-| 💻 **Engenharia de Software** | Ronaldo de Melo Sabino Filho · Jonatha da Silva Fernandes · João Vitor Mandu de Lira · Antonio Andrade Gomes Júnior |
+| 💻 **Engenharia de Software** | Antonio Andrade Gomes Júnior · João Vitor Mandu de Lira · Ronaldo de Melo Sabino Filho |
 | 🧪 **Quality Assurance** | Jackson Douglas da Silva Cassemiro · Felipe da Silva Araújo |
 
-> **Nota sobre o enunciado.** O enunciado da AV2 sugere *"2 para cada"* papel. A equipe tem
-> **1 PO, 4 Engenharia e 2 QA**. Isso não é problema desde que **todo entregável tenha um
+> **Nota sobre o enunciado.** O enunciado sugere *"2 para cada"* papel. A equipe tem
+> **1 PO, 3 Engenharia e 2 QA**. Isso não é problema desde que **todo entregável tenha um
 > responsável nomeado** — é o que esta página faz. Se o avaliador cobrar a divisão 2/2/2, a
-> resposta é a coluna "Apoio" das tabelas abaixo: um engenheiro atua como **PO de apoio**
+> resposta é a coluna "Apoio": **Ronaldo atua como PO de apoio** nos itens de processo
 > (cerimônias e slides), o que dá dois nomes em cada papel sem inflar o escopo de ninguém.
 
-Combinado com o grupo: os papéis definem **responsabilidade pela entrega**, não uma fronteira
+Combinado com o grupo: os papéis definem **responsabilidade pela entrega**, não fronteira
 rígida. Quem terminar antes ajuda quem estiver com mais carga — desde que o responsável nomeado
 continue sendo quem está na tabela, para não haver dúvida na avaliação.
 
 ---
 
-## Alocação por entregável
+## 👑 PO — Uanderson
 
-### 👑 PO — Uanderson
-
-O PO acumula 4 entregáveis avaliados. Para não virar gargalo, **Ronaldo atua como PO de apoio**
-nos itens de processo (cerimônias e slides), enquanto Uanderson mantém a propriedade do backlog.
-
-| # | Entregável | Responsável | Apoio | Onde |
+| # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
 | 1 | Escrita e documentação | **Uanderson** | — | `docs/00`, `docs/01`, `docs/02`, Wiki |
 | 2 | Ciclo de desenvolvimento | **Uanderson** | Ronaldo | `docs/11-ciclo-desenvolvimento.md` |
-| 3 | Verificar critérios de aceite | **Uanderson** | — | Board + ata da Sprint Review |
+| 3 | Verificar critérios de aceite | **Uanderson** | — | Board (coluna UAT) + ata da Review |
 | 4 | Material de apresentação (slides) | **Ronaldo** | Uanderson | `docs/apresentacao/` |
 
 **Uanderson — backlog e validação**
@@ -39,61 +34,68 @@ nos itens de processo (cerimônias e slides), enquanto Uanderson mantém a propr
 - Documento de visão do produto ([`00`](00-visao-do-produto.md)): objetivo, público, escopo
   dentro/fora, proposta de valor, métricas.
 - Requisitos consolidados ([`01`](01-requisitos.md)): RF, RNF, RN e matriz de rastreabilidade.
-- Backlog priorizado ([`02`](02-backlog.md)): US-00 a US-15 no formato *"Como… Quero… Para…"*
+- Backlog priorizado ([`02`](02-backlog.md)): US-00 a US-13 no formato *"Como… Quero… Para…"*
   com critérios de aceite em Gherkin.
-- **Validação na Sprint Review:** percorrer cada critério de aceite da US entregue e aprovar ou
+- **Guardar o escopo.** Depois do rebaseline ([ADR-008](adr/ADR-008-rebaseline-escopo.md)),
+  pedido novo que não esteja no enunciado vai para
+  [`15-melhorias-futuras.md`](15-melhorias-futuras.md), não para a sprint.
+- **Validação na coluna UAT:** percorrer cada critério de aceite da US entregue e aprovar ou
   rejeitar. Rejeição volta ao board com o motivo escrito.
-- Manter a Wiki sincronizada com `docs/`.
+- Manter a Wiki sincronizada com `docs/` (`.\scripts\gerar-wiki.ps1`, ou `python3 scripts/gerar-wiki.py`).
 
-O backlog atual da Wiki (US-00 a US-12) é obra dele e resolveu o conflito de cadastro do
-paciente (ver [ADR-005](adr/ADR-005-cadastro-paciente.md)). US-13, US-14 e US-15 foram
-adicionadas para cobrir lacunas de [`14-conflitos-e-decisoes.md`](14-conflitos-e-decisoes.md).
+**Ronaldo — cerimônias e apresentação (PO de apoio)**
 
-**Ronaldo — cerimônias e apresentação**
-
-- Conduzir Planning, Daily, Review e Retrospectiva; registrar atas em
+- Conduzir Planning, sincronizações, Review e Retrospectiva; registrar atas em
   [`11`](11-ciclo-desenvolvimento.md) §9.
 - Manter o board: fazer o WIP ser respeitado, cobrar item parado.
 - Montar os slides — roteiro na seção *Roteiro dos slides* abaixo.
 
 ---
 
-### 💻 Engenharia — Ronaldo, Jonatha, João Vitor, Antonio
+## 💻 Engenharia — Antonio, João Vitor, Ronaldo
 
-Os 5 entregáveis de engenharia dividem bem entre 4 pessoas. Cada um é **dono** de um pedaço
-verificável, e não há dois donos para a mesma coisa.
+Os 5 entregáveis de engenharia entre 3 pessoas. Cada um é **dono** de um pedaço verificável,
+e não há dois donos para a mesma coisa.
 
-| # | Entregável | Responsável | Apoio | Onde |
+| # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
-| 1 | Estratégia de entrega — Git Flow e repositório | **Antonio** | Jonatha | `docs/10-git-flow.md`, branch protection |
-| 2 | Arquitetura MVC desenvolvida e documentada | **Jonatha** | João Vitor | `docs/03-arquitetura.md` + `backend/app/` |
-| 3 | 3 práticas de Clean Code | **Jonatha** | Ronaldo | `docs/05-clean-code.md` + código |
-| 4 | 2 padrões de projeto | **Jonatha** | Antonio | `docs/06-design-patterns.md` + código |
-| 5 | 5 testes unitários | **João Vitor** | Jonatha | `backend/tests/unit/` |
+| 1 | Estratégia de entrega — Git Flow e repositório | **Antonio** | Felipe | `docs/10-git-flow.md`, branch protection |
+| 2 | Arquitetura MVC desenvolvida e documentada | **Antonio** | João Vitor | `docs/03-arquitetura.md` §2 + `backend/app/` |
+| 3 | 3 práticas de Clean Code | **Antonio** (backend) · **João Vitor** (frontend) | Ronaldo | `docs/05-clean-code.md` + código |
+| 4 | 2 padrões de projeto | **Antonio** | João Vitor | `docs/06-design-patterns.md` + `backend/app/` |
+| 5 | 5 testes unitários por stack | **Antonio** (pytest) · **João Vitor** (Vitest) | Ronaldo | `backend/tests/unit/` · `frontend/__tests__/` |
+
+> **Redistribuição após a saída de Jonatha.** Ele era o responsável nomeado pelos entregáveis
+> 2, 3 e 4. **Antonio assume o backend e o domínio por inteiro** — arquitetura MVC, Clean Code
+> do backend e os dois Design Patterns. Clean Code e testes unitários do frontend ficam com
+> João Vitor, já que são práticas de outra stack e não fazem sentido concentradas numa pessoa
+> só. Decisão registrada no [ADR-008](adr/ADR-008-rebaseline-escopo.md).
 
 Divisão do trabalho de código:
 
 | Pessoa | Frente | Escopo |
 |---|---|---|
-| **Jonatha** | Backend — domínio | Models, migrações, Services, Strategy, Repository. É o dono dos conceitos avaliados (MVC, Clean Code, Patterns). |
-| **Antonio** | Backend — plataforma | Auth (US-00), autorização por perfil, seed, Git Flow, branch protection, code review. |
-| **João Vitor** | Frontend | Telas Next.js + Mantine, formulários, guardas de rota, testes Vitest. |
-| **Ronaldo** | Frontend + processo | Telas do atendente, `src/lib/api.ts`, componentes compartilhados; cerimônias e slides como PO de apoio. |
+| **Antonio** | Backend inteiro | Models, migrações, Services, Strategy, Repository, auth, autorização por perfil, seed. Dono dos conceitos avaliados no backend (MVC, Clean Code, Patterns). Git Flow e branch protection. |
+| **João Vitor** | Frontend — paciente | Telas do paciente (login, primeiro acesso, agendar, minhas consultas, meus dados), guardas de rota, testes Vitest, Clean Code do frontend. |
+| **Ronaldo** | Frontend — atendente + processo | Telas do atendente (especialidades, médicos, pacientes, agenda, consultas), `src/lib/api.ts`, componentes compartilhados; cerimônias e slides como PO de apoio. |
 
 Regras para todos:
 
-- Camadas Router → Service → Repository → Model; manter os contratos do
+- Camadas Controller → Service → Repository → Model; manter os contratos do
   [ADR-002](adr/ADR-002-camadas-mvc.md).
+- **Backend e frontend são aplicações separadas** ([`03`](03-arquitetura.md)). O MVC avaliado é
+  o do backend; o frontend tem arquitetura própria de componentes e rotas.
 - Migração Alembic **sempre revisada à mão** — o autogenerate não cria índice parcial. Existe
   `backend/tests/integration/test_migracoes.py` para pegar divergência entre model e migração.
 - Erro da API traduzido em notificação no frontend, nunca `alert` nem erro cru.
 - Code review cruzado: quem escreveu backend revisa frontend e vice-versa.
+- **Fatia vertical:** a US só entra em UAT com backend, frontend e teste prontos.
 
 ---
 
-### 🧪 QA — Jackson e Felipe
+## 🧪 QA — Jackson e Felipe
 
-| # | Entregável | Responsável | Apoio | Onde |
+| # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
 | 1 | Plano de testes | **Jackson** | Felipe | `docs/07-plano-de-testes.md` |
 | 2 | 10 casos de teste (14 entregues) | **Jackson** | Felipe | `docs/08-casos-de-teste.md` |
@@ -102,19 +104,20 @@ Regras para todos:
 
 **Jackson — plano e casos de teste**
 
-- Plano de testes: escopo, pirâmide, ambientes, critérios de entrada/saída.
-- CT01–CT14 escritos **até o dia 3** — antes do código existir, para não enviesar o teste pela
+- Plano de testes: escopo, pirâmide, ambientes, critérios de entrada e saída.
+- CT01–CT14 escritos **antes** do código da US existir, para não enviesar o teste pela
   implementação.
 - Manter a matriz de cobertura: **toda RN01–RN15 com pelo menos um caso negativo**.
 - Executar os CTs e preencher o relatório de execução.
-- Abrir Issue de bug com o template, com severidade e evidência.
+- Abrir Issue de bug com o template `.github/ISSUE_TEMPLATE/bug.yml`, com severidade,
+  prioridade e evidência.
 
 **Felipe — CI/CD, exploratório e evidências**
 
-- Pipeline com quatro jobs (`backend`, `frontend`, `docker`, `quality-gate`). O job `docker` roda
-  o seed **duas vezes** para provar a idempotência do
+- Pipeline com quatro jobs (`backend`, `frontend`, `docker`, `quality-gate`). O job `docker`
+  roda o seed **duas vezes** para provar a idempotência do
   [ADR-004](adr/ADR-004-bootstrap-atendente.md).
-- Quatro sessões exploratórias (EXP-01 a EXP-04) com charter e registro.
+- Três sessões exploratórias (EXP-01 a EXP-03) com charter e registro.
 - Organizar `docs/evidencias/` conforme a §7 do plano de testes.
 - Relatório final de testes para a apresentação.
 
@@ -126,19 +129,21 @@ Regras para todos:
 |---|---|
 | 1 | Capa: projeto, equipe, papéis |
 | 2 | Problema (telefone + planilha) e proposta |
-| 3 | Escopo do MVP: dentro / fora |
+| 3 | Escopo do MVP: dentro / fora — e **por que** cortamos ([ADR-008](adr/ADR-008-rebaseline-escopo.md)) |
 | 4 | Backlog e priorização |
-| 5 | Arquitetura em camadas (diagrama de `03-arquitetura.md`) |
-| 6 | Modelo de dados (ER) |
-| 7 | **3 práticas de Clean Code** com ruim/bom |
-| 8 | **2 Design Patterns** com diagrama e justificativa |
-| 9 | Conflitos do enunciado e decisões (ADRs) — diferencial |
-| 10 | Git Flow e board |
-| 11 | Plano de testes e cobertura |
-| 12 | Pipeline de CI (print do quality gate verde **e** de um PR bloqueado) |
-| 13 | **Demonstração ao vivo** |
-| 14 | Métricas: 32 testes automatizados, 14 CTs, CI verde |
-| 15 | Retrospectiva: o que funcionou, o que faríamos diferente |
+| 5 | **Arquitetura: duas aplicações**, não uma. MVC do backend em detalhe |
+| 6 | Arquitetura do frontend (componentes + rotas) e o contrato entre as duas |
+| 7 | Modelo de dados (ER) |
+| 8 | **3 práticas de Clean Code**, com exemplo ruim/bom nas duas stacks |
+| 9 | **2 Design Patterns** do backend, com diagrama e justificativa |
+| 10 | Conflitos do enunciado e decisões (ADRs) — diferencial |
+| 11 | Git Flow e board |
+| 12 | Plano de testes e cobertura das RNs |
+| 13 | Pipeline de CI (print do quality gate verde **e** de um PR bloqueado) |
+| 14 | **Demonstração ao vivo** |
+| 15 | Métricas: testes automatizados por stack, CTs executados, CI verde |
+| 16 | Melhorias futuras: o que ficou fora e por quê |
+| 17 | Retrospectiva: o que funcionou, o que faríamos diferente |
 
 ---
 
@@ -146,9 +151,8 @@ Regras para todos:
 
 | Responsabilidade | Quem |
 |---|---|
-| Daily de 15 min | Todos |
+| Atualizar o board ao começar e ao terminar um item | Quem está com o item |
 | Code review (mínimo 1 aprovação por PR) | Todos, cruzado |
-| Manter o board atualizado | Quem está com o item |
 | Manter `docs/` em sincronia com o código | Quem alterou o comportamento |
 | Não quebrar `develop` | Todos |
 | Ajudar quem estiver sobrecarregado | Todos |
@@ -161,16 +165,16 @@ Regras para todos:
 |---|---|---|---|
 | PO: escrita e documentação | Uanderson | `docs/00`, `01`, `02` + Wiki | ✅ estrutura pronta |
 | PO: ciclo de desenvolvimento | Uanderson | `docs/11` | ✅ |
-| PO: verificar critérios de aceite | Uanderson | Board + ata da Review | ⬜ durante as sprints |
-| PO: material de slide | Ronaldo | `docs/apresentacao/` | ⬜ Sprint 2 |
+| PO: verificar critérios de aceite | Uanderson | Board (UAT) + ata da Review | ⬜ durante as sprints |
+| PO: material de slide | Ronaldo | `docs/apresentacao/` | ⬜ 09/08 |
 | ENG: Git Flow e repositório | Antonio | `docs/10` + branch protection | ✅ documentado |
-| ENG: arquitetura MVC documentada | Jonatha | `docs/03` + `backend/app/` | ✅ |
-| ENG: 3 práticas de Clean Code | Jonatha | `docs/05` | ✅ |
-| ENG: 2 padrões de projeto | Jonatha | `docs/06` + [ADR-006](adr/ADR-006-design-patterns.md) | ✅ |
-| ENG: 5 testes unitários | João Vitor | `backend/tests/unit/` | ✅ **17 entregues** |
+| ENG: arquitetura MVC documentada | Antonio | `docs/03` §2 + `backend/app/` | ✅ |
+| ENG: 3 práticas de Clean Code | Antonio (back) · João Vitor (front) | `docs/05` | ✅ backend · ⬜ frontend |
+| ENG: 2 padrões de projeto | Antonio | `docs/06` + [ADR-006](adr/ADR-006-design-patterns.md) | ✅ |
+| ENG: 5 testes unitários por stack | Antonio · João Vitor | `backend/tests/unit/` · `frontend/__tests__/` | ✅ backend · ⬜ frontend |
 | QA: plano de testes | Jackson | `docs/07` | ✅ |
-| QA: 10 casos de teste | Jackson | `docs/08` | ✅ **14 entregues** |
+| QA: 10 casos de teste | Jackson | `docs/08` | ✅ **14 escritos** |
 | QA: exploratório + evidências | Felipe | `docs/07` §6 + `docs/evidencias/` | ⬜ durante as sprints |
 | QA: CI no GitHub Actions | Felipe | `.github/workflows/ci.yml` | ✅ |
-| Quadro Kanban | Ronaldo | [GitHub Projects](https://github.com/users/jacksoncassemiro/projects/3) | ⬜ popular com `scripts/popular-board.sh` |
+| Quadro Kanban | Ronaldo | [GitHub Projects](https://github.com/users/jacksoncassemiro/projects/3) | ⬜ recriar com `scripts/popular-board` |
 | Cronograma | Uanderson | `docs/12-cronograma.md` | ✅ |

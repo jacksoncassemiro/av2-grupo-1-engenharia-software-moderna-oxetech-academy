@@ -1,33 +1,160 @@
-name: Bug
-description: Defeito encontrado em teste ou uso
-title: "[BUG] "
+name: 🐞 Relatório de Bug
+description: Defeito em funcionalidade que já existe. Encontrado em teste ou em uso.
+title: "[Bug] [Área] "
 labels: ["bug"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        **Título no formato:** `[Bug] [Área] Verbo no infinitivo + descrição curta`
+        Exemplo: `[Bug] [Agendamento] Permitir reserva de horário já ocupado`
+
+        Estrutura baseada na **ISO/IEC 29119-3** (Incident Report). Preencha tudo o que souber —
+        campo vazio atrasa a correção.
+
   - type: dropdown
     id: severidade
     attributes:
-      label: Severidade
-      options: [Critica, Alta, Media, Baixa]
+      label: Severidade (impacto técnico)
+      description: |
+        O quão quebrado está o sistema?
+        • **Blocker** — módulo principal parou, sem contorno (ex.: tela branca ao logar)
+        • **Critical** — fluxo principal quebrado, ou contorno muito doloroso
+        • **Major** — fluxo secundário quebrado, ou erro de regra de negócio severo
+        • **Minor** — erro que não impede o uso
+        • **Trivial** — cosmético (texto, alinhamento)
+      options:
+        - Blocker
+        - Critical
+        - Major
+        - Minor
+        - Trivial
     validations:
       required: true
-  - type: input
-    id: caso
+
+  - type: dropdown
+    id: prioridade
     attributes:
-      label: Caso de teste
-      placeholder: CT07
+      label: Prioridade (urgência para a entrega)
+      description: |
+        Severidade e prioridade **são coisas diferentes**. Um bug Trivial pode ser Crítico
+        (ex.: erro de digitação no slide da apresentação).
+        • **Crítica** — resolver agora; bloqueia a entrega de 10/08
+        • **Alta** — resolver nesta sprint
+        • **Média** — próxima sprint
+        • **Baixa** — vira melhoria futura se não sobrar tempo
+      options:
+        - Crítica
+        - Alta
+        - Média
+        - Baixa
+    validations:
+      required: true
+
+  - type: dropdown
+    id: onde
+    attributes:
+      label: Onde ocorre
+      options:
+        - Backend (API)
+        - Frontend (interface)
+        - Backend e Frontend
+        - Banco de dados / migração
+        - CI / pipeline
+    validations:
+      required: true
+
+  - type: dropdown
+    id: frequencia
+    attributes:
+      label: Frequência
+      options:
+        - Sempre
+        - Intermitente
+        - Aconteceu uma vez
+    validations:
+      required: true
+
+  - type: input
+    id: rastreabilidade
+    attributes:
+      label: Rastreabilidade
+      description: User Story, regra de negócio e caso de teste envolvidos.
+      placeholder: "US-08 · RN03 · CT05"
+
+  - type: input
+    id: ambiente
+    attributes:
+      label: Ambiente
+      description: Como o sistema estava rodando quando o erro apareceu.
+      placeholder: "Docker Compose local · Windows 11 · Chrome 131 · branch feature/us08-solicitar-consulta"
+    validations:
+      required: true
+
   - type: textarea
     id: passos
     attributes:
       label: Passos para reproduzir
+      description: Lista numerada e exata. Não pule etapas — quem for corrigir precisa chegar ao mesmo ponto.
+      value: |
+        1.
+        2.
+        3.
     validations:
       required: true
+
+  - type: textarea
+    id: observado
+    attributes:
+      label: Comportamento observado
+      description: O que de fato aconteceu.
+    validations:
+      required: true
+
   - type: textarea
     id: esperado
     attributes:
-      label: Resultado esperado vs. obtido
+      label: Comportamento esperado
+      description: O que deveria acontecer, segundo o critério de aceite da US ou o texto da RN. Cite a fonte.
     validations:
       required: true
+
   - type: textarea
     id: evidencia
     attributes:
-      label: Evidencia (screenshot / log)
+      label: Evidência
+      description: |
+        Screenshot, gravação de tela, log do console ou resposta da API. Arraste o arquivo para cá.
+        Bug encontrado durante um CT tem a evidência copiada também para `docs/evidencias/`.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tecnico
+    attributes:
+      label: Dados técnicos (apenas se for erro de API ou banco)
+      description: Preencha só se você é dev ou QA técnico e o erro é de API/banco.
+      value: |
+        **Endpoint:**
+        **Método:**
+        **Payload enviado:**
+        ```json
+        ```
+        **Resposta recebida (status + body):**
+        ```json
+        ```
+        **Log / stack trace:**
+        ```
+        ```
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Contorno temporário
+      description: Existe forma de continuar usando o sistema apesar do bug? Isso muda a prioridade.
+
+  - type: input
+    id: dependencias
+    attributes:
+      label: Dependências
+      placeholder: "Bloqueado por #42 · Relacionado a #17"

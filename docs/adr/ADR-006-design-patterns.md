@@ -71,7 +71,7 @@ com `SELECT ... FOR UPDATE` — para o cenário de concorrência que a própria 
 
 **Positivas**
 
-- **20 testes unitários em ~3 segundos, sem banco.** Medido, não estimado. É o benefício
+- **17 testes unitários em ~3 segundos, sem banco.** Contado e medido, não estimado. É o benefício
   concreto do Repository + DIP.
 - Perfil novo com regra própria de cancelamento = classe nova, `ConsultaService` intacto (OCP).
 - O prazo de 24h vem de `settings` e `agora` é injetado → teste determinístico e demonstração

@@ -134,9 +134,9 @@ op.create_index(
 
 ### `nome` em `usuario`
 
-O Wiki original não tinha `nome` em `usuario`. O nome do paciente vinha por `paciente_id`, mas o
-atendente tem `paciente_id = NULL` — não havia como exibir "Olá, Maria" nem auditar quem
-cancelou o quê. Coluna adicionada (conflito C06).
+A modelagem inicial não tinha `nome` em `usuario`: o nome do paciente vinha por `paciente_id`.
+Mas o atendente tem `paciente_id = NULL` — não haveria como exibir "Olá, Maria" no painel dele
+nem auditar quem cancelou o quê. Coluna adicionada (conflito C06).
 
 ### Médico 1:N especialidade
 
@@ -152,8 +152,16 @@ no espaçamento com que o atendente lança a grade.
 
 ### Soft delete
 
-`ativo boolean` em `paciente`, `medico`, `especialidade`, `usuario`. Desativar um médico não
-apaga o histórico de consultas dele. Listagens públicas filtram por `ativo = true`.
+`ativo boolean` em `paciente`, `medico`, `especialidade`, `usuario`. Toda listagem filtra por
+`ativo = true`, e nenhum registro é apagado fisicamente — desativar um médico não apagaria o
+histórico de consultas dele.
+
+> **No MVP a coluna é lida, nunca escrita como `false`.** Inativar médico (MF04) e excluir
+> especialidade (MF03) ficaram fora do escopo ([ADR-008](ADR-008-Rebaseline-de-Escopo)), e
+> não há nenhum ponto no código que faça `ativo = False`. A coluna permanece porque o filtro
+> `WHERE ativo = true` já está nas queries e porque adicioná-la depois exigiria migração em
+> quatro tabelas — custo maior do que mantê-la agora. É preparação deliberada, não código morto
+> por descuido.
 
 ### `disponivel` redundante com o índice parcial — de propósito
 

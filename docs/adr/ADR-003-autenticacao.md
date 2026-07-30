@@ -1,16 +1,16 @@
 # ADR-003 — Login flexível (CPF ou e-mail) com JWT
 
-**Status:** Aceito · **Data:** 2026-07-29 · **Decisores:** Equipe 01
+**Status:** Aceito · **Data:** 2026-07-29 · **Revisado:** 2026-07-30 (rebaseline — ADR-008)
+· **Decisores:** Equipe 01
 
 ## Contexto
 
-O Wiki do PO definiu um requisito de domínio importante: **paciente pode não ter e-mail**.
-Numa clínica que atende por telefone e balcão, exigir e-mail excluiria parte dos pacientes.
-Mas o atendente tem e-mail profissional e é por ele que se identifica.
+Um requisito de domínio manda na decisão: **paciente pode não ter e-mail**. Numa clínica que
+atende por telefone e balcão, exigir e-mail excluiria parte dos pacientes. O atendente, ao
+contrário, tem e-mail profissional e é por ele que se identifica.
 
-Havia também uma frase no Wiki afirmando que **médicos** também logariam por e-mail — mas o
-enum `tipo_usuario` só tem `PACIENTE` e `ATENDENTE`, e nenhuma User Story começa com
-"Como Médico...".
+O enunciado define **dois perfis**: Paciente e Atendente. O enum `tipo_usuario` reflete isso, e
+nenhuma User Story começa com "Como Médico...".
 
 ## Decisão
 
@@ -29,8 +29,10 @@ MVP, configurável (RN13). Senha com **bcrypt** via `passlib` (RN11).
 contas — uma com login = e-mail (ATENDENTE), outra com login = CPF (PACIENTE). Decisão do PO,
 mantida: evita auto-atendimento e simplifica a autorização.
 
-**Perfil MEDICO fica fora do MVP.** Médico é entidade de cadastro, sem credencial. A frase do
-Wiki foi corrigida.
+**Perfil MEDICO fica fora do MVP.** Médico é **entidade de cadastro, não usuário do sistema**.
+Ele tem `email` — usado para unicidade (RN02) e contato — mas não tem credencial nem login. Um
+terceiro perfil mudaria o modelo de autorização inteiro; registrado como MF09 em
+[`15-melhorias-futuras.md`](../15-melhorias-futuras.md).
 
 ## Consequências
 
@@ -60,4 +62,4 @@ Wiki foi corrigida.
 | Login só por CPF | Atendente não tem CPF cadastrado como identidade funcional |
 | Sessão com cookie no servidor | Estado no servidor complica o Docker; JWT é o padrão da stack |
 | OAuth / provedor externo | Dependência externa, sem valor de avaliação, e exigiria e-mail |
-| Perfil ADMIN + MEDICO agora | Escopo — ver ADR-004 |
+| Perfil ADMIN + MEDICO agora | Escopo — ver ADR-004 e MF09 em `15-melhorias-futuras.md` |

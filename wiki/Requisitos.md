@@ -4,6 +4,11 @@ Lista canônica. Qualquer código, teste ou caso de teste referencia os IDs daqu
 Divergências entre as fontes do enunciado estão analisadas em
 [14-conflitos-e-decisoes.md](Conflitos-e-Decisoes).
 
+> **Escopo do MVP (rebaseline de 30/07).** Esta lista contém **apenas** o que será entregue até
+> 10/08. Requisitos analisados e adiados estão em
+> [15-melhorias-futuras.md](Melhorias-Futuras); a justificativa de cada corte está no
+> [ADR-008](ADR-008-Rebaseline-de-Escopo).
+
 ---
 
 ## 1. Requisitos funcionais
@@ -16,10 +21,10 @@ Divergências entre as fontes do enunciado estão analisadas em
 | RF04 | Permitir que um paciente sem cadastro se auto-cadastre e já obtenha login | Paciente | US-00 | Alta |
 | RF05 | Restringir rotas e telas conforme o perfil do usuário autenticado | Sistema | US-00 | Alta |
 | RF06 | Cadastrar especialidades médicas | Atendente | US-01 | Alta |
-| RF07 | Listar especialidades ativas | Todos | US-06 | Média |
+| RF07 | Listar especialidades ativas | Todos | US-01, US-06 | Média |
 | RF08 | Cadastrar médicos com nome, e-mail, CRM e especialidade | Atendente | US-02 | Alta |
-| RF09 | Listar médicos ativos, com filtro por especialidade | Todos | US-06 | Média |
-| RF10 | Cadastrar pacientes (e-mail opcional) | Atendente | US-03 | Alta |
+| RF09 | Listar médicos ativos, com filtro por especialidade | Todos | US-02, US-06 | Média |
+| RF10 | Cadastrar e listar pacientes (e-mail opcional) | Atendente | US-03 | Alta |
 | RF11 | Permitir que o paciente atualize seus próprios dados | Paciente | US-04 | Média |
 | RF12 | Cadastrar a grade de horários disponíveis de um médico | Atendente | US-05 | Alta |
 | RF13 | Listar horários livres de um médico numa data | Todos | US-07 | Alta |
@@ -31,9 +36,23 @@ Divergências entre as fontes do enunciado estão analisadas em
 | RF19 | Permitir que o atendente cancele consulta sem restrição de prazo | Atendente | US-12 | Alta |
 | RF20 | Liberar o horário na agenda quando a consulta é cancelada | Sistema | US-11/12 | Alta |
 | RF21 | Permitir que o atendente confirme e finalize consultas | Atendente | US-13 | Alta |
-| RF22 | Exibir a agenda geral consolidada da clínica | Atendente | US-14 | Desejável |
-| RF23 | Permitir que um atendente cadastre outro atendente | Atendente | US-15 | Alta |
-| RF24 | Rejeitar requisição sem token (401) ou com perfil inadequado (403) | Sistema | US-00 | Alta |
+| RF22 | Rejeitar requisição sem token (401) ou com perfil inadequado (403) | Sistema | US-00 | Alta |
+
+### 1.1 Requisitos analisados e adiados
+
+Não fazem parte do MVP. Detalhamento e versão-alvo em
+[15-melhorias-futuras.md](Melhorias-Futuras).
+
+| Ex-ID | Requisito | Vira |
+|---|---|---|
+| RF22 (antigo) | Exibir a agenda geral consolidada da clínica | MF01 |
+| RF23 (antigo) | Permitir que um atendente cadastre outro atendente pela interface | MF02 |
+| — | Editar e excluir especialidade | MF03 |
+| — | Editar e inativar médico | MF04 |
+| — | Editar dados do paciente pelo atendente | MF05 |
+| — | Excluir horário livre da grade | MF06 |
+
+> O **RF24 antigo virou RF22**. Não há RF23 nem RF24 no MVP.
 
 ---
 
@@ -41,12 +60,12 @@ Divergências entre as fontes do enunciado estão analisadas em
 
 | ID | Requisito | Categoria | Como é verificado |
 |---|---|---|---|
-| RNF01 | Arquitetura em camadas com separação MVC | Arquitetura | `docs/03-arquitetura.md` + revisão de PR |
-| RNF02 | Aplicar ao menos 3 práticas de Clean Code e princípios SOLID | Manutenibilidade | `docs/05-clean-code.md` |
-| RNF03 | Implementar ao menos 2 Design Patterns | Arquitetura | `docs/06-design-patterns.md` |
+| RNF01 | Arquitetura MVC em camadas **no backend**, documentada | Arquitetura | `docs/03-arquitetura.md` §2 + revisão de PR |
+| RNF02 | Aplicar ao menos 3 práticas de Clean Code e princípios SOLID **nas duas stacks** | Manutenibilidade | `docs/05-clean-code.md` |
+| RNF03 | Implementar ao menos 2 Design Patterns **no backend** | Arquitetura | `docs/06-design-patterns.md` |
 | RNF04 | Versionamento com Git Flow e Conventional Commits | Processo | `docs/10-git-flow.md` |
 | RNF05 | Pipeline de CI automatizado no GitHub Actions | DevOps | `.github/workflows/ci.yml` |
-| RNF06 | Mínimo de 5 testes unitários automatizados | Qualidade | `backend/tests/unit/` (20 entregues) |
+| RNF06 | Mínimo de 5 testes unitários automatizados **por stack** | Qualidade | `backend/tests/unit/` (pytest) + `frontend/__tests__/` (Vitest) |
 | RNF07 | Subir em qualquer máquina com um comando | Portabilidade | `make bootstrap` + job `docker` do CI |
 | RNF08 | Dois perfis de acesso com permissões distintas | Segurança | `core/deps.py` + CT11/CT12 |
 | RNF09 | Validar dados de entrada antes de persistir | Segurança | Schemas Pydantic + `@mantine/form` |
@@ -83,7 +102,7 @@ Divergências entre as fontes do enunciado estão analisadas em
 | **RN11** | Senha armazenada com hash bcrypt, nunca em texto claro | Segurança | `core/security.py` |
 | **RN12** | Cada rota exige o perfil correto, extraído do JWT | RNF08 | `core/deps.py` |
 | **RN13** | Token JWT expira (24h no MVP, configurável) | Segurança | `JWT_EXPIRE_MINUTES` |
-| **RN14** | Apenas ATENDENTE cria ATENDENTE; não há rota pública para isso | Evita escalonamento de privilégio | `exigir_atendente` + seed |
+| **RN14** | Não existe rota pública de criação de atendente; o primeiro vem do seed | Evita escalonamento de privilégio | `exigir_atendente` + `seeds/seed.py` |
 | **RN15** | Regras temporais avaliadas em `America/Maceio` | Evita erro de 3h em UTC | `settings.TIMEZONE` |
 
 ### 3.3 Detalhamento das regras sensíveis
@@ -143,9 +162,9 @@ Transição fora deste grafo levanta `TransicaoDeStatusInvalida` (HTTP 422).
 | RN09 | RF12 | US-05 | — | CTU08 | CT13 |
 | RN10 | RF21 | US-13 | — | CTU09 | CT09, CT10 |
 | RN11 | RF01 | US-00 | — | CTU10 | CT04 |
-| RN12 | RF05, RF24 | US-00 | — | CTU11 | CT11, CT12 |
+| RN12 | RF05, RF22 | US-00 | — | CTU11 | CT11, CT12 |
 | RN13 | RF01 | US-00 | — | — | CT12 |
-| RN14 | RF23 | US-15 | — | — | CT14 |
+| RN14 | RF05 | US-00 (seed) | — | — | CT14 |
 | RN15 | RF18 | US-11 | `TIMESTAMPTZ` | CTU04 | CT06 |
 
 

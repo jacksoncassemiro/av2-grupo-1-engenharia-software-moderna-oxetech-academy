@@ -1,0 +1,37 @@
+# Normaliza fim de linha no repositorio.
+#
+# Motivo: a equipe trabalha no Windows, e o Git converte LF -> CRLF ao clonar.
+# Um .sh com CRLF quebra no Git Bash, no WSL, no Docker e no CI com um erro
+# confuso ("syntax error near unexpected token `$'do\r'"). Sem este arquivo,
+# o bug volta na proxima vez que alguem editar um script no Windows.
+
+# Detecta texto e normaliza para LF no repositorio.
+* text=auto eol=lf
+
+# Sempre LF — quebram se virarem CRLF.
+*.sh            text eol=lf
+*.py            text eol=lf
+*.yml           text eol=lf
+*.yaml          text eol=lf
+Dockerfile      text eol=lf
+Makefile        text eol=lf
+*.mako          text eol=lf
+.env.example    text eol=lf
+
+# PowerShell prefere CRLF.
+*.ps1           text eol=crlf
+
+# Binarios — nunca converter.
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.gif           binary
+*.ico           binary
+*.pdf           binary
+*.pptx          binary
+*.docx          binary
+*.xlsx          binary
+*.zip           binary
+
+# Lockfile: e texto, mas nao deve gerar ruido de diff.
+yarn.lock       text eol=lf -diff

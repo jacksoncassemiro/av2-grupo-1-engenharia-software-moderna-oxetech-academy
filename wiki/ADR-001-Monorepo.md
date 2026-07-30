@@ -8,7 +8,7 @@ O repositório começou com o FastAPI na raiz (`app/`, `pyproject.toml`, `docker
 direto em `/`). O frontend Next.js ainda não existia. Duas opções: repositórios separados ou
 um só.
 
-Restrições: 6 pessoas, 2 semanas, uma única entrega avaliada, ninguém do time com experiência
+Restrições: 6 pessoas, prazo curto até 10/08, uma única entrega avaliada, ninguém do time com experiência
 prévia em orquestrar dois repositórios.
 
 ## Decisão

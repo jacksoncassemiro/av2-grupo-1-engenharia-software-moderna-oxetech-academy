@@ -33,7 +33,13 @@ make seed   # ou: docker compose exec backend python -m app.seeds.seed
 
 **2. RN14** — *apenas usuários com perfil ATENDENTE podem criar outros ATENDENTE. Não existe
 rota pública de cadastro de atendente.* Materializada em `POST /api/atendente/atendentes`
-protegida por `Depends(exigir_atendente)`, e registrada como **US-15**.
+protegida por `Depends(exigir_atendente)`.
+
+> **Atualização de 30/07.** A *tela* de cadastro de atendente saiu do MVP no rebaseline de
+> escopo ([ADR-008](ADR-008-rebaseline-escopo.md)) e virou MF02 em
+> [`15-melhorias-futuras.md`](../15-melhorias-futuras.md). A decisão deste ADR permanece
+> integralmente: o primeiro atendente vem do seed idempotente e **não existe rota pública** de
+> criação de atendente (RN14).
 
 ## Consequências
 
@@ -60,6 +66,6 @@ protegida por `Depends(exigir_atendente)`, e registrada como **US-15**.
 |---|---|
 | Só seed, sem RN14 | Sem caminho de recuperação nem funcionalidade demonstrável |
 | Rota pública `POST /register` de atendente | Qualquer visitante viraria atendente e leria todos os prontuários — falha de segurança indefensável na avaliação |
-| Perfil ADMIN separado | Conceitualmente melhor, mas adiciona terceiro perfil, telas, guards e testes a um MVP de 2 semanas. Registrado como evolução futura |
+| Perfil ADMIN separado | Conceitualmente melhor, mas adiciona terceiro perfil, telas, guards e testes a um MVP de 11 dias. Registrado como MF09 em `15-melhorias-futuras.md` |
 | Rota `/bootstrap-admin` protegida por token, ativa só com tabela vazia | Elegante, mas é mais código e mais teste para resolver o que o seed já resolve |
 | INSERT manual no banco | Não reproduzível, não versionado, não testável |

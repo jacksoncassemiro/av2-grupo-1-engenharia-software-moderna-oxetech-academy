@@ -22,7 +22,7 @@ src/app/
     ├── pacientes/page.tsx        # US-03
     ├── especialidades/page.tsx   # US-01
     ├── medicos/page.tsx          # US-02
-    ├── agenda/page.tsx           # US-05 + US-14 (agenda geral)
+    ├── agenda/page.tsx           # US-05
     └── consultas/page.tsx        # US-09, US-12, US-13
 ```
 

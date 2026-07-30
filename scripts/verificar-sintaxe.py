@@ -22,6 +22,7 @@ Nao substitui um parser de verdade: valida balanceamento, nao semantica.
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -93,11 +94,61 @@ def analisar_powershell(caminho: Path) -> list[str]:
     return problemas
 
 
+AVISO_CRLF = (
+    "fim de linha CRLF (Windows). O bash le o \\r como parte do comando e quebra "
+    "com erros do tipo \"unexpected token `$'do\\r'`\". Corrija com:\n"
+    "            git add --renormalize . && git checkout -- scripts/\n"
+    "        (o .gitattributes ja forca eol=lf para *.sh; falta o Git aplicar)"
+)
+
+
 def analisar_bash(caminho: Path) -> list[str]:
-    processo = subprocess.run(
-        ["bash", "-n", str(caminho)], capture_output=True, text=True, check=False
-    )
-    return [] if processo.returncode == 0 else [processo.stderr.strip()]
+    """Checa um .sh: primeiro o fim de linha, depois a sintaxe.
+
+    Dois cuidados que so aparecem no Windows:
+
+    1. **Caminho.** Passar `C:\\Users\\...\\script.sh` para o bash do Git Bash faz
+       ele tratar as barras invertidas como escape e engolir os separadores
+       ("No such file or directory" com o arquivo existindo). Por isso o conteudo
+       vai por STDIN.
+
+    2. **CRLF.** Se o Git checou o arquivo com `core.autocrlf=true`, cada linha
+       termina em `\\r\\n`. O bash inclui o `\\r` no token e falha com uma mensagem
+       que nao diz o que aconteceu. Reportamos isso explicitamente e removemos o
+       `\\r` antes de checar a sintaxe, para nao esconder um segundo problema
+       atras do primeiro.
+    """
+    bruto = caminho.read_bytes()
+    problemas: list[str] = []
+
+    if b"\r\n" in bruto:
+        problemas.append(AVISO_CRLF)
+
+    if shutil.which("bash") is None:
+        # Sem bash na maquina (Windows sem Git Bash): da para checar o CRLF,
+        # mas nao a sintaxe.
+        return problemas
+
+    conteudo = bruto.replace(b"\r\n", b"\n").decode("utf-8", errors="replace")
+
+    try:
+        processo = subprocess.run(
+            ["bash", "-n"],
+            input=conteudo,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError as erro:
+        problemas.append(f"nao foi possivel executar o bash: {erro}")
+        return problemas
+
+    if processo.returncode != 0:
+        # O bash conta as linhas do stdin, que batem com as do arquivo.
+        detalhe = processo.stderr.strip().replace("bash: line", f"{caminho.name}: linha")
+        problemas.append(detalhe)
+
+    return problemas
 
 
 def main() -> int:

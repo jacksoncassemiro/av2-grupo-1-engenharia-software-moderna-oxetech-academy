@@ -7,10 +7,18 @@ Critério de escolha: cada padrão precisa resolver um problema **real deste MVP
 aplicado sem problema para resolver é complexidade acidental — e o Módulo 3 trata isso como
 antipadrão.
 
-| # | Padrão | Categoria (GoF) | Problema que resolve |
-|---|---|---|---|
-| 1 | **Strategy** | Comportamental | A regra de cancelamento muda conforme o perfil (RN04 vs. US-12) |
-| 2 | **Repository** | Arquitetural / acesso a dados | Regra de negócio acoplada ao SQLAlchemy impede testar sem banco |
+> **Os dois padrões avaliados são do backend.** Eles vivem inteiramente em `backend/app/` e
+> resolvem problemas de domínio e de acesso a dados — que só existem lá. O frontend usa padrões
+> próprios do ecossistema React, documentados na §*Padrões do frontend*, mas eles **não** entram
+> na contagem dos dois exigidos: seriam uma comparação injusta, porque a maioria vem pronta do
+> Next.js e do Mantine em vez de ter sido decidida pela equipe.
+>
+> Contexto das duas aplicações: [`03-arquitetura.md`](Arquitetura).
+
+| # | Padrão | Categoria (GoF) | Aplicação | Problema que resolve |
+|---|---|---|---|---|
+| 1 | **Strategy** | Comportamental | **Backend** | A regra de cancelamento muda conforme o perfil (RN04 no paciente, sem restrição no atendente) |
+| 2 | **Repository** | Arquitetural / acesso a dados | **Backend** | Regra de negócio acoplada ao SQLAlchemy impede testar sem banco |
 
 ---
 
@@ -326,6 +334,26 @@ método com nome de intenção, sem saber que existe lock de banco.
 | Active Record (query no model) | Model passa a ter duas responsabilidades |
 | Unit of Work explícito | O `Session` do SQLAlchemy já é um UoW; o router delimita a transação |
 | Query Object / CQRS | Complexidade sem retorno neste domínio |
+
+---
+
+## Padrões do frontend
+
+Registrados por completude e para a pergunta "e o frontend, não tem padrão?". **Não contam para
+os dois exigidos** — a maior parte vem pronta do framework, não foi decisão de arquitetura da
+equipe.
+
+| Padrão | Onde | O que resolve |
+|---|---|---|
+| **Container / Presentational** | `page.tsx` busca dados · `components/` só desenha | Componente de apresentação testável sem mock de rede; é a versão React da "função pequena com responsabilidade única" |
+| **Facade** | `src/lib/api.ts` | Único ponto do app que conhece HTTP, token e tradução de erro. Trocar `fetch` por outra biblioteca é mudar um arquivo |
+| **Provider (Inversão de controle)** | `MantineProvider`, `ModalsProvider` em `app/layout.tsx` | Tema e serviços de UI disponíveis na árvore inteira sem *prop drilling*. Vem do Mantine |
+| **Compound Components** | `Table.Thead`, `List.Item` do Mantine | API declarativa. ⚠️ Não atravessa a fronteira RSC — ver [`03-arquitetura.md`](Arquitetura) §3.3 |
+
+O único desses que é **decisão nossa** é o **Facade** em `src/lib/api.ts`, e ele existe por um
+motivo concreto: com `fetch` espalhado, cada componente reinterpretaria o status HTTP à sua
+maneira e as mensagens de erro divergiriam. Vale citar na apresentação como paralelo ao
+Repository — os dois isolam uma fronteira técnica (SQL lá, HTTP aqui) do resto do código.
 
 ---
 

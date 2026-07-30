@@ -9,7 +9,12 @@ como cada divergência foi resolvida. Cada decisão relevante virou um ADR em `d
 |---|---|
 | **F1** | Texto do *Case 1 — Sistema de Gestão de Clínica Médica* |
 | **F2** | Lista detalhada de funcionalidades por perfil + RN01–RN06 |
-| **F3** | Backlog do Wiki (US-00 a US-12), escrito pelo PO |
+| **F3** | Backlog do Wiki (US-00 a US-12), escrito pelo PO — versão de 29/07 |
+
+> **Nota sobre F3.** O Wiki foi republicado a partir de `docs/` em 30/07, então a versão citada
+> aqui não está mais disponível para consulta. As divergências que envolviam **apenas** F3 e já
+> estavam resolvidas foram encerradas; o que permanece neste documento são as divergências
+> entre **F1 e F2**, que são o enunciado e continuam verificáveis.
 
 ---
 
@@ -21,15 +26,15 @@ como cada divergência foi resolvida. Cada decisão relevante virou um ADR em `d
 | C02 | Como nasce o primeiro atendente | **Alta** | Seed idempotente + RN14 | ADR-004 |
 | C03 | `UNIQUE` no slot impede reagendar | **Alta** | Índice parcial | ADR-006 |
 | C04 | Nada leva a consulta a CONFIRMADA/FINALIZADA | **Alta** | US-13 nova | — |
-| C05 | Médico "loga com e-mail" mas não é perfil | Média | Fora do escopo do MVP | ADR-003 |
+| C05 | E-mail do médico serve para login? | Média | Não — médico é cadastro, não usuário (MF09) | ADR-003 |
 | C06 | `Usuario` do atendente não tem nome | Média | `nome` em `Usuario` | — |
 | C07 | RN05 sem constraint no modelo | Média | `UniqueConstraint` | — |
-| C08 | "Gerenciar agenda geral" sem US | Média | US-14 nova | — |
+| C08 | "Gerenciar agenda geral" sem US | Média | ~~US-14 nova~~ → fora do MVP (MF01) | [ADR-008](ADR-008-Rebaseline-de-Escopo) |
 | C09 | Status inicial divergente entre US-08 e US-09 | Média | Depende de quem agenda | — |
 | C10 | 24h sem fuso definido | Média | RN15 — `America/Maceio` | — |
 | C11 | Médico ↔ especialidade: 1:N ou N:N | Baixa | 1:N (segue F3) | — |
 | C12 | Vitest × Next.js (Mantine recomenda Jest) | Baixa | Vitest, setup oficial Next | ADR-007 |
-| C13 | Composição da equipe: 7 nomes, 1/4/2 por papel | **Bloqueante** | Precisa decisão do grupo | — |
+| C13 | Composição da equipe | Média | ✅ Resolvido: 6 pessoas, 1/3/2 + PO de apoio | [ADR-008](ADR-008-Rebaseline-de-Escopo) |
 
 ---
 
@@ -74,12 +79,18 @@ Alternativas descartadas:
 - **Rota pública `/register` de atendente** — qualquer visitante da internet vira atendente
   e passa a ver o prontuário de todos. É falha de segurança, difícil de defender na avaliação.
 - **Perfil ADMIN separado** — conceitualmente mais correto, mas adiciona um terceiro perfil,
-  telas e testes a um MVP de 2 semanas. Fica registrado como evolução futura.
+  telas e testes a um MVP de 11 dias. Fica registrado como evolução futura em
+  [`15-melhorias-futuras.md`](Melhorias-Futuras).
 
-**Resolução.** Seed **idempotente** cria o primeiro atendente com credenciais vindas do
-`.env`; a partir dele, **atendente cadastra atendente** pela UI. Formalizado como
-**RN14: apenas usuários com perfil ATENDENTE podem criar outros ATENDENTE — não existe
-rota pública de cadastro de atendente.** → **ADR-004**
+**Resolução.** Seed **idempotente** cria o primeiro atendente com credenciais vindas do `.env`.
+Formalizado como **RN14: não existe rota pública de cadastro de atendente; só quem já tem o
+perfil ATENDENTE pode criar outro.** → **ADR-004**
+
+> **Ajuste de 30/07.** A *tela* de cadastro de atendente saiu do MVP no rebaseline de escopo —
+> ela não consta na lista de funcionalidades do enunciado, e o atendente do seed basta para a
+> demonstração e para os testes. Virou **MF02** em
+> [`15-melhorias-futuras.md`](Melhorias-Futuras). **A RN14 permanece integralmente** e é
+> testada pelo CT14, que prova que não existe caminho público para obter o perfil de atendente.
 
 O CI roda o seed **duas vezes** para provar a idempotência.
 
@@ -126,16 +137,17 @@ Sem ela, a RN06 fica sem cobertura de teste.
 
 ---
 
-## C05 — Médico "loga com e-mail", mas médico não é um perfil
+## C05 — Médico tem e-mail, mas não é perfil de acesso
 
-**Divergência.** F3 afirma: *"Atendentes / **Médicos**: Logam digitando o seu E-mail
-profissional"*. Mas o enum `tipo_usuario` de F3 tem apenas `PACIENTE, ATENDENTE`, F2 lista
-só dois perfis, e não existe nenhuma US com "Como Médico...".
+**Ambiguidade.** F2 manda "cadastrar médicos" com e-mail, e a RN02 exige e-mail único **entre
+usuários**. Isso levanta a dúvida: o e-mail do médico serve para ele fazer login?
 
-**Resolução.** No MVP, **Médico é entidade de cadastro, não usuário do sistema**. Ele tem
-`email` (usado para unicidade e contato), mas não tem credencial nem login. A frase do Wiki
-é uma antecipação de escopo futuro e foi corrigida na página republicada.
-Perfil MEDICO fica em *Fora do escopo* na visão do produto. → **ADR-003**
+**Resolução.** Não. O enunciado define **dois perfis**: Paciente e Atendente. No MVP, **Médico
+é entidade de cadastro, não usuário do sistema** — tem `email` para unicidade (RN02) e contato,
+mas não tem credencial nem login, e o enum `tipo_usuario` tem apenas `PACIENTE` e `ATENDENTE`.
+
+Um terceiro perfil mudaria o modelo de autorização inteiro. Registrado como **MF09** em
+[`15-melhorias-futuras.md`](Melhorias-Futuras), versão-alvo v2.0. → **ADR-003**
 
 ---
 
@@ -168,8 +180,18 @@ banco cru.
 de um médico, mas a **visão consolidada** da clínica (todos os médicos, filtro por data,
 quem está livre) não tem US nem endpoint.
 
-**Resolução.** Criada a **US-14 — Agenda geral da clínica**, prioridade *Desejável* (entra
-se a Sprint 2 tiver folga). Marcada como tal para não inflar o MVP.
+**Resolução original (29/07).** Criada a **US-14 — Agenda geral da clínica**, prioridade
+*Desejável*.
+
+**Resolução atual (30/07) — revertida.** A US-14 **saiu do MVP** no rebaseline de escopo. Ela
+não consta na lista de funcionalidades dos dois perfis, e é uma visualização agregada de dados
+que já são acessíveis pelas telas existentes: o atendente vê a agenda de cada médico na tela de
+agenda (US-05) e todas as consultas na tela de consultas (US-09). A lacuna que ela preenchia é
+de conveniência, não de capacidade.
+
+Registrada como **MF01** em [`15-melhorias-futuras.md`](Melhorias-Futuras), com esforço
+estimado e versão-alvo v1.1. Justificativa em
+[ADR-008](ADR-008-Rebaseline-de-Escopo).
 
 ---
 
@@ -221,19 +243,27 @@ testável fica em Client Components e em funções puras de `src/lib/`. → **AD
 
 ---
 
-## C13 — Composição da equipe (⚠️ precisa de decisão do grupo)
+## C13 — Composição da equipe
 
-**Divergência não resolvível por nós.**
+**Divergência original.** O enunciado diz *"As funções, sendo **2 para cada**"* → 2 PO + 2 Eng
++ 2 QA. O repositório listava **7 nomes**, distribuídos como 1 PO + 4 Engenharia + 2 QA.
 
-- O enunciado da AV2 diz: *"As funções, sendo **2 para cada**"* → 2 PO + 2 Eng + 2 QA = **6 pessoas**.
-- O `README.md` do repositório lista **7 nomes**, distribuídos como **1 PO + 4 Engenharia + 2 QA**.
-- O material `Aula - Pratica 13-05.pdf` lista um "Grupo 2" com 6 nomes que **não coincide**
-  com os do README.
+**Resolvido em 30/07.** Com a saída de Jonatha da Silva Fernandes, a equipe passou a **6
+pessoas**: 1 PO + 3 Engenharia + 2 QA.
 
-Como o enunciado é explícito sobre 2 por papel, `docs/13-papeis-e-responsabilidades.md`
-propõe uma redistribuição 2/2/2 usando os nomes do README. **Confirmem em Sprint Planning e
-corrijam o README** — a divisão de papéis é item avaliado, e o desalinhamento entre README e
-enunciado é visível para o avaliador.
+A leitura "2 para cada" é atendida pela coluna **Apoio** de
+[`13-papeis-e-responsabilidades.md`](Papeis-e-Responsabilidades): **Ronaldo atua como PO
+de apoio** nos itens de processo (cerimônias e slides), enquanto Uanderson mantém a propriedade
+do backlog. Assim há dois nomes em cada papel sem inflar o escopo de ninguém.
+
+Os entregáveis que eram de Jonatha (arquitetura MVC, Clean Code e Design Patterns) foram para
+**Antonio**, que passa a ser dono do backend e do domínio por inteiro. Clean Code e testes
+unitários **do frontend** ficaram com João Vitor — são práticas de outra stack, e concentrá-las
+numa pessoa só não faria sentido. Registrado no
+[ADR-008](ADR-008-Rebaseline-de-Escopo).
+
+O que importa para a avaliação: **todo entregável tem um responsável nomeado**, e a tabela de
+`13-papeis-e-responsabilidades.md` mostra isso item a item.
 
 ---
 
@@ -250,7 +280,7 @@ Além das RN01–RN06 do enunciado:
 | RN11 | Senha com hash bcrypt | Segurança — F3 diz "senha criptografada" sem especificar |
 | RN12 | Autorização por perfil no token | F2 (dois perfis com permissões próprias) |
 | RN13 | Expiração do JWT | Segurança |
-| RN14 | Só ATENDENTE cria ATENDENTE | C02 |
+| RN14 | Sem rota pública de cadastro de atendente | C02 |
 | RN15 | Regras temporais em `America/Maceio` | C10 |
 
 

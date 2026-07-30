@@ -4,6 +4,19 @@ Entregável do Engenheiro de Software: **3 práticas de Clean Code**, aplicadas 
 código e documentadas com exemplo ruim/bom. Base: *Módulo 2 — Clean Code e SOLID* e
 *Prática - Clean Code* (`material-aulas/`).
 
+> **Duas stacks, as mesmas três práticas.** O projeto tem duas aplicações — Python/FastAPI e
+> TypeScript/Next.js ([`03-arquitetura.md`](Arquitetura)). Cada prática abaixo é
+> demonstrada primeiro no **backend**, onde nasceu, e depois traduzida para o **frontend** na
+> §*A mesma prática no frontend*. As duas versões contam para o entregável — não é o mesmo
+> código repetido, é o mesmo princípio resolvendo problemas diferentes em linguagens
+> diferentes.
+
+| Prática | Responsável no backend | Responsável no frontend |
+|---|---|---|
+| 1. Nomes significativos | Antonio | João Vitor |
+| 2. Funções pequenas com responsabilidade única | Antonio | João Vitor |
+| 3. Exceções tipadas em vez de códigos de erro | Antonio | João Vitor |
+
 ---
 
 ## Prática 1 — Nomes significativos
@@ -279,6 +292,94 @@ class PacienteService:
 
 Por isso os 17 testes unitários rodam em ~3 segundos sem PostgreSQL, usando os fakes de
 `tests/conftest.py`. Nos routers, o FastAPI injeta a implementação real via `Depends`.
+
+---
+
+## As mesmas 3 práticas no frontend
+
+O frontend é outra aplicação, com outra linguagem e outros problemas. Os princípios são os
+mesmos; a aplicação deles muda.
+
+### Prática 1 no frontend — nomes significativos
+
+**Onde está aplicada:** `src/lib/api.ts`, `src/lib/cpf.ts`, `src/types/dominio.ts`
+
+```ts
+// ❌ Ruim — o que é `d`? o que significa `s === 2`?
+const d = await fetch(`/api/consultas/${id}`).then(r => r.json());
+if (d.s === 2) mostrarBotao();
+
+// ✅ Bom — o tipo revela a intenção e o enum elimina o número mágico
+const consulta: Consulta = await api.get<Consulta>(`/consultas/${id}`);
+if (consulta.status === StatusConsulta.CONFIRMADA) mostrarBotaoFinalizar();
+```
+
+**Convenções fixadas**
+
+| Elemento | Convenção | Exemplo |
+|---|---|---|
+| Componente | `PascalCase`, substantivo | `GradeDeHorarios`, `CardConsulta` |
+| Hook | `use` + verbo | `useConsultasDoPaciente()` |
+| Handler de evento | `handle` + evento | `handleConfirmarAgendamento()` |
+| Booleano | `é`/`tem`/`pode` no nome | `podeCancelar`, `estaCarregando` |
+| Tipo de domínio | espelha o schema do backend | `Consulta`, `HorarioDisponivel` |
+
+### Prática 2 no frontend — funções e componentes pequenos
+
+No React, o equivalente a "função pequena com responsabilidade única" é **separar o componente
+que busca dados do componente que desenha**.
+
+```tsx
+// ❌ Ruim — um componente que busca, filtra, formata e desenha
+export default function Consultas() {
+  const [dados, setDados] = useState([]);
+  useEffect(() => { /* fetch, tratamento de erro, filtro, ordenação... */ }, []);
+  return <div>{/* 80 linhas de JSX com if aninhado */}</div>;
+}
+
+// ✅ Bom — cada peça faz uma coisa
+export default function PaginaConsultas() {
+  const { consultas, estaCarregando, erro } = useConsultasDoPaciente();  // busca
+  if (estaCarregando) return <SkeletonConsultas />;                       // estado
+  if (erro) return <AvisoDeErro mensagem={erro.message} />;               // estado
+  return <ListaDeConsultas consultas={consultas} />;                      // desenho
+}
+
+// ListaDeConsultas recebe props e nao sabe de onde vieram — testavel isolado
+```
+
+**Métrica adotada:** componente com mais de ~80 linhas de JSX, ou com mais de um `useEffect`
+de busca, é sinal de que há dois componentes ali dentro.
+
+### Prática 3 no frontend — erro tipado em vez de código
+
+`src/lib/api.ts` é o único ponto do app que conhece HTTP. Ele traduz status em `ApiError`
+tipado, e nenhum componente precisa saber o que é um 409.
+
+```ts
+// ❌ Ruim — cada componente reinterpreta o status
+const resposta = await fetch('/api/consultas', { method: 'POST', body });
+if (resposta.status === 409) alert('erro');
+if (resposta.status === 422) alert('outro erro');
+
+// ✅ Bom — o cliente HTTP lanca um erro tipado com a mensagem que o backend mandou
+try {
+  await api.post('/consultas', { horario_disponivel_id: id });
+} catch (erro) {
+  if (erro instanceof ApiError) {
+    notifications.show({ message: erro.message, color: 'red' });
+    if (erro.status === 409) await recarregarHorarios();
+  }
+}
+```
+
+O ganho é o mesmo do backend: **a mensagem de erro tem uma fonte só**. O backend já devolve
+texto pronto (`CPF ja cadastrado`), e o frontend o repassa em vez de reescrever a regra.
+
+> ⚠️ **Onde o frontend erra com mais facilidade.** Duplicar regra de negócio "para melhorar a
+> experiência" — por exemplo, calcular as 24h da RN04 em JavaScript para esconder o botão de
+> cancelar. Isso cria duas fontes da verdade que divergem por fuso horário (RN15). A API devolve
+> `pode_cancelar`; o React obedece.
 
 ---
 

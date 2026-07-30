@@ -10,7 +10,7 @@ as regras de integridade garantidas no próprio banco de dados.
 | 📦 **Repositório** | [av2-grupo-1-engenharia-software-moderna-oxetech-academy](https://github.com/jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy) |
 | 📋 **Quadro Kanban** | [Projects #3](https://github.com/users/jacksoncassemiro/projects/3) |
 | ⚙️ **Pipeline** | [Actions](https://github.com/jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy/actions) |
-| 🗓️ **Prazo** | 2 semanas · 2 sprints |
+| 🗓️ **Entrega** | **10/08/2026** · 2 sprints (31/07–05/08 e 05/08–10/08) |
 
 ---
 
@@ -18,8 +18,8 @@ as regras de integridade garantidas no próprio banco de dados.
 
 | Se você é… | Comece por |
 |---|---|
-| **novo na equipe** | [Visão do Produto](Visao-do-Produto) → [Arquitetura](Arquitetura) → [Git Flow](Git-Flow) |
-| **avaliador** | [Conflitos e Decisões](Conflitos-e-Decisoes) → [Clean Code](Clean-Code-e-SOLID) → [Design Patterns](Design-Patterns) |
+| **novo na equipe** | [Como Rodar](Como-Rodar) → [Visão do Produto](Visao-do-Produto) → [Arquitetura](Arquitetura) → [Git Flow](Git-Flow) |
+| **avaliador** | [ADR-008 Rebaseline](ADR-008-Rebaseline-de-Escopo) → [Conflitos e Decisões](Conflitos-e-Decisoes) → [Clean Code](Clean-Code-e-SOLID) → [Design Patterns](Design-Patterns) |
 | **PO** | [Requisitos](Requisitos) → [Backlog](Backlog-e-User-Stories) → [Ciclo de Desenvolvimento](Ciclo-de-Desenvolvimento) |
 | **Engenharia** | [Arquitetura](Arquitetura) → [Modelo de Dados](Modelo-de-Dados) → [ADRs](ADR-001-Monorepo) |
 | **QA** | [Plano de Testes](Plano-de-Testes) → [Casos de Teste](Casos-de-Teste) → [CI/CD](CI-CD) |
@@ -29,14 +29,19 @@ as regras de integridade garantidas no próprio banco de dados.
 ## Rodar o projeto
 
 ```bash
-git clone git@github.com:jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy.git
+git clone https://github.com/jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy.git
 cd av2-grupo-1-engenharia-software-moderna-oxetech-academy
-cp .env.example .env        # não precisa editar nada
-make bootstrap              # sobe + migra + seed
+cp .env.example .env                 # não precisa editar nada
+docker compose up -d --build
+docker compose exec backend alembic upgrade head
+docker compose exec backend python -m app.seeds.seed
 ```
 
 Frontend em `localhost:3000` · Swagger em `localhost:8000/docs`
 Login inicial: `recepcao@clinica.com` / `admin123`
+
+🆘 **Travou?** [Como Rodar](Como-Rodar) tem o guia para Windows, os problemas conhecidos e o
+checklist de ambiente.
 
 ---
 
@@ -45,16 +50,18 @@ Login inicial: `recepcao@clinica.com` / `admin123`
 ### Produto
 
 - **[Visão do Produto](Visao-do-Produto)** — problema, escopo dentro/fora, proposta de valor, métricas, riscos
-- **[Requisitos](Requisitos)** — RF01–RF24, RNF01–RNF15, RN01–RN15 e matriz de rastreabilidade
-- **[Backlog e User Stories](Backlog-e-User-Stories)** — US-00 a US-15 com critérios de aceite em Gherkin
+- **[Requisitos](Requisitos)** — RF01–RF22, RNF01–RNF15, RN01–RN15 e matriz de rastreabilidade
+- **[Backlog e User Stories](Backlog-e-User-Stories)** — US-00 a US-13 com critérios de aceite em Gherkin
+- **[Melhorias Futuras](Melhorias-Futuras)** — o que ficou fora do MVP, com motivo e versão-alvo
 
 ### Engenharia
 
-- **[Arquitetura](Arquitetura)** — camadas MVC, contratos, diagramas, contratos da API, segurança
+- **[Arquitetura](Arquitetura)** — **duas aplicações**: MVC do backend (§2), arquitetura do frontend (§3), contrato entre elas (§4)
 - **[Modelo de Dados](Modelo-de-Dados)** — ER, constraints por regra, migrações, SQL de verificação
-- **[Clean Code e SOLID](Clean-Code-e-SOLID)** — 3 práticas com exemplo ruim/bom
-- **[Design Patterns](Design-Patterns)** — Strategy e Repository com diagramas e alternativas
+- **[Clean Code e SOLID](Clean-Code-e-SOLID)** — 3 práticas com ruim/bom nas duas stacks
+- **[Design Patterns](Design-Patterns)** — Strategy e Repository (backend) com diagramas e alternativas
 - **[Git Flow](Git-Flow)** — branches, commits, PR, code review, release, board
+- **[Como Rodar](Como-Rodar)** — subir o projeto, comandos do dia a dia, problemas conhecidos
 
 ### Qualidade
 
@@ -65,8 +72,8 @@ Login inicial: `recepcao@clinica.com` / `admin123`
 ### Processo
 
 - **[Ciclo de Desenvolvimento](Ciclo-de-Desenvolvimento)** — Scrum + Kanban, cerimônias, DoR/DoD, métricas
-- **[Cronograma](Cronograma)** — Gantt, 2 sprints dia a dia, marcos, priorização
-- **[Papéis e Responsabilidades](Papeis-e-Responsabilidades)** — divisão 2/2/2 e entregáveis por pessoa
+- **[Cronograma](Cronograma)** — calendário 31/07 a 10/08, 2 sprints por encontro, marcos, priorização
+- **[Papéis e Responsabilidades](Papeis-e-Responsabilidades)** — equipe de 6 e entregáveis por pessoa
 
 ### Análise e decisões
 
@@ -78,6 +85,7 @@ Login inicial: `recepcao@clinica.com` / `admin123`
 - [ADR-005 — Cadastro de Paciente](ADR-005-Cadastro-de-Paciente)
 - [ADR-006 — Design Patterns](ADR-006-Design-Patterns)
 - [ADR-007 — Vitest](ADR-007-Vitest)
+- [**ADR-008 — Rebaseline de Escopo**](ADR-008-Rebaseline-de-Escopo)
 
 ---
 
@@ -90,8 +98,11 @@ consulta médicos e especialidades · vê horários livres · solicita consulta 
 cancela respeitando as 24h
 
 **👩‍💻 Atendente** — cadastra pacientes, médicos, especialidades e a grade de horários ·
-agenda consultas · confirma e finaliza · cancela sem restrição de prazo · cadastra outros
-atendentes
+agenda consultas · confirma e finaliza · cancela sem restrição de prazo
+
+> **Escopo congelado:** 14 User Stories (US-00 a US-13) — as 13 funcionalidades do enunciado
+> mais autenticação. O que ficou de fora está em [Melhorias Futuras](Melhorias-Futuras), com
+> motivo e versão-alvo. Justificativa: [ADR-008](ADR-008-Rebaseline-de-Escopo).
 
 ### Regras de negócio
 
@@ -104,7 +115,7 @@ atendentes
 | RN05 | Sem alocação dupla de médico | RN11 | Senha com hash bcrypt |
 | RN06 | Gestão dos 4 status | RN12 | Autorização por perfil no token |
 | | | RN13 | Expiração do JWT |
-| | | RN14 | Só ATENDENTE cria ATENDENTE |
+| | | RN14 | Sem rota pública de cadastro de atendente |
 | | | RN15 | Regras temporais em `America/Maceio` |
 
 Detalhes em [Requisitos](Requisitos).
@@ -120,12 +131,12 @@ Testes pytest + Vitest · CI GitHub Actions · Docker Compose
 | | Entregue | Exigido |
 |---|---|---|
 | Testes unitários backend | **17** | 5 |
-| Testes unitários frontend | 7 | — |
-| Testes de integração | **15** | — |
+| Testes unitários frontend | **11** | 5 |
+| Testes de integração | **11** | — |
 | Casos de teste funcionais | **14** | 10 |
-| Práticas de Clean Code | **3** | 3 |
-| Design Patterns | **2** | 2 |
-| ADRs | 7 | — |
+| Práticas de Clean Code | **3** por stack | 3 |
+| Design Patterns (backend) | **2** | 2 |
+| ADRs | 8 | — |
 
 ---
 
@@ -146,6 +157,8 @@ cada uma. Os achados mais relevantes:
    [ADR-006](ADR-006-Design-Patterns).
 4. **Nenhuma User Story levava a consulta a CONFIRMADA ou FINALIZADA**, o que deixaria a RN06
    sem cobertura. Resolvido criando a US-13.
+5. **O planejamento inicial inflou para 82 itens** e não cabia no prazo real. Resolvido com um
+   rebaseline documentado — [ADR-008](ADR-008-Rebaseline-de-Escopo).
 
 ---
 

@@ -40,7 +40,7 @@ try {
 
     $paginas = Get-ChildItem -Path $Origem -Filter '*.md' | Where-Object { $_.Name -ne 'README.md' }
     if ($paginas.Count -eq 0) {
-        throw "Nenhuma pagina .md em $Origem. Rode antes: python scripts\gerar-wiki.py"
+        throw "Nenhuma pagina .md em $Origem. Rode antes: .\scripts\gerar-wiki.ps1"
     }
 
     Write-Host "==> Clonando o wiki de $Repo" -ForegroundColor Cyan

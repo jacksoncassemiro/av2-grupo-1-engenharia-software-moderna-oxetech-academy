@@ -18,7 +18,7 @@ permitia por descuido, o sistema bloqueia por constraint.
 
 ## Objetivo do MVP
 
-Entregar, em **2 semanas**, o ciclo completo de agendamento — cadastro, consulta de
+Entregar, até **10/08/2026** (11 dias corridos), o ciclo completo de agendamento — cadastro, consulta de
 disponibilidade, agendamento, cancelamento — para os perfis **Paciente** e **Atendente**,
 com as seis regras de negócio obrigatórias demonstráveis por teste automatizado.
 
@@ -85,7 +85,7 @@ sucesso é **qualidade e rastreabilidade**, não volume de features.
 | Métrica | Meta |
 |---|---|
 | Regras RN01–RN15 com teste automatizado | 100% |
-| Testes unitários no backend | ≥ 5 exigidos · **20 entregues** |
+| Testes unitários por stack | ≥ 5 exigidos · **17 no backend · 11 no frontend** |
 | Casos de teste executados com evidência | 14 |
 | Pipeline de CI verde em `develop` | Sempre |
 | Bugs Críticos ou Altos em aberto no fim da Sprint 2 | 0 |
@@ -97,7 +97,7 @@ sucesso é **qualidade e rastreabilidade**, não volume de features.
 
 | Risco | Impacto | Mitigação |
 |---|---|---|
-| 2 semanas é curto para 15 US | Alto | US-14 e refinamentos marcados como *Desejável*; obrigatórias primeiro |
+| 11 dias corridos é curto | Alto | Escopo reduzido a 14 US pelo [ADR-008](adr/ADR-008-rebaseline-escopo.md); corte por US inteira, nunca pela metade |
 | Equipe com níveis técnicos diferentes | Médio | `CLAUDE.md` + skills em `.claude/skills/` padronizam o "como fazer" |
 | Ambiente diferente em cada máquina | Médio | Docker Compose; job de CI prova que sobe do zero |
 | Conflito de merge no monorepo | Médio | Divisão backend/frontend por pessoa; PRs pequenos |

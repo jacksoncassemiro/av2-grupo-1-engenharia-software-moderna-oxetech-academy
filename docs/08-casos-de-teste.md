@@ -317,33 +317,52 @@ duplicado é criado.
 
 ---
 
-### CT14 — Atendente cadastra outro atendente (RN14)
+### CT14 — Não existe caminho público para virar atendente (RN14)
 
 | | |
 |---|---|
-| **Perfil** | Atendente · **US:** US-15 · **RN:** RN14 · **Prioridade:** Alta |
-| **Pré-condição** | Logado com o atendente do seed |
+| **Perfil** | Sistema · **US:** US-00 · **RN:** RN14, RN12 · **Prioridade:** Alta |
+| **Pré-condição** | Sistema no ar; seed executado; um paciente cadastrado |
+
+> **Nota de escopo.** A *tela* de cadastro de atendente saiu do MVP
+> ([ADR-008](adr/ADR-008-rebaseline-escopo.md), MF02). A **RN14 continua valendo** e este caso
+> passou a testá-la pelo lado que importa: provar que **não existe** forma de um não-atendente
+> obter esse perfil.
 
 **Passos**
 
-1. Acessar *Atendentes → Novo atendente*
-2. Cadastrar `Maria Recepcao` / `maria@clinica.com` / senha
-3. Sair e logar com `maria@clinica.com`
-4. Como paciente, tentar acessar a tela de cadastro de atendente
-5. Sem token, chamar `POST /api/atendente/atendentes`
+1. Abrir `http://localhost:8000/docs` e procurar por qualquer rota pública que crie usuário
+   com perfil `ATENDENTE`
+2. Sem token, chamar `POST /api/auth/vincular-ou-criar` tentando forçar
+   `{"tipo_usuario": "ATENDENTE"}` no corpo
+3. Logado como **paciente**, chamar qualquer rota sob `/api/atendente/*`
+4. Sem token, chamar qualquer rota sob `/api/atendente/*`
+5. Rodar `docker compose exec backend python -m app.seeds.seed` uma segunda vez
 
 **Esperado**
 
-- Passo 2: atendente criado
-- Passo 3: login aceito, painel de atendente
-- Passo 4: **403**
-- Passo 5: **401** — não existe rota pública de cadastro de atendente (RN14)
+- Passo 1: **nenhuma** rota pública cria atendente. As únicas rotas públicas são `login`,
+  `verificar-cpf` e `vincular-ou-criar`
+- Passo 2: o campo é ignorado — o usuário nasce `PACIENTE`. O schema de entrada não expõe
+  `tipo_usuario`
+- Passo 3: **403**
+- Passo 4: **401**
+- Passo 5: seed idempotente — nenhum atendente duplicado ([ADR-004](adr/ADR-004-bootstrap-atendente.md))
 
 ---
 
 ## 3. Casos de teste unitários (automatizados)
 
-`backend/tests/unit/` e `frontend/__tests__/` — executados no CI a cada push.
+Duas suítes independentes, uma por aplicação. Ambas rodam no CI a cada push.
+
+| Stack | Pasta | Ferramenta | Comando | Mínimo exigido | Hoje |
+|---|---|---|---|---|---|
+| Backend | `backend/tests/unit/` | pytest + fakes de repositório | `make test-backend` | 5 | **17** |
+| Frontend | `frontend/__tests__/` | Vitest + Testing Library | `make test-frontend` | 5 | **11** |
+
+Os testes de backend rodam **sem banco** — é o que o padrão Repository torna possível
+([`06-design-patterns.md`](06-design-patterns.md)). Os de frontend usam o `render` de
+`@test-utils`, que já traz o `MantineProvider`.
 
 | ID | Arquivo | Teste | RN |
 |---|---|---|---|
