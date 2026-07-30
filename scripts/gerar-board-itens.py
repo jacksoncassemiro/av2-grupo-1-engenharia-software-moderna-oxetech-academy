@@ -123,11 +123,11 @@ DOD = {
 }
 
 RESP = {
-    "BACKEND": "Antonio",
-    "FRONTEND": "João Vitor / Ronaldo",
+    "BACKEND": "Ronaldo",
+    "FRONTEND": "João Vitor / Antonio",
     "QA": "Jackson / Felipe",
     "INFRA": "Felipe",
-    "DOCS": "Uanderson / Ronaldo",
+    "DOCS": "Uanderson / Antonio",
 }
 
 
