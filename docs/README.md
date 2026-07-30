@@ -31,11 +31,11 @@ Sistema de Gestão de Clínica Médica (MVP) — AV2 Engenharia de Software Mode
 
 | Doc | Conteúdo | Responsável |
 |---|---|---|
-| [03 — Arquitetura](03-arquitetura.md) | **§2 MVC do backend · §3 arquitetura do frontend · §4 contrato entre as duas** | Antonio |
-| [04 — Modelo de dados](04-modelo-de-dados.md) | ER, constraints por regra, migrações, SQL de verificação | Antonio |
-| [05 — Clean Code](05-clean-code.md) | 3 práticas com ruim/bom nas duas stacks + SOLID | Antonio · João Vitor |
-| [06 — Design Patterns](06-design-patterns.md) | Strategy e Repository (backend) com diagramas e alternativas | Antonio |
-| [10 — Git Flow](10-git-flow.md) | Branches, commits, PR, code review, release, board | Antonio |
+| [03 — Arquitetura](03-arquitetura.md) | **§2 MVC do backend · §3 arquitetura do frontend · §4 contrato entre as duas** | Ronaldo |
+| [04 — Modelo de dados](04-modelo-de-dados.md) | ER, constraints por regra, migrações, SQL de verificação | Ronaldo |
+| [05 — Clean Code](05-clean-code.md) | 3 práticas com ruim/bom nas duas stacks + SOLID | Ronaldo · João Vitor |
+| [06 — Design Patterns](06-design-patterns.md) | Strategy e Repository (backend) com diagramas e alternativas | Ronaldo |
+| [10 — Git Flow](10-git-flow.md) | Branches, commits, PR, code review, release, board | Ronaldo |
 | [17 — Como rodar](17-como-rodar.md) | Subir o projeto, comandos do dia a dia, problemas conhecidos | Felipe |
 
 ### Qualidade
@@ -52,7 +52,7 @@ Sistema de Gestão de Clínica Médica (MVP) — AV2 Engenharia de Software Mode
 |---|---|---|
 | [11 — Ciclo de desenvolvimento](11-ciclo-desenvolvimento.md) | Scrum + Kanban, cerimônias, DoR/DoD, métricas, atas | Uanderson |
 | [12 — Cronograma](12-cronograma.md) | Calendário 31/07 a 10/08, 2 sprints por encontro, marcos, priorização | Uanderson |
-| [13 — Papéis](13-papeis-e-responsabilidades.md) | Equipe de 6, entregáveis por pessoa, matriz de avaliação | Ronaldo |
+| [13 — Papéis](13-papeis-e-responsabilidades.md) | Equipe de 6, entregáveis por pessoa, matriz de avaliação | Antonio |
 
 ### Análise
 

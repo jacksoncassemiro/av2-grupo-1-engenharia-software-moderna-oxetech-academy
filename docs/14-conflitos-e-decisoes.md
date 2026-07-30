@@ -252,12 +252,12 @@ testável fica em Client Components e em funções puras de `src/lib/`. → **AD
 pessoas**: 1 PO + 3 Engenharia + 2 QA.
 
 A leitura "2 para cada" é atendida pela coluna **Apoio** de
-[`13-papeis-e-responsabilidades.md`](13-papeis-e-responsabilidades.md): **Ronaldo atua como PO
+[`13-papeis-e-responsabilidades.md`](13-papeis-e-responsabilidades.md): **Antonio atua como PO
 de apoio** nos itens de processo (cerimônias e slides), enquanto Uanderson mantém a propriedade
 do backlog. Assim há dois nomes em cada papel sem inflar o escopo de ninguém.
 
 Os entregáveis que eram de Jonatha (arquitetura MVC, Clean Code e Design Patterns) foram para
-**Antonio**, que passa a ser dono do backend e do domínio por inteiro. Clean Code e testes
+**Ronaldo**, que passa a ser dono do backend e do domínio por inteiro. Clean Code e testes
 unitários **do frontend** ficaram com João Vitor — são práticas de outra stack, e concentrá-las
 numa pessoa só não faria sentido. Registrado no
 [ADR-008](adr/ADR-008-rebaseline-escopo.md).

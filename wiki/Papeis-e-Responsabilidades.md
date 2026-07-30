@@ -11,7 +11,7 @@
 > **Nota sobre o enunciado.** O enunciado sugere *"2 para cada"* papel. A equipe tem
 > **1 PO, 3 Engenharia e 2 QA**. Isso não é problema desde que **todo entregável tenha um
 > responsável nomeado** — é o que esta página faz. Se o avaliador cobrar a divisão 2/2/2, a
-> resposta é a coluna "Apoio": **Ronaldo atua como PO de apoio** nos itens de processo
+> resposta é a coluna "Apoio": **Antonio atua como PO de apoio** nos itens de processo
 > (cerimônias e slides), o que dá dois nomes em cada papel sem inflar o escopo de ninguém.
 
 Combinado com o grupo: os papéis definem **responsabilidade pela entrega**, não fronteira
@@ -25,9 +25,9 @@ continue sendo quem está na tabela, para não haver dúvida na avaliação.
 | # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
 | 1 | Escrita e documentação | **Uanderson** | — | `docs/00`, `docs/01`, `docs/02`, Wiki |
-| 2 | Ciclo de desenvolvimento | **Uanderson** | Ronaldo | `docs/11-ciclo-desenvolvimento.md` |
+| 2 | Ciclo de desenvolvimento | **Uanderson** | Antonio | `docs/11-ciclo-desenvolvimento.md` |
 | 3 | Verificar critérios de aceite | **Uanderson** | — | Board (coluna UAT) + ata da Review |
-| 4 | Material de apresentação (slides) | **Ronaldo** | Uanderson | `docs/apresentacao/` |
+| 4 | Material de apresentação (slides) | **Antonio** | Uanderson | `docs/apresentacao/` |
 
 **Uanderson — backlog e validação**
 
@@ -43,7 +43,7 @@ continue sendo quem está na tabela, para não haver dúvida na avaliação.
   rejeitar. Rejeição volta ao board com o motivo escrito.
 - Manter a Wiki sincronizada com `docs/` (`.\scripts\gerar-wiki.ps1`, ou `python3 scripts/gerar-wiki.py`).
 
-**Ronaldo — cerimônias e apresentação (PO de apoio)**
+**Antonio — cerimônias e apresentação (PO de apoio)**
 
 - Conduzir Planning, sincronizações, Review e Retrospectiva; registrar atas em
   [`11`](Ciclo-de-Desenvolvimento) §9.
@@ -52,21 +52,21 @@ continue sendo quem está na tabela, para não haver dúvida na avaliação.
 
 ---
 
-## 💻 Engenharia — Antonio, João Vitor, Ronaldo
+## 💻 Engenharia — Ronaldo, João Vitor, Antonio
 
 Os 5 entregáveis de engenharia entre 3 pessoas. Cada um é **dono** de um pedaço verificável,
 e não há dois donos para a mesma coisa.
 
 | # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
-| 1 | Estratégia de entrega — Git Flow e repositório | **Antonio** | Felipe | `docs/10-git-flow.md`, branch protection |
-| 2 | Arquitetura MVC desenvolvida e documentada | **Antonio** | João Vitor | `docs/03-arquitetura.md` §2 + `backend/app/` |
-| 3 | 3 práticas de Clean Code | **Antonio** (backend) · **João Vitor** (frontend) | Ronaldo | `docs/05-clean-code.md` + código |
-| 4 | 2 padrões de projeto | **Antonio** | João Vitor | `docs/06-design-patterns.md` + `backend/app/` |
-| 5 | 5 testes unitários por stack | **Antonio** (pytest) · **João Vitor** (Vitest) | Ronaldo | `backend/tests/unit/` · `frontend/__tests__/` |
+| 1 | Estratégia de entrega — Git Flow e repositório | **Ronaldo** | Felipe | `docs/10-git-flow.md`, branch protection |
+| 2 | Arquitetura MVC desenvolvida e documentada | **Ronaldo** | João Vitor | `docs/03-arquitetura.md` §2 + `backend/app/` |
+| 3 | 3 práticas de Clean Code | **Ronaldo** (backend) · **João Vitor** (frontend) | Antonio | `docs/05-clean-code.md` + código |
+| 4 | 2 padrões de projeto | **Ronaldo** | João Vitor | `docs/06-design-patterns.md` + `backend/app/` |
+| 5 | 5 testes unitários por stack | **Ronaldo** (pytest) · **João Vitor** (Vitest) | Antonio | `backend/tests/unit/` · `frontend/__tests__/` |
 
 > **Redistribuição após a saída de Jonatha.** Ele era o responsável nomeado pelos entregáveis
-> 2, 3 e 4. **Antonio assume o backend e o domínio por inteiro** — arquitetura MVC, Clean Code
+> 2, 3 e 4. **Ronaldo assume o backend e o domínio por inteiro** — arquitetura MVC, Clean Code
 > do backend e os dois Design Patterns. Clean Code e testes unitários do frontend ficam com
 > João Vitor, já que são práticas de outra stack e não fazem sentido concentradas numa pessoa
 > só. Decisão registrada no [ADR-008](ADR-008-Rebaseline-de-Escopo).
@@ -75,9 +75,9 @@ Divisão do trabalho de código:
 
 | Pessoa | Frente | Escopo |
 |---|---|---|
-| **Antonio** | Backend inteiro | Models, migrações, Services, Strategy, Repository, auth, autorização por perfil, seed. Dono dos conceitos avaliados no backend (MVC, Clean Code, Patterns). Git Flow e branch protection. |
+| **Ronaldo** | Backend inteiro | Models, migrações, Services, Strategy, Repository, auth, autorização por perfil, seed. Dono dos conceitos avaliados no backend (MVC, Clean Code, Patterns). Git Flow e branch protection. |
 | **João Vitor** | Frontend — paciente | Telas do paciente (login, primeiro acesso, agendar, minhas consultas, meus dados), guardas de rota, testes Vitest, Clean Code do frontend. |
-| **Ronaldo** | Frontend — atendente + processo | Telas do atendente (especialidades, médicos, pacientes, agenda, consultas), `src/lib/api.ts`, componentes compartilhados; cerimônias e slides como PO de apoio. |
+| **Antonio** | Frontend — atendente + processo | Telas do atendente (especialidades, médicos, pacientes, agenda, consultas), `src/lib/api.ts`, componentes compartilhados; cerimônias e slides como PO de apoio. |
 
 Regras para todos:
 
@@ -100,7 +100,7 @@ Regras para todos:
 | 1 | Plano de testes | **Jackson** | Felipe | `docs/07-plano-de-testes.md` |
 | 2 | 10 casos de teste (14 entregues) | **Jackson** | Felipe | `docs/08-casos-de-teste.md` |
 | 3 | Testes exploratórios com evidências | **Felipe** | Jackson | `docs/07` §6 + `docs/evidencias/` |
-| 4 | CI no GitHub Actions | **Felipe** | Antonio | `.github/workflows/ci.yml` |
+| 4 | CI no GitHub Actions | **Felipe** | Ronaldo | `.github/workflows/ci.yml` |
 
 **Jackson — plano e casos de teste**
 
@@ -166,17 +166,17 @@ Regras para todos:
 | PO: escrita e documentação | Uanderson | `docs/00`, `01`, `02` + Wiki | ✅ estrutura pronta |
 | PO: ciclo de desenvolvimento | Uanderson | `docs/11` | ✅ |
 | PO: verificar critérios de aceite | Uanderson | Board (UAT) + ata da Review | ⬜ durante as sprints |
-| PO: material de slide | Ronaldo | `docs/apresentacao/` | ⬜ 09/08 |
-| ENG: Git Flow e repositório | Antonio | `docs/10` + branch protection | ✅ documentado |
-| ENG: arquitetura MVC documentada | Antonio | `docs/03` §2 + `backend/app/` | ✅ |
-| ENG: 3 práticas de Clean Code | Antonio (back) · João Vitor (front) | `docs/05` | ✅ backend · ⬜ frontend |
-| ENG: 2 padrões de projeto | Antonio | `docs/06` + [ADR-006](ADR-006-Design-Patterns) | ✅ |
-| ENG: 5 testes unitários por stack | Antonio · João Vitor | `backend/tests/unit/` · `frontend/__tests__/` | ✅ backend · ⬜ frontend |
+| PO: material de slide | Antonio | `docs/apresentacao/` | ⬜ 09/08 |
+| ENG: Git Flow e repositório | Ronaldo | `docs/10` + branch protection | ✅ documentado |
+| ENG: arquitetura MVC documentada | Ronaldo | `docs/03` §2 + `backend/app/` | ✅ |
+| ENG: 3 práticas de Clean Code | Ronaldo (back) · João Vitor (front) | `docs/05` | ✅ backend · ⬜ frontend |
+| ENG: 2 padrões de projeto | Ronaldo | `docs/06` + [ADR-006](ADR-006-Design-Patterns) | ✅ |
+| ENG: 5 testes unitários por stack | Ronaldo · João Vitor | `backend/tests/unit/` · `frontend/__tests__/` | ✅ backend · ⬜ frontend |
 | QA: plano de testes | Jackson | `docs/07` | ✅ |
 | QA: 10 casos de teste | Jackson | `docs/08` | ✅ **14 escritos** |
 | QA: exploratório + evidências | Felipe | `docs/07` §6 + `docs/evidencias/` | ⬜ durante as sprints |
 | QA: CI no GitHub Actions | Felipe | `.github/workflows/ci.yml` | ✅ |
-| Quadro Kanban | Ronaldo | [GitHub Projects](https://github.com/users/jacksoncassemiro/projects/3) | ⬜ recriar com `scripts/popular-board` |
+| Quadro Kanban | Antonio | [GitHub Projects](https://github.com/users/jacksoncassemiro/projects/3) | ⬜ recriar com `scripts/popular-board` |
 | Cronograma | Uanderson | `docs/12-cronograma.md` | ✅ |
 
 

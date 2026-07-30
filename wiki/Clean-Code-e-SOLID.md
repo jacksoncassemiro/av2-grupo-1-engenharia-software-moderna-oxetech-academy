@@ -13,9 +13,9 @@ código e documentadas com exemplo ruim/bom. Base: *Módulo 2 — Clean Code e S
 
 | Prática | Responsável no backend | Responsável no frontend |
 |---|---|---|
-| 1. Nomes significativos | Antonio | João Vitor |
-| 2. Funções pequenas com responsabilidade única | Antonio | João Vitor |
-| 3. Exceções tipadas em vez de códigos de erro | Antonio | João Vitor |
+| 1. Nomes significativos | Ronaldo | João Vitor |
+| 2. Funções pequenas com responsabilidade única | Ronaldo | João Vitor |
+| 3. Exceções tipadas em vez de códigos de erro | Ronaldo | João Vitor |
 
 ---
 

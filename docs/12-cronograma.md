@@ -71,7 +71,7 @@ especialidade, médico, paciente e a agenda de horários.*
 **Casos de teste:** CT01, CT02, CT03, CT04, CT08, CT13, CT14
 **Sessão exploratória:** EXP-01 (cadastros)
 
-| Encontro | Uanderson (PO) | Antonio (Backend) | João Vitor (Frontend) | Ronaldo (Frontend + processo) | Jackson (QA) | Felipe (QA/CI) |
+| Encontro | Uanderson (PO) | Ronaldo (Backend) | João Vitor (Frontend) | Antonio (Frontend + processo) | Jackson (QA) | Felipe (QA/CI) |
 |---|---|---|---|---|---|---|
 | **31/07 sex** — Kickoff | Apresentar rebaseline; validar backlog cortado | Rodar ambiente; revisar migração inicial | Rodar ambiente; `AppShell`, tema, layout | Rodar ambiente; `lib/api.ts` e componentes base | Revisar plano de testes com o escopo novo | Validar CI e ativar branch protection |
 | **01/08 sáb** | Refinar critérios de US-01/02/03 | US-00 backend: revisar auth pronta e cobrir lacunas | US-00 frontend: tela de login | US-00 frontend: primeiro acesso | Escrever CT01–CT04 | Escrever CT08, CT13, CT14 |
@@ -79,7 +79,7 @@ especialidade, médico, paciente e a agenda de horários.*
 | **05/08 qua** — Review 1 | **Validar critérios de aceite**; conduzir Retro | US-03 + US-05 backend (RN01, RN02, RN05, RN09) + testes unitários | US-02 frontend: médicos | US-03 frontend: pacientes | Executar CT01–CT03, CT08, CT13 | Executar CT14; consolidar evidências |
 
 **Risco principal:** US-00 bloqueia todo o resto. O backend dela **já existe** — se algo atrasar,
-será o frontend. Mitigação: João Vitor e Ronaldo atacam login e primeiro acesso em paralelo já
+será o frontend. Mitigação: João Vitor e Antonio atacam login e primeiro acesso em paralelo já
 no primeiro dia.
 
 ---
@@ -95,7 +95,7 @@ finaliza — com evidência de teste e release marcada.*
 **Casos de teste:** CT05, CT06, CT07, CT09, CT10, CT11, CT12
 **Sessões exploratórias:** EXP-02 (agendamento e concorrência), EXP-03 (cancelamento e 24h)
 
-| Encontro | Uanderson (PO) | Antonio (Backend) | João Vitor (Frontend) | Ronaldo (Frontend + processo) | Jackson (QA) | Felipe (QA/CI) |
+| Encontro | Uanderson (PO) | Ronaldo (Backend) | João Vitor (Frontend) | Antonio (Frontend + processo) | Jackson (QA) | Felipe (QA/CI) |
 |---|---|---|---|---|---|---|
 | **05/08 qua** — Planning 2 | Repriorizar carryover; travar ordem de corte | US-06 + US-07 backend (RN03) | Filtro de médicos por especialidade | Grade de horários livres | Revisar matriz de cobertura | Ajustar CI se necessário |
 | **07/08 sex** — Congelamento | Validar US-06/07/08; **congelar escopo** | US-08 (`FOR UPDATE`) + US-09 backend | Fluxo de agendamento do paciente | Tela de agendamento do atendente | Executar CT05 | EXP-02 (concorrência) |
