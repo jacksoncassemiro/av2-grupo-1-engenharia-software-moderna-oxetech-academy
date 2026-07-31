@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference UI — Clínica Médica MVP</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div style="min-height:100vh; background: linear-gradient(135deg, var(--clinica-0) 0%, #fff 50%, var(--clinica-0) 100%); padding: 48px 24px;">
+    <div class="container">
+      <!-- Header -->
+      <div class="text-center mb-xl">
+        <div style="display:inline-flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="width:56px;height:56px;background:var(--color-primary);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.75rem;font-weight:700;">🏥</div>
+          <div style="text-align:left">
+            <div style="font-size:1.75rem;font-weight:700;color:var(--gray-9)">Clínica Médica — MVP</div>
+            <div style="font-size:0.875rem;color:var(--gray-6)">Frontend Estático de Referência</div>
+          </div>
+        </div>
+        <p style="max-width:640px;margin:0 auto;color:var(--gray-6);font-size:0.9375rem;line-height:1.6">
+          Protótipo visual com HTML puro + CSS inspirado no Mantine v9, usando dados estáticos.
+          Serve de <strong>guia de referência</strong> para os desenvolvedores construírem os componentes React reais.
+        </p>
+      </div>
+
+      <!-- Legenda -->
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;">
+        <span class="badge badge-primary" style="font-size:.75rem">🔓 Público</span>
+        <span class="badge" style="background:#e7f5ff;color:#1971c2;font-size:.75rem">👤 Paciente</span>
+        <span class="badge" style="background:#fff4e6;color:#e8590c;font-size:.75rem">👩‍💻 Atendente</span>
+      </div>
+
+      <!-- Telas Públicas -->
+      <h2 style="font-size:1.125rem;margin-bottom:12px;color:var(--gray-8)">🔓 Telas Públicas</h2>
+      <div class="index-grid mb-xl">
+        <a href="login.html" class="index-card">
+          <div class="index-card-icon" style="background:var(--clinica-0);color:var(--clinica-7)">🔑</div>
+          <div class="index-card-content">
+            <h3>Login</h3>
+            <p>Campo único "CPF ou E-mail" com máscara dinâmica, campo de senha e redirecionamento por perfil.</p>
+            <div class="index-card-us">
+              <span class="pill">US-00</span>
+            </div>
+          </div>
+        </a>
+        <a href="primeiro-acesso.html" class="index-card">
+          <div class="index-card-icon" style="background:var(--clinica-0);color:var(--clinica-7)">✨</div>
+          <div class="index-card-content">
+            <h3>Primeiro Acesso</h3>
+            <p>Duas etapas: verifica CPF → formulário condicional (ativar login ou auto-cadastro completo).</p>
+            <div class="index-card-us">
+              <span class="pill">US-00</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Telas do Paciente -->
+      <h2 style="font-size:1.125rem;margin-bottom:12px;color:var(--gray-8)">👤 Telas do Paciente</h2>
+      <div class="index-grid mb-xl">
+        <a href="paciente-dashboard.html" class="index-card">
+          <div class="index-card-icon" style="background:#e7f5ff;color:#1971c2">📊</div>
+          <div class="index-card-content">
+            <h3>Dashboard do Paciente</h3>
+            <p>Painel inicial com resumo de consultas, próximos agendamentos e ações rápidas.</p>
+            <div class="index-card-us">
+              <span class="pill">Base</span>
+            </div>
+          </div>
+        </a>
+        <a href="paciente-meus-dados.html" class="index-card">
+          <div class="index-card-icon" style="background:#e7f5ff;color:#1971c2">👤</div>
+          <div class="index-card-content">
+            <h3>Meus Dados</h3>
+            <p>Perfil do paciente com CPF em modo leitura. Pode editar nome, telefone e e-mail.</p>
+            <div class="index-card-us">
+              <span class="pill">US-04</span>
+            </div>
+          </div>
+        </a>
+        <a href="paciente-medicos.html" class="index-card">
+          <div class="index-card-icon" style="background:#e7f5ff;color:#1971c2">🩺</div>
+          <div class="index-card-content">
+            <h3>Busca de Médicos</h3>
+            <p>Lista de médicos com filtro por especialidade. Cards com nome, CRM e especialidade.</p>
+            <div class="index-card-us">
+              <span class="pill">US-06</span>
+            </div>
+          </div>
+        </a>
+        <a href="paciente-agendar.html" class="index-card">
+          <div class="index-card-icon" style="background:#e7f5ff;color:#1971c2">📅</div>
+          <div class="index-card-content">
+            <h3>Agendar Consulta</h3>
+            <p>Fluxo em etapas: escolher médico → selecionar data → horário livre → confirmar.</p>
+            <div class="index-card-us">
+              <span class="pill">US-07</span>
+              <span class="pill">US-08</span>
+            </div>
+          </div>
+        </a>
+        <a href="paciente-consultas.html" class="index-card">
+          <div class="index-card-icon" style="background:#e7f5ff;color:#1971c2">📋</div>
+          <div class="index-card-content">
+            <h3>Minhas Consultas</h3>
+            <p>Histórico com badges de status (SOLICITADA, CONFIRMADA, CANCELADA, FINALIZADA) e ação de cancelar.</p>
+            <div class="index-card-us">
+              <span class="pill">US-10</span>
+              <span class="pill">US-11</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Telas do Atendente -->
+      <h2 style="font-size:1.125rem;margin-bottom:12px;color:var(--gray-8)">👩‍💻 Telas do Atendente</h2>
+      <div class="index-grid mb-xl">
+        <a href="atendente-dashboard.html" class="index-card">
+          <div class="index-card-icon" style="background:#fff4e6;color:#e8590c">📊</div>
+          <div class="index-card-content">
+            <h3>Dashboard do Atendente</h3>
+            <p>Painel com estatísticas gerais: pacientes, médicos, consultas do dia e pendentes.</p>
+            <div class="index-card-us">
+              <span class="pill">Base</span>
+            </div>
+          </div>
+        </a>
+        <a href="atendente-especialidades.html" class="index-card">
+          <div class="index-card-icon" style="background:#fff4e6;color:#e8590c">🏷️</div>
+          <div class="index-card-content">
+            <h3>Especialidades</h3>
+            <p>Cadastro e listagem de especialidades médicas com formulário inline.</p>
+            <div class="index-card-us">
+              <span class="pill">US-01</span>
+            </div>
+          </div>
+        </a>
+        <a href="atendente-medicos.html" class="index-card">
+          <div class="index-card-icon" style="background:#fff4e6;color:#e8590c">🩺</div>
+          <div class="index-card-content">
+            <h3>Cadastro de Médicos</h3>
+            <p>Formulário com Select de especialidade, validação de CRM e e-mail únicos.</p>
+            <div class="index-card-us">
+              <span class="pill">US-02</span>
+            </div>
+          </div>
+        </a>
+        <a href="atendente-pacientes.html" class="index-card">
+          <div class="index-card-icon" style="background:#fff4e6;color:#e8590c">🧑‍🤝‍🧑</div>
+          <div class="index-card-content">
+            <h3>Cadastro de Pacientes</h3>
+            <p>Formulário com máscara de CPF, validação por dígitos verificadores, e-mail opcional.</p>
+            <div class="index-card-us">
+              <span class="pill">US-03</span>
+            </div>
+          </div>
+        </a>
+        <a href="atendente-agenda.html" class="index-card">
+          <div class="index-card-icon" style="background:#fff4e6;color:#e8590c">🕐</div>
+          <div class="index-card-content">
+            <h3>Agenda de Horários</h3>
+            <p>Cadastro da grade horária por médico: selecionar data e adicionar horários disponíveis.</p>
+            <div class="index-card-us">
+              <span class="pill">US-05</span>
+            </div>
+          </div>
+        </a>
+        <a href="atendente-consultas.html" class="index-card">
+          <div class="index-card-icon" style="background:#fff4e6;color:#e8590c">📑</div>
+          <div class="index-card-content">
+            <h3>Gestão de Consultas</h3>
+            <p>Lista de todas as consultas com ações de confirmar, finalizar e cancelar. Filtro por status.</p>
+            <div class="index-card-us">
+              <span class="pill">US-09</span>
+              <span class="pill">US-12</span>
+              <span class="pill">US-13</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Footer -->
+      <div class="divider"></div>
+      <div class="text-center" style="padding:24px 0;">
+        <p class="text-sm text-dimmed">
+          AV2 — Engenharia de Software Moderna · Oxetech Academy · Equipe 01<br>
+          Stack: Next.js (App Router) + React + TypeScript + Mantine v9
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

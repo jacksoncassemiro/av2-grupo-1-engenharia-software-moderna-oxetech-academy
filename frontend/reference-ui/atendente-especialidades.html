@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Especialidades — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-01: Gestão de especialidades -->
+  <!-- CA1: cadastrar; CA2: duplicata; CA3: paciente vê apenas ativas -->
+
+  <div class="app-shell">
+    <!-- Sidebar Atendente -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Atendente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Início</a>
+        <a href="atendente-consultas.html" class="nav-link"><span class="nav-icon">📑</span> Consultas</a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-pacientes.html" class="nav-link"><span class="nav-icon">🧑‍🤝‍🧑</span> Pacientes</a>
+        <a href="atendente-medicos.html" class="nav-link"><span class="nav-icon">🩺</span> Médicos</a>
+        <a href="atendente-especialidades.html" class="nav-link active"><span class="nav-icon">🏷️</span> Especialidades</a>
+        <a href="atendente-agenda.html" class="nav-link"><span class="nav-icon">🕐</span> Agenda</a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);"><span class="nav-icon">🚪</span> Sair</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Atendente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar" style="background:#e8590c;">MR</div>
+          <div class="user-info">
+            <div class="user-name">Maria da Recepção</div>
+            <div class="user-role">Atendente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1>Especialidades</h1>
+          <p>Gerencie as especialidades médicas oferecidas pela clínica.</p>
+        </div>
+
+        <!-- Formulário de cadastro -->
+        <div class="card mb-lg">
+          <h3 style="font-size:1rem;margin-bottom:16px;">Cadastrar nova especialidade</h3>
+          <form onsubmit="return false">
+            <div class="flex gap-md items-end flex-wrap">
+              <div class="input-wrapper" style="flex:1;min-width:250px;">
+                <label class="input-label input-required" for="nome-espec">Nome da especialidade</label>
+                <input id="nome-espec" class="input" type="text" placeholder="Ex: Cardiologia">
+              </div>
+              <div class="input-wrapper" style="flex:1;min-width:250px;">
+                <label class="input-label" for="desc-espec">Descrição <span class="text-xs text-dimmed">(opcional)</span></label>
+                <input id="desc-espec" class="input" type="text" placeholder="Breve descrição da especialidade">
+              </div>
+              <button class="btn btn-primary" type="submit" style="margin-bottom:4px;">
+                + Cadastrar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Notification de sucesso -->
+        <div class="notification notification-success">
+          <span>✅</span>
+          <div>
+            <div class="notification-title">Especialidade cadastrada</div>
+            <div class="notification-body">Cardiologia foi adicionada com sucesso.</div>
+          </div>
+        </div>
+
+        <!-- Listagem -->
+        <div class="card">
+          <div class="action-bar">
+            <h3 style="font-size:1rem;">Especialidades cadastradas</h3>
+            <span class="badge badge-gray">3 ativas</span>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>Médicos vinculados</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-dimmed">1</td>
+                  <td><strong>Cardiologia</strong></td>
+                  <td class="text-dimmed">Doenças do coração e sistema cardiovascular</td>
+                  <td>
+                    <span class="pill">Dr. Ricardo Silva</span>
+                  </td>
+                  <td><span class="badge badge-confirmada">Ativa</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">2</td>
+                  <td><strong>Pediatria</strong></td>
+                  <td class="text-dimmed">Saúde de crianças e adolescentes</td>
+                  <td>
+                    <span class="pill">Dra. Mariana Souza</span>
+                  </td>
+                  <td><span class="badge badge-confirmada">Ativa</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">3</td>
+                  <td><strong>Dermatologia</strong></td>
+                  <td class="text-dimmed">Pele, cabelo e unhas</td>
+                  <td>
+                    <span class="pill">Dr. André Lima</span>
+                  </td>
+                  <td><span class="badge badge-confirmada">Ativa</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Referência: Erro de duplicata (CA2) -->
+        <div class="card mt-xl" style="border: 1px dashed var(--gray-3);">
+          <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Referência: Especialidade duplicada (CA2)</h4>
+          <div class="flex gap-md items-end flex-wrap">
+            <div class="input-wrapper" style="flex:1;">
+              <label class="input-label input-required">Nome da especialidade</label>
+              <input class="input input-error" type="text" value="Cardiologia">
+              <span class="error-message">Especialidade já cadastrada</span>
+            </div>
+            <button class="btn btn-primary disabled" disabled style="margin-bottom:22px;">+ Cadastrar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>

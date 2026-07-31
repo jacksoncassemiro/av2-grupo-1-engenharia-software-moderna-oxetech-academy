@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacientes — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-03: Cadastro de pacientes -->
+  <!-- CA1: nome+CPF+telefone; CA2 (RN01): CPF duplicado; CA3 (RN02): e-mail duplicado -->
+  <!-- CA4: e-mail opcional; CA5: múltiplos NULL; CA6 (RN07): CPF inválido -->
+
+  <div class="app-shell">
+    <!-- Sidebar Atendente -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Atendente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Início</a>
+        <a href="atendente-consultas.html" class="nav-link"><span class="nav-icon">📑</span> Consultas</a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-pacientes.html" class="nav-link active"><span class="nav-icon">🧑‍🤝‍🧑</span> Pacientes</a>
+        <a href="atendente-medicos.html" class="nav-link"><span class="nav-icon">🩺</span> Médicos</a>
+        <a href="atendente-especialidades.html" class="nav-link"><span class="nav-icon">🏷️</span> Especialidades</a>
+        <a href="atendente-agenda.html" class="nav-link"><span class="nav-icon">🕐</span> Agenda</a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);"><span class="nav-icon">🚪</span> Sair</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Atendente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar" style="background:#e8590c;">MR</div>
+          <div class="user-info">
+            <div class="user-name">Maria da Recepção</div>
+            <div class="user-role">Atendente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1>Cadastro de Pacientes</h1>
+          <p>Cadastre pacientes no balcão. O login é ativado pelo próprio paciente no primeiro acesso.</p>
+        </div>
+
+        <!-- Formulário de cadastro -->
+        <div class="card mb-lg">
+          <h3 style="font-size:1rem;margin-bottom:16px;">Cadastrar novo paciente</h3>
+          <form onsubmit="return false">
+            <div class="stack gap-md">
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="nome-pac">Nome completo</label>
+                  <input id="nome-pac" class="input" type="text" placeholder="Nome do paciente">
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="cpf-pac">CPF</label>
+                  <input id="cpf-pac" class="input" type="text" placeholder="000.000.000-00">
+                  <span class="input-description">Validado por dígitos verificadores (RN07)</span>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="tel-pac">Telefone</label>
+                  <input id="tel-pac" class="input" type="tel" placeholder="(82) 99999-0000">
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label" for="email-pac">E-mail <span class="text-xs text-dimmed">(opcional — CA4)</span></label>
+                  <input id="email-pac" class="input" type="email" placeholder="paciente@email.com">
+                </div>
+              </div>
+
+              <div class="input-wrapper" style="max-width:300px;">
+                <label class="input-label" for="nasc-pac">Data de nascimento <span class="text-xs text-dimmed">(opcional)</span></label>
+                <input id="nasc-pac" class="input" type="date">
+              </div>
+
+              <div class="alert alert-info" style="padding:10px 12px;">
+                <span class="alert-icon" style="font-size:1rem;">ℹ️</span>
+                <div class="text-xs">
+                  Este cadastro <strong>não cria credencial de login</strong>. O paciente ativa o acesso usando "Primeiro Acesso" (US-00).
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <button class="btn btn-primary" type="submit">+ Cadastrar paciente</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Listagem -->
+        <div class="card">
+          <div class="action-bar">
+            <h3 style="font-size:1rem;">Pacientes cadastrados</h3>
+            <div class="flex gap-sm items-center">
+              <div class="search-input">
+                <span class="search-icon">🔍</span>
+                <input class="input" type="text" placeholder="Buscar por nome ou CPF...">
+              </div>
+              <span class="badge badge-gray">24 pacientes</span>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Telefone</th>
+                  <th>E-mail</th>
+                  <th>Login</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-dimmed">1</td>
+                  <td><strong>Carlos Silva</strong></td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">529.982.247-25</code></td>
+                  <td>(82) 99123-4567</td>
+                  <td>carlos@email.com</td>
+                  <td><span class="badge badge-confirmada">Ativo</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">2</td>
+                  <td><strong>Ana Souza</strong></td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">123.456.789-09</code></td>
+                  <td>(82) 98765-4321</td>
+                  <td>ana@email.com</td>
+                  <td><span class="badge badge-confirmada">Ativo</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">3</td>
+                  <td><strong>João Santos</strong></td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">987.654.321-00</code></td>
+                  <td>(82) 99876-5432</td>
+                  <td class="text-dimmed">—</td>
+                  <td><span class="badge badge-solicitada">Pendente</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">4</td>
+                  <td><strong>Maria Oliveira</strong></td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">456.789.123-56</code></td>
+                  <td>(82) 99111-2222</td>
+                  <td class="text-dimmed">—</td>
+                  <td><span class="badge badge-solicitada">Pendente</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">5</td>
+                  <td><strong>Pedro Costa</strong></td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">321.654.987-12</code></td>
+                  <td>(82) 99333-4444</td>
+                  <td>pedro@email.com</td>
+                  <td><span class="badge badge-confirmada">Ativo</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Referências de erro -->
+        <div class="grid-3 mt-xl gap-md">
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 CPF duplicado (CA2 / RN01)</h4>
+            <div class="input-wrapper">
+              <label class="input-label input-required">CPF</label>
+              <input class="input input-error" type="text" value="529.982.247-25">
+              <span class="error-message">CPF já cadastrado</span>
+            </div>
+          </div>
+
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 CPF inválido (CA6 / RN07)</h4>
+            <div class="input-wrapper">
+              <label class="input-label input-required">CPF</label>
+              <input class="input input-error" type="text" value="111.111.111-11">
+              <span class="error-message">CPF inválido</span>
+            </div>
+          </div>
+
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 E-mail duplicado (CA3 / RN02)</h4>
+            <div class="input-wrapper">
+              <label class="input-label">E-mail</label>
+              <input class="input input-error" type="email" value="carlos@email.com">
+              <span class="error-message">E-mail em uso</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>

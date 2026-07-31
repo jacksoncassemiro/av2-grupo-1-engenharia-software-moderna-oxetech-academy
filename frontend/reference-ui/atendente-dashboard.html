@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Atendente — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar Atendente -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Atendente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-dashboard.html" class="nav-link active"><span class="nav-icon">📊</span> Início</a>
+        <a href="atendente-consultas.html" class="nav-link"><span class="nav-icon">📑</span> Consultas</a>
+
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-pacientes.html" class="nav-link"><span class="nav-icon">🧑‍🤝‍🧑</span> Pacientes</a>
+        <a href="atendente-medicos.html" class="nav-link"><span class="nav-icon">🩺</span> Médicos</a>
+        <a href="atendente-especialidades.html" class="nav-link"><span class="nav-icon">🏷️</span> Especialidades</a>
+        <a href="atendente-agenda.html" class="nav-link"><span class="nav-icon">🕐</span> Agenda</a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);"><span class="nav-icon">🚪</span> Sair</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Atendente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar" style="background:#e8590c;">MR</div>
+          <div class="user-info">
+            <div class="user-name">Maria da Recepção</div>
+            <div class="user-role">Atendente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1>Olá, Maria! 👋</h1>
+          <p>Visão geral do sistema da Clínica Médica.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid-4 mb-lg">
+          <div class="stat-card">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="stat-label">Pacientes</div>
+                <div class="stat-value">24</div>
+                <div class="stat-diff stat-diff-up text-xs">+3 esta semana</div>
+              </div>
+              <div class="stat-icon" style="background:#e7f5ff;color:#1971c2;">🧑‍🤝‍🧑</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="stat-label">Médicos ativos</div>
+                <div class="stat-value">3</div>
+              </div>
+              <div class="stat-icon" style="background:var(--clinica-0);color:var(--clinica-7);">🩺</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="stat-label">Consultas hoje</div>
+                <div class="stat-value">5</div>
+                <div class="text-xs text-dimmed mt-xs">2 confirmadas · 3 solicitadas</div>
+              </div>
+              <div class="stat-icon" style="background:var(--color-confirmada-bg);color:#0ca678;">📅</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="stat-label">Pendentes de confirmação</div>
+                <div class="stat-value" style="color:var(--color-solicitada);">7</div>
+              </div>
+              <div class="stat-icon" style="background:var(--color-solicitada-bg);color:#e67700;">⏳</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2 gap-lg">
+          <!-- Consultas pendentes -->
+          <div class="card">
+            <div class="flex justify-between items-center mb-md">
+              <h3 style="font-size:1rem;">Consultas pendentes de confirmação</h3>
+              <a href="atendente-consultas.html" class="btn btn-subtle btn-sm">Ver todas →</a>
+            </div>
+            <div class="stack gap-sm">
+              <div class="card" style="padding:12px;border:1px solid var(--gray-2);">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <strong class="text-sm">Carlos Silva</strong>
+                    <div class="text-xs text-dimmed">Dr. Ricardo Silva · Cardiologia</div>
+                    <div class="text-xs text-dimmed">📅 12/08 · 14:00</div>
+                  </div>
+                  <div class="flex gap-xs">
+                    <button class="btn btn-primary btn-xs">Confirmar</button>
+                    <button class="btn btn-danger-outline btn-xs">Recusar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="padding:12px;border:1px solid var(--gray-2);">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <strong class="text-sm">Ana Souza</strong>
+                    <div class="text-xs text-dimmed">Dra. Mariana Souza · Pediatria</div>
+                    <div class="text-xs text-dimmed">📅 13/08 · 10:00</div>
+                  </div>
+                  <div class="flex gap-xs">
+                    <button class="btn btn-primary btn-xs">Confirmar</button>
+                    <button class="btn btn-danger-outline btn-xs">Recusar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="padding:12px;border:1px solid var(--gray-2);">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <strong class="text-sm">João Santos</strong>
+                    <div class="text-xs text-dimmed">Dr. André Lima · Dermatologia</div>
+                    <div class="text-xs text-dimmed">📅 14/08 · 11:00</div>
+                  </div>
+                  <div class="flex gap-xs">
+                    <button class="btn btn-primary btn-xs">Confirmar</button>
+                    <button class="btn btn-danger-outline btn-xs">Recusar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ações rápidas -->
+          <div class="card">
+            <h3 style="font-size:1rem;margin-bottom:16px;">Ações rápidas</h3>
+            <div class="stack gap-sm">
+              <a href="atendente-consultas.html" class="btn btn-primary btn-full" style="justify-content:flex-start;padding:14px 16px;">
+                <span>📑</span> Agendar consulta para paciente
+              </a>
+              <a href="atendente-pacientes.html" class="btn btn-light btn-full" style="justify-content:flex-start;padding:14px 16px;">
+                <span>🧑‍🤝‍🧑</span> Cadastrar paciente
+              </a>
+              <a href="atendente-medicos.html" class="btn btn-light btn-full" style="justify-content:flex-start;padding:14px 16px;">
+                <span>🩺</span> Cadastrar médico
+              </a>
+              <a href="atendente-especialidades.html" class="btn btn-light btn-full" style="justify-content:flex-start;padding:14px 16px;">
+                <span>🏷️</span> Cadastrar especialidade
+              </a>
+              <a href="atendente-agenda.html" class="btn btn-light btn-full" style="justify-content:flex-start;padding:14px 16px;">
+                <span>🕐</span> Gerenciar agenda
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Consultas do dia -->
+        <div class="card mt-lg">
+          <h3 style="font-size:1rem;margin-bottom:16px;">Agenda do dia — 31/07/2026</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Horário</th>
+                  <th>Paciente</th>
+                  <th>Médico</th>
+                  <th>Especialidade</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>09:00</strong></td>
+                  <td>Carlos Silva</td>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">Finalizar</button>
+                      <button class="btn btn-danger-outline btn-xs">Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>10:00</strong></td>
+                  <td>Ana Souza</td>
+                  <td>Dra. Mariana Souza</td>
+                  <td>Pediatria</td>
+                  <td><span class="badge badge-solicitada badge-dot">Solicitada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">Confirmar</button>
+                      <button class="btn btn-danger-outline btn-xs">Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>11:00</strong></td>
+                  <td>João Santos</td>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">Finalizar</button>
+                      <button class="btn btn-danger-outline btn-xs">Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>14:00</strong></td>
+                  <td>Maria Oliveira</td>
+                  <td>Dr. André Lima</td>
+                  <td>Dermatologia</td>
+                  <td><span class="badge badge-finalizada badge-dot">Finalizada</span></td>
+                  <td><span class="text-xs text-dimmed">—</span></td>
+                </tr>
+                <tr>
+                  <td><strong>15:00</strong></td>
+                  <td>Pedro Costa</td>
+                  <td>Dr. André Lima</td>
+                  <td>Dermatologia</td>
+                  <td><span class="badge badge-cancelada badge-dot">Cancelada</span></td>
+                  <td><span class="text-xs text-dimmed">—</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>

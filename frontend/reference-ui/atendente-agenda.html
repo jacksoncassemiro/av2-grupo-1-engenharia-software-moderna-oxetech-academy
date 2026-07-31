@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-05: Cadastro de agenda e horários disponíveis -->
+  <!-- CA1: múltiplos horários por data; CA2 (RN05): horário duplicado; CA3 (RN09): fora do comercial; CA4: médico inexistente -->
+
+  <div class="app-shell">
+    <!-- Sidebar Atendente -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Atendente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Início</a>
+        <a href="atendente-consultas.html" class="nav-link"><span class="nav-icon">📑</span> Consultas</a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-pacientes.html" class="nav-link"><span class="nav-icon">🧑‍🤝‍🧑</span> Pacientes</a>
+        <a href="atendente-medicos.html" class="nav-link"><span class="nav-icon">🩺</span> Médicos</a>
+        <a href="atendente-especialidades.html" class="nav-link"><span class="nav-icon">🏷️</span> Especialidades</a>
+        <a href="atendente-agenda.html" class="nav-link active"><span class="nav-icon">🕐</span> Agenda</a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);"><span class="nav-icon">🚪</span> Sair</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Atendente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar" style="background:#e8590c;">MR</div>
+          <div class="user-info">
+            <div class="user-name">Maria da Recepção</div>
+            <div class="user-role">Atendente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1>Agenda de Horários</h1>
+          <p>Cadastre a grade horária de atendimento dos médicos da clínica.</p>
+        </div>
+
+        <div class="grid-2 gap-lg">
+          <!-- Coluna esquerda: Seleção e cadastro -->
+          <div class="stack gap-md">
+            <!-- Selecionar médico -->
+            <div class="card">
+              <h3 style="font-size:1rem;margin-bottom:16px;">1. Selecionar médico</h3>
+              <div class="input-wrapper">
+                <label class="input-label input-required" for="medico-agenda">Médico</label>
+                <select id="medico-agenda" class="select">
+                  <option value="">Selecione o médico</option>
+                  <option value="1" selected>Dr. Ricardo Silva — Cardiologia</option>
+                  <option value="2">Dra. Mariana Souza — Pediatria</option>
+                  <option value="3">Dr. André Lima — Dermatologia</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Selecionar data -->
+            <div class="card">
+              <h3 style="font-size:1rem;margin-bottom:16px;">2. Selecionar data</h3>
+              <div class="input-wrapper">
+                <label class="input-label input-required" for="data-agenda">Data</label>
+                <input id="data-agenda" class="input" type="date" value="2026-08-10">
+              </div>
+            </div>
+
+            <!-- Adicionar horários -->
+            <div class="card">
+              <h3 style="font-size:1rem;margin-bottom:16px;">3. Adicionar horários</h3>
+              <p class="text-sm text-dimmed mb-md">
+                Selecione os horários para abrir na agenda. Horário comercial: <strong>08:00 às 18:00</strong> (RN09).
+              </p>
+
+              <!-- Grade de horários clicáveis -->
+              <div class="slot-grid">
+                <div class="slot selected">08:00</div>
+                <div class="slot selected">09:00</div>
+                <div class="slot selected">10:00</div>
+                <div class="slot selected">11:00</div>
+                <div class="slot">12:00</div>
+                <div class="slot">13:00</div>
+                <div class="slot selected">14:00</div>
+                <div class="slot selected">15:00</div>
+                <div class="slot">16:00</div>
+                <div class="slot">17:00</div>
+              </div>
+
+              <div class="flex items-center gap-md mt-md" style="font-size:.75rem;color:var(--gray-5);">
+                <div class="flex items-center gap-xs">
+                  <div style="width:12px;height:12px;background:var(--color-primary);border-radius:3px;"></div>
+                  Selecionado (6)
+                </div>
+                <div class="flex items-center gap-xs">
+                  <div style="width:12px;height:12px;border:1px solid var(--gray-3);border-radius:3px;"></div>
+                  Disponível
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-dimmed"><strong>6</strong> horários selecionados</span>
+                <button class="btn btn-primary">Salvar grade</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna direita: Grade existente -->
+          <div>
+            <div class="card" style="position:sticky;top:84px;">
+              <div class="flex justify-between items-center mb-md">
+                <h3 style="font-size:1rem;">Grade existente</h3>
+                <span class="badge badge-primary">Dr. Ricardo Silva</span>
+              </div>
+
+              <!-- Agenda da semana (resumo) -->
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Horários</th>
+                      <th>Livres</th>
+                      <th>Ocupados</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>10/08 (seg)</strong></td>
+                      <td>
+                        <div class="chip-group">
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">09:00</span>
+                          <span class="chip disabled" style="padding:2px 8px;font-size:.7rem;">10:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">11:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">14:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">15:00</span>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-confirmada">4</span></td>
+                      <td><span class="badge badge-cancelada">1</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>11/08 (ter)</strong></td>
+                      <td>
+                        <div class="chip-group">
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">08:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">09:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">10:00</span>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-confirmada">3</span></td>
+                      <td><span class="badge badge-gray">0</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>12/08 (qua)</strong></td>
+                      <td>
+                        <div class="chip-group">
+                          <span class="chip disabled" style="padding:2px 8px;font-size:.7rem;">14:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">15:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">16:00</span>
+                          <span class="chip selected" style="padding:2px 8px;font-size:.7rem;">17:00</span>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-confirmada">3</span></td>
+                      <td><span class="badge badge-cancelada">1</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="flex items-center gap-md mt-md" style="font-size:.75rem;color:var(--gray-5);">
+                <div class="flex items-center gap-xs">
+                  <span class="chip selected" style="padding:1px 6px;font-size:.65rem;">HH:MM</span>
+                  Livre
+                </div>
+                <div class="flex items-center gap-xs">
+                  <span class="chip disabled" style="padding:1px 6px;font-size:.65rem;">HH:MM</span>
+                  Ocupado
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Referências de erro -->
+        <div class="grid-2 mt-xl gap-md">
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Horário duplicado (CA2 / RN05)</h4>
+            <div class="alert alert-error">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <strong>Horário já cadastrado</strong><br>
+                <span class="text-sm">Médico já possui consulta agendada para este horário.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Fora do horário comercial (CA3 / RN09)</h4>
+            <div class="alert alert-error">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <strong>Horário inválido</strong><br>
+                <span class="text-sm">Apenas horários entre 08:00 e 18:00 são permitidos.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>

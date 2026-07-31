@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Médicos — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-06: Consulta de médicos e especialidades -->
+  <!-- CA1: filtrar por especialidade; CA2: todos sem filtro; CA3: inativos não aparecem -->
+
+  <div class="app-shell">
+    <!-- Sidebar Paciente -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Paciente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Menu</div>
+        <a href="paciente-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Início</a>
+        <a href="paciente-agendar.html" class="nav-link"><span class="nav-icon">📅</span> Agendar Consulta</a>
+        <a href="paciente-consultas.html" class="nav-link"><span class="nav-icon">📋</span> Minhas Consultas</a>
+        <a href="paciente-medicos.html" class="nav-link active"><span class="nav-icon">🩺</span> Médicos</a>
+        <div class="nav-section-label">Conta</div>
+        <a href="paciente-meus-dados.html" class="nav-link"><span class="nav-icon">👤</span> Meus Dados</a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);"><span class="nav-icon">🚪</span> Sair</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Paciente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar">CS</div>
+          <div class="user-info">
+            <div class="user-name">Carlos Silva</div>
+            <div class="user-role">Paciente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1>Médicos e Especialidades</h1>
+          <p>Encontre o profissional certo para sua consulta.</p>
+        </div>
+
+        <!-- Filtro por especialidade -->
+        <div class="card mb-lg">
+          <div class="flex items-center gap-md flex-wrap">
+            <div class="input-wrapper" style="min-width:250px;flex:1;max-width:350px;">
+              <label class="input-label" for="filtro-espec">Filtrar por especialidade</label>
+              <select id="filtro-espec" class="select">
+                <option value="">Todas as especialidades</option>
+                <option value="1" selected>Cardiologia</option>
+                <option value="2">Pediatria</option>
+                <option value="3">Dermatologia</option>
+              </select>
+            </div>
+            <div style="padding-top:20px;">
+              <span class="text-sm text-dimmed">Exibindo <strong>1</strong> médico de <strong>3</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards de médicos -->
+        <div class="grid-3">
+          <!-- Dr. Silva (visível com filtro Cardiologia) -->
+          <div class="doctor-card">
+            <div class="flex items-start gap-md">
+              <div class="doctor-avatar">RS</div>
+              <div style="flex:1;">
+                <h3 style="font-size:1rem;margin-bottom:2px;">Dr. Ricardo Silva</h3>
+                <span class="badge badge-primary" style="margin-bottom:8px;">Cardiologia</span>
+                <div class="text-sm text-dimmed mb-xs">CRM: 12345-AL</div>
+                <div class="text-sm text-dimmed">📧 silva@email.com</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <a href="paciente-agendar.html" class="btn btn-primary btn-full btn-sm">
+              📅 Ver horários disponíveis
+            </a>
+          </div>
+
+          <!-- Dra. Souza (oculta se filtro Cardiologia) -->
+          <!--
+          <div class="doctor-card">
+            <div class="flex items-start gap-md">
+              <div class="doctor-avatar">MS</div>
+              <div style="flex:1;">
+                <h3 style="font-size:1rem;margin-bottom:2px;">Dra. Mariana Souza</h3>
+                <span class="badge badge-primary" style="margin-bottom:8px;">Pediatria</span>
+                <div class="text-sm text-dimmed mb-xs">CRM: 67890-AL</div>
+                <div class="text-sm text-dimmed">📧 souza@email.com</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <a href="paciente-agendar.html" class="btn btn-primary btn-full btn-sm">
+              📅 Ver horários disponíveis
+            </a>
+          </div>
+          -->
+
+          <!-- Dr. Lima (oculto se filtro Cardiologia) -->
+          <!--
+          <div class="doctor-card">
+            <div class="flex items-start gap-md">
+              <div class="doctor-avatar">AL</div>
+              <div style="flex:1;">
+                <h3 style="font-size:1rem;margin-bottom:2px;">Dr. André Lima</h3>
+                <span class="badge badge-primary" style="margin-bottom:8px;">Dermatologia</span>
+                <div class="text-sm text-dimmed mb-xs">CRM: 11223-AL</div>
+                <div class="text-sm text-dimmed">📧 lima@email.com</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <a href="paciente-agendar.html" class="btn btn-primary btn-full btn-sm">
+              📅 Ver horários disponíveis
+            </a>
+          </div>
+          -->
+        </div>
+
+        <!-- Referência: Estado sem filtro (todos visíveis) -->
+        <div class="card mt-xl" style="border: 1px dashed var(--gray-3);">
+          <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Referência: Sem filtro (CA2) — todos os 3 médicos ativos aparecem</h4>
+          <div class="grid-3">
+            <div class="doctor-card">
+              <div class="flex items-start gap-md">
+                <div class="doctor-avatar">RS</div>
+                <div style="flex:1;">
+                  <h3 style="font-size:1rem;margin-bottom:2px;">Dr. Ricardo Silva</h3>
+                  <span class="badge badge-primary">Cardiologia</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <a href="paciente-agendar.html" class="btn btn-primary btn-full btn-sm">📅 Ver horários</a>
+            </div>
+            <div class="doctor-card">
+              <div class="flex items-start gap-md">
+                <div class="doctor-avatar">MS</div>
+                <div style="flex:1;">
+                  <h3 style="font-size:1rem;margin-bottom:2px;">Dra. Mariana Souza</h3>
+                  <span class="badge badge-primary">Pediatria</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <a href="paciente-agendar.html" class="btn btn-primary btn-full btn-sm">📅 Ver horários</a>
+            </div>
+            <div class="doctor-card">
+              <div class="flex items-start gap-md">
+                <div class="doctor-avatar">AL</div>
+                <div style="flex:1;">
+                  <h3 style="font-size:1rem;margin-bottom:2px;">Dr. André Lima</h3>
+                  <span class="badge badge-primary">Dermatologia</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <a href="paciente-agendar.html" class="btn btn-primary btn-full btn-sm">📅 Ver horários</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>

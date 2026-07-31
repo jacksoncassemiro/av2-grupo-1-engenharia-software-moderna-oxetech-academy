@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultas — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-09: Cadastro de consultas pelo atendente -->
+  <!-- US-12: Cancelamento pelo atendente (sem restrição de prazo) -->
+  <!-- US-13: Confirmação e finalização de consultas -->
+
+  <div class="app-shell">
+    <!-- Sidebar Atendente -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Atendente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Início</a>
+        <a href="atendente-consultas.html" class="nav-link active"><span class="nav-icon">📑</span> Consultas</a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-pacientes.html" class="nav-link"><span class="nav-icon">🧑‍🤝‍🧑</span> Pacientes</a>
+        <a href="atendente-medicos.html" class="nav-link"><span class="nav-icon">🩺</span> Médicos</a>
+        <a href="atendente-especialidades.html" class="nav-link"><span class="nav-icon">🏷️</span> Especialidades</a>
+        <a href="atendente-agenda.html" class="nav-link"><span class="nav-icon">🕐</span> Agenda</a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);"><span class="nav-icon">🚪</span> Sair</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Atendente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar" style="background:#e8590c;">MR</div>
+          <div class="user-info">
+            <div class="user-name">Maria da Recepção</div>
+            <div class="user-role">Atendente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <div class="flex justify-between items-start">
+            <div>
+              <h1>Gestão de Consultas</h1>
+              <p>Agende, confirme, finalize e cancele consultas da clínica.</p>
+            </div>
+            <button class="btn btn-primary" onclick="document.getElementById('modal-agendar').style.display='flex'">
+              + Agendar consulta
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabs e filtros -->
+        <div class="card mb-lg">
+          <div class="flex justify-between items-center flex-wrap gap-md">
+            <div class="tabs" style="border-bottom:none;margin:0;">
+              <button class="tab active">Todas (12)</button>
+              <button class="tab">Solicitadas (3)</button>
+              <button class="tab">Confirmadas (4)</button>
+              <button class="tab">Finalizadas (3)</button>
+              <button class="tab">Canceladas (2)</button>
+            </div>
+            <div class="flex gap-sm items-center">
+              <div class="search-input" style="max-width:220px;">
+                <span class="search-icon">🔍</span>
+                <input class="input" type="text" placeholder="Buscar paciente...">
+              </div>
+              <select class="select" style="max-width:180px;">
+                <option>Todos os médicos</option>
+                <option>Dr. Ricardo Silva</option>
+                <option>Dra. Mariana Souza</option>
+                <option>Dr. André Lima</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de consultas -->
+        <div class="card">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Paciente</th>
+                  <th>Médico</th>
+                  <th>Especialidade</th>
+                  <th>Data</th>
+                  <th>Horário</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- SOLICITADA — pode confirmar ou cancelar (US-13 CA1 + US-12) -->
+                <tr>
+                  <td class="text-dimmed">#12</td>
+                  <td><strong>Carlos Silva</strong></td>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td>15/08/2026</td>
+                  <td>14:00</td>
+                  <td><span class="badge badge-solicitada badge-dot">Solicitada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">✓ Confirmar</button>
+                      <button class="btn btn-danger-outline btn-xs">✕ Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- SOLICITADA -->
+                <tr>
+                  <td class="text-dimmed">#11</td>
+                  <td><strong>Ana Souza</strong></td>
+                  <td>Dra. Mariana Souza</td>
+                  <td>Pediatria</td>
+                  <td>14/08/2026</td>
+                  <td>10:00</td>
+                  <td><span class="badge badge-solicitada badge-dot">Solicitada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">✓ Confirmar</button>
+                      <button class="btn btn-danger-outline btn-xs">✕ Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- SOLICITADA -->
+                <tr>
+                  <td class="text-dimmed">#10</td>
+                  <td><strong>João Santos</strong></td>
+                  <td>Dr. André Lima</td>
+                  <td>Dermatologia</td>
+                  <td>13/08/2026</td>
+                  <td>11:00</td>
+                  <td><span class="badge badge-solicitada badge-dot">Solicitada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">✓ Confirmar</button>
+                      <button class="btn btn-danger-outline btn-xs">✕ Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- CONFIRMADA — pode finalizar ou cancelar (US-13 CA2 + US-12) -->
+                <tr>
+                  <td class="text-dimmed">#9</td>
+                  <td><strong>Carlos Silva</strong></td>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td>12/08/2026</td>
+                  <td>09:00</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">✓ Finalizar</button>
+                      <button class="btn btn-danger-outline btn-xs">✕ Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- CONFIRMADA -->
+                <tr>
+                  <td class="text-dimmed">#8</td>
+                  <td><strong>Maria Oliveira</strong></td>
+                  <td>Dra. Mariana Souza</td>
+                  <td>Pediatria</td>
+                  <td>12/08/2026</td>
+                  <td>10:00</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">✓ Finalizar</button>
+                      <button class="btn btn-danger-outline btn-xs">✕ Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- CONFIRMADA -->
+                <tr>
+                  <td class="text-dimmed">#7</td>
+                  <td><strong>Pedro Costa</strong></td>
+                  <td>Dr. André Lima</td>
+                  <td>Dermatologia</td>
+                  <td>11/08/2026</td>
+                  <td>14:00</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">✓ Finalizar</button>
+                      <button class="btn btn-danger-outline btn-xs">✕ Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- CONFIRMADA -->
+                <tr>
+                  <td class="text-dimmed">#6</td>
+                  <td><strong>Ana Souza</strong></td>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td>10/08/2026</td>
+                  <td>11:00</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td>
+                    <div class="flex gap-xs">
+                      <button class="btn btn-primary btn-xs">✓ Finalizar</button>
+                      <button class="btn btn-danger-outline btn-xs">✕ Cancelar</button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- FINALIZADA — sem ações (RN10 — terminal) -->
+                <tr>
+                  <td class="text-dimmed">#5</td>
+                  <td><strong>Carlos Silva</strong></td>
+                  <td>Dr. André Lima</td>
+                  <td>Dermatologia</td>
+                  <td>05/08/2026</td>
+                  <td>09:00</td>
+                  <td><span class="badge badge-finalizada badge-dot">Finalizada</span></td>
+                  <td><span class="text-xs text-dimmed">—</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">#4</td>
+                  <td><strong>João Santos</strong></td>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td>03/08/2026</td>
+                  <td>14:00</td>
+                  <td><span class="badge badge-finalizada badge-dot">Finalizada</span></td>
+                  <td><span class="text-xs text-dimmed">—</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">#3</td>
+                  <td><strong>Maria Oliveira</strong></td>
+                  <td>Dra. Mariana Souza</td>
+                  <td>Pediatria</td>
+                  <td>01/08/2026</td>
+                  <td>10:00</td>
+                  <td><span class="badge badge-finalizada badge-dot">Finalizada</span></td>
+                  <td><span class="text-xs text-dimmed">—</span></td>
+                </tr>
+                <!-- CANCELADA — sem ações (RN10 — terminal) -->
+                <tr>
+                  <td class="text-dimmed">#2</td>
+                  <td><strong>Pedro Costa</strong></td>
+                  <td>Dr. André Lima</td>
+                  <td>Dermatologia</td>
+                  <td>04/08/2026</td>
+                  <td>15:00</td>
+                  <td><span class="badge badge-cancelada badge-dot">Cancelada</span></td>
+                  <td>
+                    <span class="text-xs text-dimmed" data-tooltip="Motivo: Paciente solicitou">
+                      ℹ️ Motivo
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">#1</td>
+                  <td><strong>Carlos Silva</strong></td>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td>01/08/2026</td>
+                  <td>11:00</td>
+                  <td><span class="badge badge-cancelada badge-dot">Cancelada</span></td>
+                  <td>
+                    <span class="text-xs text-dimmed" data-tooltip="Motivo: Compromisso profissional">
+                      ℹ️ Motivo
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginação -->
+          <div class="pagination mt-md">
+            <button class="pagination-btn">‹</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">›</button>
+          </div>
+        </div>
+
+        <!-- Modal: Agendar consulta pelo atendente (US-09) -->
+        <div class="modal-overlay" id="modal-agendar" style="display:none;">
+          <div class="modal" style="max-width:560px;">
+            <div class="modal-header">
+              <div class="modal-title">Agendar consulta para paciente</div>
+              <button class="modal-close" onclick="document.getElementById('modal-agendar').style.display='none'">✕</button>
+            </div>
+            <div class="modal-body">
+              <div class="stack gap-md">
+                <div class="input-wrapper">
+                  <label class="input-label input-required">Paciente</label>
+                  <select class="select">
+                    <option value="">Selecione o paciente</option>
+                    <option value="1">Carlos Silva — CPF: 529.982.247-25</option>
+                    <option value="2">Ana Souza — CPF: 123.456.789-09</option>
+                    <option value="3">João Santos — CPF: 987.654.321-00</option>
+                  </select>
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label input-required">Médico</label>
+                  <select class="select">
+                    <option value="">Selecione o médico</option>
+                    <option value="1">Dr. Ricardo Silva — Cardiologia</option>
+                    <option value="2">Dra. Mariana Souza — Pediatria</option>
+                    <option value="3">Dr. André Lima — Dermatologia</option>
+                  </select>
+                </div>
+                <div class="grid-2">
+                  <div class="input-wrapper">
+                    <label class="input-label input-required">Data</label>
+                    <input class="input" type="date" value="2026-08-12">
+                  </div>
+                  <div class="input-wrapper">
+                    <label class="input-label input-required">Horário</label>
+                    <select class="select">
+                      <option value="">Selecione</option>
+                      <option value="09:00">09:00 — livre</option>
+                      <option value="11:00">11:00 — livre</option>
+                      <option value="14:00">14:00 — livre</option>
+                      <option value="15:00">15:00 — livre</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="alert alert-info" style="padding:10px 12px;">
+                  <span class="alert-icon" style="font-size:1rem;">ℹ️</span>
+                  <div class="text-xs">
+                    Consulta agendada pelo atendente nasce com status <strong>CONFIRMADA</strong> (CA1-US09).
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-gray" onclick="document.getElementById('modal-agendar').style.display='none'">Cancelar</button>
+              <button class="btn btn-primary">Agendar consulta</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Referências de estado -->
+        <div class="stack gap-md mt-xl">
+          <!-- Máquina de estados da RN06/RN10 -->
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-md" style="font-size:0.8125rem;">📌 Referência: Máquina de estados (RN06 + RN10)</h4>
+            <div class="flex items-center gap-sm flex-wrap" style="justify-content:center;">
+              <span class="badge badge-solicitada" style="padding:6px 16px;font-size:.8125rem;">SOLICITADA</span>
+              <span style="color:var(--gray-4);">→</span>
+              <span class="badge badge-confirmada" style="padding:6px 16px;font-size:.8125rem;">CONFIRMADA</span>
+              <span style="color:var(--gray-4);">→</span>
+              <span class="badge badge-finalizada" style="padding:6px 16px;font-size:.8125rem;">FINALIZADA</span>
+            </div>
+            <div class="text-center mt-sm" style="font-size:.75rem;color:var(--gray-5);">
+              SOLICITADA ou CONFIRMADA → <span class="badge badge-cancelada" style="font-size:.7rem;">CANCELADA</span>
+              &nbsp;|&nbsp; CANCELADA e FINALIZADA são <strong>terminais</strong>
+            </div>
+          </div>
+
+          <!-- Transição inválida (CA3-US13) -->
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Referência: Transição inválida (CA3-US13 / RN10)</h4>
+            <div class="alert alert-error">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <strong>Transição não permitida</strong><br>
+                <span class="text-sm">Não é permitido ir de SOLICITADA para FINALIZADA.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cancelamento pelo atendente: modal (US-12) -->
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-md" style="font-size:0.8125rem;">📌 Referência: Modal de cancelamento administrativo (US-12)</h4>
+            <div style="background:var(--gray-0);border-radius:var(--radius-md);padding:20px;">
+              <div class="modal" style="position:static;max-width:100%;box-shadow:var(--shadow-lg);">
+                <div class="modal-header">
+                  <div class="modal-title">Cancelar consulta #9</div>
+                  <button class="modal-close">✕</button>
+                </div>
+                <div class="modal-body">
+                  <div class="alert alert-warning mb-md" style="padding:10px 12px;">
+                    <span class="alert-icon" style="font-size:1rem;">⚠️</span>
+                    <div class="text-xs">
+                      Cancelamento <strong>sem restrição de prazo</strong> (atendente ignora a regra de 24h — CA1-US12).
+                    </div>
+                  </div>
+                  <p class="text-sm mb-md">
+                    Cancelar consulta de <strong>Carlos Silva</strong> com <strong>Dr. Ricardo Silva</strong>
+                    em <strong>12/08/2026 às 09:00</strong>?
+                  </p>
+                  <div class="input-wrapper">
+                    <label class="input-label input-required">Motivo do cancelamento</label>
+                    <textarea class="input" placeholder="O motivo será visível para o paciente (CA3-US12)..."></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-gray">Voltar</button>
+                  <button class="btn btn-danger">Confirmar cancelamento</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FINALIZADA não pode ser cancelada (CA2-US12 / RN10) -->
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Referência: FINALIZADA não pode ser cancelada (CA2-US12 / RN10)</h4>
+            <div class="alert alert-error">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <strong>Operação não permitida</strong><br>
+                <span class="text-sm">Consulta finalizada não pode ser cancelada, nem pelo atendente.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>
