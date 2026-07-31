@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus Dados — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-04: Atualização cadastral pelo paciente -->
+  <!-- CA1: alterar telefone; CA2: e-mail duplicado; CA3: manter próprio e-mail; CA4: paciente_id do token; CA5: CPF não editável -->
+
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Paciente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Menu</div>
+        <a href="paciente-dashboard.html" class="nav-link">
+          <span class="nav-icon">📊</span> Início
+        </a>
+        <a href="paciente-agendar.html" class="nav-link">
+          <span class="nav-icon">📅</span> Agendar Consulta
+        </a>
+        <a href="paciente-consultas.html" class="nav-link">
+          <span class="nav-icon">📋</span> Minhas Consultas
+        </a>
+        <a href="paciente-medicos.html" class="nav-link">
+          <span class="nav-icon">🩺</span> Médicos
+        </a>
+        <div class="nav-section-label">Conta</div>
+        <a href="paciente-meus-dados.html" class="nav-link active">
+          <span class="nav-icon">👤</span> Meus Dados
+        </a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);">
+          <span class="nav-icon">🚪</span> Sair
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Paciente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar">CS</div>
+          <div class="user-info">
+            <div class="user-name">Carlos Silva</div>
+            <div class="user-role">Paciente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="container-md" style="padding:0;">
+          <!-- Header -->
+          <div class="page-header">
+            <h1>Meus Dados</h1>
+            <p>Atualize suas informações cadastrais. O CPF não pode ser alterado.</p>
+          </div>
+
+          <!-- Notification de sucesso (estática) -->
+          <div class="notification notification-success" style="display:flex;">
+            <span>✅</span>
+            <div>
+              <div class="notification-title">Dados atualizados</div>
+              <div class="notification-body">Suas informações foram salvas com sucesso.</div>
+            </div>
+          </div>
+
+          <!-- Card do perfil -->
+          <div class="card">
+            <div class="flex items-center gap-md mb-lg">
+              <div class="user-avatar" style="width:64px;height:64px;font-size:1.5rem;">CS</div>
+              <div>
+                <h2 style="font-size:1.25rem;margin-bottom:2px;">Carlos Silva</h2>
+                <span class="badge badge-primary">Paciente</span>
+              </div>
+            </div>
+
+            <form onsubmit="return false">
+              <div class="stack gap-md">
+                <!-- CPF (readonly — CA5) -->
+                <div class="input-wrapper">
+                  <label class="input-label" for="cpf">CPF</label>
+                  <input id="cpf" class="input" type="text" value="529.982.247-25" disabled
+                    style="background:var(--gray-1);color:var(--gray-6);cursor:not-allowed;">
+                  <span class="input-description">O CPF não pode ser alterado</span>
+                </div>
+
+                <!-- Nome -->
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="nome">Nome completo</label>
+                  <input id="nome" class="input" type="text" value="Carlos Silva">
+                </div>
+
+                <div class="grid-2">
+                  <!-- Telefone -->
+                  <div class="input-wrapper">
+                    <label class="input-label input-required" for="telefone">Telefone</label>
+                    <input id="telefone" class="input" type="tel" value="(82) 99123-4567">
+                  </div>
+
+                  <!-- E-mail (opcional) -->
+                  <div class="input-wrapper">
+                    <label class="input-label" for="email">E-mail <span class="text-dimmed text-xs">(opcional)</span></label>
+                    <input id="email" class="input" type="email" value="carlos@email.com">
+                  </div>
+                </div>
+
+                <!-- Data de nascimento (opcional) -->
+                <div class="input-wrapper" style="max-width:300px;">
+                  <label class="input-label" for="nascimento">Data de nascimento <span class="text-dimmed text-xs">(opcional)</span></label>
+                  <input id="nascimento" class="input" type="date" value="1985-03-15">
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Ações -->
+                <div class="flex justify-end gap-sm">
+                  <button class="btn btn-gray" type="button">Cancelar</button>
+                  <button class="btn btn-primary" type="submit">Salvar alterações</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Estado de erro (CA2 — e-mail duplicado) -->
+          <div class="card mt-lg" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Referência: Estado de erro (CA2)</h4>
+            <div class="input-wrapper">
+              <label class="input-label" for="email-err">E-mail</label>
+              <input id="email-err" class="input input-error" type="email" value="maria@email.com">
+              <span class="error-message">E-mail em uso</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>

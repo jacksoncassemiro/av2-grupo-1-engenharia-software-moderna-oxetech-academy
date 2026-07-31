@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Médicos — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-02: Gestão de médicos -->
+  <!-- CA1: obrigatório especialidade; CA2 (RN02): e-mail duplicado; CA3: CRM duplicado; CA4: inativo não aparece -->
+
+  <div class="app-shell">
+    <!-- Sidebar Atendente -->
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon">🏥</div>
+          <div>
+            <div class="brand-text">Clínica Médica</div>
+            <div class="brand-sub">Painel do Atendente</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-dashboard.html" class="nav-link"><span class="nav-icon">📊</span> Início</a>
+        <a href="atendente-consultas.html" class="nav-link"><span class="nav-icon">📑</span> Consultas</a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-pacientes.html" class="nav-link"><span class="nav-icon">🧑‍🤝‍🧑</span> Pacientes</a>
+        <a href="atendente-medicos.html" class="nav-link active"><span class="nav-icon">🩺</span> Médicos</a>
+        <a href="atendente-especialidades.html" class="nav-link"><span class="nav-icon">🏷️</span> Especialidades</a>
+        <a href="atendente-agenda.html" class="nav-link"><span class="nav-icon">🕐</span> Agenda</a>
+      </div>
+      <div class="app-shell__navbar-footer">
+        <a href="login.html" class="nav-link" style="color:var(--color-error);"><span class="nav-icon">🚪</span> Sair</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div><span class="text-sm text-dimmed">Painel do Atendente</span></div>
+        <div class="user-menu">
+          <div class="user-avatar" style="background:#e8590c;">MR</div>
+          <div class="user-info">
+            <div class="user-name">Maria da Recepção</div>
+            <div class="user-role">Atendente</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1>Cadastro de Médicos</h1>
+          <p>Cadastre e visualize os médicos da clínica.</p>
+        </div>
+
+        <!-- Formulário de cadastro -->
+        <div class="card mb-lg">
+          <h3 style="font-size:1rem;margin-bottom:16px;">Cadastrar novo médico</h3>
+          <form onsubmit="return false">
+            <div class="stack gap-md">
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="nome-med">Nome completo</label>
+                  <input id="nome-med" class="input" type="text" placeholder="Dr(a). Nome Completo">
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="crm-med">CRM</label>
+                  <input id="crm-med" class="input" type="text" placeholder="Ex: 12345-AL">
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="email-med">E-mail</label>
+                  <input id="email-med" class="input" type="email" placeholder="medico@email.com">
+                </div>
+                <!-- Select de especialidade (CA1) -->
+                <div class="input-wrapper">
+                  <label class="input-label input-required" for="espec-med">Especialidade</label>
+                  <select id="espec-med" class="select">
+                    <option value="">Selecione uma especialidade</option>
+                    <option value="1">Cardiologia</option>
+                    <option value="2">Pediatria</option>
+                    <option value="3">Dermatologia</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <button class="btn btn-primary" type="submit">+ Cadastrar médico</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Listagem -->
+        <div class="card">
+          <div class="action-bar">
+            <h3 style="font-size:1rem;">Médicos cadastrados</h3>
+            <div class="search-input">
+              <span class="search-icon">🔍</span>
+              <input class="input" type="text" placeholder="Buscar por nome ou CRM...">
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nome</th>
+                  <th>CRM</th>
+                  <th>E-mail</th>
+                  <th>Especialidade</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-dimmed">1</td>
+                  <td>
+                    <div class="flex items-center gap-sm">
+                      <div class="doctor-avatar" style="width:32px;height:32px;font-size:.75rem;">RS</div>
+                      <strong>Dr. Ricardo Silva</strong>
+                    </div>
+                  </td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">12345-AL</code></td>
+                  <td class="text-dimmed">silva@email.com</td>
+                  <td><span class="badge badge-primary">Cardiologia</span></td>
+                  <td><span class="badge badge-confirmada">Ativo</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">2</td>
+                  <td>
+                    <div class="flex items-center gap-sm">
+                      <div class="doctor-avatar" style="width:32px;height:32px;font-size:.75rem;">MS</div>
+                      <strong>Dra. Mariana Souza</strong>
+                    </div>
+                  </td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">67890-AL</code></td>
+                  <td class="text-dimmed">souza@email.com</td>
+                  <td><span class="badge badge-primary">Pediatria</span></td>
+                  <td><span class="badge badge-confirmada">Ativo</span></td>
+                </tr>
+                <tr>
+                  <td class="text-dimmed">3</td>
+                  <td>
+                    <div class="flex items-center gap-sm">
+                      <div class="doctor-avatar" style="width:32px;height:32px;font-size:.75rem;">AL</div>
+                      <strong>Dr. André Lima</strong>
+                    </div>
+                  </td>
+                  <td><code style="background:var(--gray-1);padding:2px 6px;border-radius:4px;font-size:.8125rem;">11223-AL</code></td>
+                  <td class="text-dimmed">lima@email.com</td>
+                  <td><span class="badge badge-primary">Dermatologia</span></td>
+                  <td><span class="badge badge-confirmada">Ativo</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Referências de erro -->
+        <div class="grid-2 mt-xl gap-md">
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 Sem especialidade (CA1)</h4>
+            <div class="input-wrapper">
+              <label class="input-label input-required">Especialidade</label>
+              <select class="select" style="border-color:var(--color-error);">
+                <option value="">Selecione uma especialidade</option>
+              </select>
+              <span class="error-message">Selecione uma especialidade</span>
+            </div>
+          </div>
+
+          <div class="card" style="border: 1px dashed var(--gray-3);">
+            <h4 class="text-dimmed mb-sm" style="font-size:0.8125rem;">📌 E-mail/CRM duplicados (CA2/CA3)</h4>
+            <div class="stack gap-sm">
+              <div class="input-wrapper">
+                <label class="input-label">E-mail</label>
+                <input class="input input-error" type="email" value="silva@email.com">
+                <span class="error-message">E-mail em uso</span>
+              </div>
+              <div class="input-wrapper">
+                <label class="input-label">CRM</label>
+                <input class="input input-error" type="text" value="12345-AL">
+                <span class="error-message">CRM já cadastrado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+</body>
+</html>
