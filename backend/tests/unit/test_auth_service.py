@@ -120,7 +120,7 @@ def test_primeiro_acesso_falha_se_login_ja_existe():
 
 @pytest.mark.unit
 def test_ca07_credenciais_invalidas_lança_exceção():
-    """US-00 CA7 - Credencial invalida deve lançar CredenciaisInvalidas com mensagem generica."""
+    """US-00 CA7 - Credencial inválida deve lançar CredenciaisInvalidas com mensagem genérica."""
     usuario = Usuario(
         id=1,
         nome="Joao",
