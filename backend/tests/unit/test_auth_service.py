@@ -133,9 +133,15 @@ def test_ca07_credenciais_invalidas_lança_exceção():
     service = AuthService(FakeUsuarioRepository([usuario]), FakePacienteRepository())
 
     # Usuario inexistente
-    with pytest.raises(CredenciaisInvalidas):
+    with pytest.raises(CredenciaisInvalidas) as exc_usuario_inexistente:
         service.autenticar("99999999999", "senha123")
 
     # Senha incorreta
-    with pytest.raises(CredenciaisInvalidas):
+    with pytest.raises(CredenciaisInvalidas) as exc_senha_incorreta:
         service.autenticar(CPF, "senha_errada")
+
+    assert (
+        str(exc_usuario_inexistente.value)
+        == str(exc_senha_incorreta.value)
+        == "Login ou senha invalidos"
+    )
