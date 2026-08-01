@@ -1,6 +1,6 @@
 """Servico de especialidades (US-01, US-06)."""
 
-from app.exceptions.dominio import RegraDeNegocioViolada
+from app.exceptions.dominio import EspecialidadeDuplicada, RegraDeNegocioViolada
 from app.models.especialidade import Especialidade
 from app.repositories.especialidade_repository import EspecialidadeRepository
 
@@ -13,11 +13,16 @@ class EspecialidadeService:
         """Cadastra uma nova especialidade médica.
 
         RN12 - Autorização validada na controller via `exigir_atendente`.
-        CA2 - Nome duplicado (case-insensitive) levanta RegraDeNegocioViolada (409).
+        CA2 - Nome duplicado (case-insensitive) levanta EspecialidadeDuplicada (409).
         """
-        if self.repositorio.buscar_por_nome(nome):
-            raise RegraDeNegocioViolada("Especialidade ja cadastrada")
-        return self.repositorio.salvar(Especialidade(nome=nome.strip()))
+        nome_limpo = nome.strip()
+        if len(nome_limpo) < 3:
+            raise RegraDeNegocioViolada("Nome da especialidade deve ter ao menos 3 caracteres")
+
+        if self.repositorio.buscar_por_nome(nome_limpo):
+            raise EspecialidadeDuplicada()
+
+        return self.repositorio.salvar(Especialidade(nome=nome_limpo))
 
     def listar_ativas(self) -> list[Especialidade]:
         """Listagem de especialidades ativas (US-06 / CA3 da US-01)."""

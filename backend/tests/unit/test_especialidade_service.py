@@ -2,7 +2,7 @@
 
 import pytest
 
-from app.exceptions.dominio import RegraDeNegocioViolada
+from app.exceptions.dominio import EspecialidadeDuplicada, RegraDeNegocioViolada
 from app.models.especialidade import Especialidade
 from app.services.especialidade_service import EspecialidadeService
 
@@ -42,13 +42,28 @@ def test_cadastrar_especialidade_com_sucesso():
 
 @pytest.mark.unit
 def test_bloquear_cadastro_especialidade_duplicada_case_insensitive():
-    """US-01 CA2 - Nome duplicado (case-insensitive) deve ser recusado com erro de dominio."""
+    """US-01 CA2 - Nome duplicado (case-insensitive) deve dar erro 409 (EspecialidadeDuplicada)."""
     existente = Especialidade(id=1, nome="Cardiologia", ativo=True)
     repo = FakeEspecialidadeRepository([existente])
     service = EspecialidadeService(repo)
 
-    with pytest.raises(RegraDeNegocioViolada, match="Especialidade ja cadastrada"):
+    with pytest.raises(EspecialidadeDuplicada) as exc_info:
         service.cadastrar("cardiologia")
+
+    assert exc_info.value.status_code == 409
+    assert exc_info.value.mensagem == "Especialidade ja cadastrada"
+
+
+@pytest.mark.unit
+def test_bloquear_cadastro_nome_vazio_ou_curto_apos_strip():
+    """Valida que nome com menos de 3 caracteres apos strip e recusado."""
+    repo = FakeEspecialidadeRepository()
+    service = EspecialidadeService(repo)
+
+    with pytest.raises(
+        RegraDeNegocioViolada, match="Nome da especialidade deve ter ao menos 3 caracteres"
+    ):
+        service.cadastrar("   ab   ")
 
 
 @pytest.mark.unit
