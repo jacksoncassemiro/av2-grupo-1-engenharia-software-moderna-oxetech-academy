@@ -10,79 +10,79 @@ import { apenasDigitos, cpfEhValido, formatarCpf, pareceEmail } from '@/lib/cpf'
 import { realizarLogin } from './auth.service';
 
 export function useLogin() {
-    const router = useRouter();
-    const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-    const form = useForm({
-        initialValues: {
-            login: '',
-            senha: '',
-        },
-        validate: {
-            login: (value) => {
-                const val = value.trim();
-                if (!val) return 'Informe o CPF ou E-mail';
+  const form = useForm({
+    initialValues: {
+      login: '',
+      senha: '',
+    },
+    validate: {
+      login: (value) => {
+        const val = value.trim();
+        if (!val) return 'Informe o CPF ou E-mail';
 
-                if (pareceEmail(val)) {
-                    const emailRegex = /^\S+@\S+\.\S+$/;
-                    return emailRegex.test(val) ? null : 'E-mail em formato inválido';
-                }
-
-                return cpfEhValido(val) ? null : 'CPF inválido';
-            },
-            senha: (value) => (value ? null : 'Informe a senha'),
-        },
-    });
-
-    const handleLoginChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const rawValue = event.currentTarget.value;
-
-        if (/[a-zA-Z@]/.test(rawValue)) {
-            form.setFieldValue('login', rawValue);
-            return;
+        if (pareceEmail(val)) {
+          const emailRegex = /^\S+@\S+\.\S+$/;
+          return emailRegex.test(val) ? null : 'E-mail em formato inválido';
         }
 
-        form.setFieldValue('login', formatarCpf(rawValue));
-    };
+        return cpfEhValido(val) ? null : 'CPF inválido';
+      },
+      senha: (value) => (value ? null : 'Informe a senha'),
+    },
+  });
 
-    const handleSubmit = async (values: typeof form.values) => {
-        setLoading(true);
+  const handleLoginChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const rawValue = event.currentTarget.value;
 
-        try {
-            const loginLimpo = pareceEmail(values.login)
-                ? values.login.trim().toLowerCase()
-                : apenasDigitos(values.login);
+    if (/[a-zA-Z@]/.test(rawValue)) {
+      form.setFieldValue('login', rawValue);
+      return;
+    }
 
-            const resposta = await realizarLogin({
-                login: loginLimpo,
-                senha: values.senha,
-            });
+    form.setFieldValue('login', formatarCpf(rawValue));
+  };
 
-            if (resposta.tipo_usuario === 'PACIENTE') {
-                router.push('/consultas');
-            } else if (resposta.tipo_usuario === 'ATENDENTE') {
-                router.push('/agenda');
-            }
-        } catch (erro) {
-            const mensagem =
-                erro instanceof ApiError && erro.status === 401
-                    ? 'Login ou senha invalidos'
-                    : 'Falha ao entrar. Tente novamente.';
+  const handleSubmit = async (values: typeof form.values) => {
+    setLoading(true);
 
-            notifications.show({
-                title: 'Erro ao entrar',
-                message: mensagem,
-                color: 'red',
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+    try {
+      const loginLimpo = pareceEmail(values.login)
+        ? values.login.trim().toLowerCase()
+        : apenasDigitos(values.login);
 
-    return {
-        form,
-        loading,
-        handleLoginChange,
-        handleSubmit: form.onSubmit(handleSubmit),
-    };
+      const resposta = await realizarLogin({
+        login: loginLimpo,
+        senha: values.senha,
+      });
+
+      if (resposta.tipo_usuario === 'PACIENTE') {
+        router.push('/consultas');
+      } else if (resposta.tipo_usuario === 'ATENDENTE') {
+        router.push('/agenda');
+      }
+    } catch (erro) {
+      const mensagem =
+        erro instanceof ApiError && erro.status === 401
+          ? 'Login ou senha invalidos'
+          : 'Falha ao entrar. Tente novamente.';
+
+      notifications.show({
+        title: 'Erro ao entrar',
+        message: mensagem,
+        color: 'red',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    form,
+    loading,
+    handleLoginChange,
+    handleSubmit: form.onSubmit(handleSubmit),
+  };
 }
