@@ -31,6 +31,13 @@ class EmailDuplicado(RegraDeNegocioViolada):
     mensagem = "E-mail em uso"
 
 
+class EspecialidadeDuplicada(RegraDeNegocioViolada):
+    """US-01 / CA2."""
+
+    status_code = 409
+    mensagem = "Especialidade ja cadastrada"
+
+
 class HorarioIndisponivel(RegraDeNegocioViolada):
     """RN03."""
 
