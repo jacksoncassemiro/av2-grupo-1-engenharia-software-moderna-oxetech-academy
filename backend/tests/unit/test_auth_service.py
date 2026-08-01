@@ -116,3 +116,32 @@ def test_primeiro_acesso_falha_se_login_ja_existe():
 
     with pytest.raises(CredenciaisInvalidas):
         service.vincular_ou_criar(PrimeiroAcesso(cpf=CPF, senha="senha123"))
+
+
+@pytest.mark.unit
+def test_ca07_credenciais_invalidas_lança_exceção():
+    """US-00 CA7 - Credencial inválida deve lançar CredenciaisInvalidas com mensagem genérica."""
+    usuario = Usuario(
+        id=1,
+        nome="Joao",
+        login=CPF,
+        senha_hash=gerar_hash_senha("senha123"),
+        tipo_usuario=TipoUsuario.PACIENTE,
+        paciente_id=1,
+        ativo=True,
+    )
+    service = AuthService(FakeUsuarioRepository([usuario]), FakePacienteRepository())
+
+    # Usuario inexistente
+    with pytest.raises(CredenciaisInvalidas) as exc_usuario_inexistente:
+        service.autenticar("99999999999", "senha123")
+
+    # Senha incorreta
+    with pytest.raises(CredenciaisInvalidas) as exc_senha_incorreta:
+        service.autenticar(CPF, "senha_errada")
+
+    assert (
+        str(exc_usuario_inexistente.value)
+        == str(exc_senha_incorreta.value)
+        == "Login ou senha invalidos"
+    )
