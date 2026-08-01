@@ -151,3 +151,17 @@ def test_listar_medicos_ativos_com_filtro():
     apenas_esp1 = service.listar_ativos(especialidade_id=1)
     assert len(apenas_esp1) == 1
     assert apenas_esp1[0].nome == "Dr. Silva"
+
+
+@pytest.mark.unit
+def test_rn08_deve_rejeitar_email_em_formato_invalido():
+    """RN08 - e-mail deve estar em formato valido (validacao no schema)."""
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        MedicoCriar(
+            nome="Dr. Silva",
+            email="email-invalido",
+            crm="CRM12345",
+            especialidade_id=1,
+        )
