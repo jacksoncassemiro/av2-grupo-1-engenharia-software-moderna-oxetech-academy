@@ -3,6 +3,8 @@
 import { createTheme, type MantineColorsTuple } from '@mantine/core';
 
 // Paleta da clinica. Gerada em https://mantine.dev/colors-generator/
+// Os 10 tons ficam em 2 linhas de proposito: assim a paleta le-se como escala.
+// prettier-ignore
 const clinica: MantineColorsTuple = [
   '#e7f5f4', '#d7e8e7', '#b1d1cf', '#87b9b6', '#66a5a1',
   '#519996', '#44938f', '#34807d', '#28726f', '#12635f',

@@ -187,6 +187,11 @@ Justificativa: `docs/06-design-patterns.md` e `docs/adr/ADR-006-design-patterns.
 - **`next lint` não existe mais** (removido no Next 16, junto com a opção `eslint` do
   `next.config`). O lint roda pela CLI: `yarn lint` → `eslint .`, configurado em
   `eslint.config.mjs` com `eslint-config-next/core-web-vitals` + `/typescript` em flat config.
+- **Formatação é do Prettier**, configurado em `frontend/.prettierrc` para o estilo que o código
+  já usava (aspas simples, 100 colunas, `trailingComma: es5`). `yarn format` escreve,
+  `yarn format:check` confere — e o CI **reprova o PR** se algo estiver fora. Ligue o
+  *format on save* apontando para o Prettier, senão seu editor formata com outro padrão e o
+  PR quebra. Exceções deliberadas ficam em `.prettierignore` ou com `// prettier-ignore`.
 - `yarn typecheck` é `next typegen && tsc --noEmit`. O `next typegen` gera `next-env.d.ts` e os
   tipos de rota — sem ele o `tsc` falha no CI.
 - **`params` e `searchParams` são `Promise` no Next 16** (a compatibilidade síncrona da v15 foi
