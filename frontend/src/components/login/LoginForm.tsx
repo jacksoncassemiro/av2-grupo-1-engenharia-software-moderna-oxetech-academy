@@ -13,7 +13,7 @@ import {
     Title,
 } from '@mantine/core';
 
-import { useLogin } from '../_hooks/useLogin';
+import { useLogin } from './useLogin';
 
 export function LoginForm() {
     const { form, loading, handleLoginChange, handleSubmit } = useLogin();

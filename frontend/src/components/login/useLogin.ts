@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
+import { ApiError } from '@/lib/api';
 import { apenasDigitos, cpfEhValido, formatarCpf, pareceEmail } from '@/lib/cpf';
-import { realizarLogin } from '../_services/auth.service';
+import { realizarLogin } from './auth.service';
 
 export function useLogin() {
     const router = useRouter();
@@ -33,21 +34,15 @@ export function useLogin() {
         },
     });
 
-    const handleLoginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleLoginChange = (event: ChangeEvent<HTMLInputElement>) => {
         const rawValue = event.currentTarget.value;
-        const contemLetraOuAt = /[a-zA-Z@]/.test(rawValue);
 
-        if (contemLetraOuAt) {
-            const semMascaraCpf = rawValue
-                .replace(/^(\d{3})\.(\d{3})\.(\d{3})-(\d{1,2})/, '$1$2$3$4')
-                .replace(/^(\d{3})\.(\d{3})\.(.*)/, '$1$2$3')
-                .replace(/^(\d{3})\.(.*)/, '$1$2')
-                .replace(/-/g, '');
-
-            form.setFieldValue('login', semMascaraCpf);
-        } else {
-            form.setFieldValue('login', formatarCpf(rawValue));
+        if (/[a-zA-Z@]/.test(rawValue)) {
+            form.setFieldValue('login', rawValue);
+            return;
         }
+
+        form.setFieldValue('login', formatarCpf(rawValue));
     };
 
     const handleSubmit = async (values: typeof form.values) => {
@@ -68,10 +63,15 @@ export function useLogin() {
             } else if (resposta.tipo_usuario === 'ATENDENTE') {
                 router.push('/agenda');
             }
-        } catch {
+        } catch (erro) {
+            const mensagem =
+                erro instanceof ApiError && erro.status === 401
+                    ? 'Login ou senha invalidos'
+                    : 'Falha ao entrar. Tente novamente.';
+
             notifications.show({
                 title: 'Erro ao entrar',
-                message: 'Login ou senha invalidos',
+                message: mensagem,
                 color: 'red',
             });
         } finally {

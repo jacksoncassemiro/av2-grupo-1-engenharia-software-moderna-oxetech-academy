@@ -26,6 +26,9 @@ src/app/
     └── consultas/page.tsx        # US-09, US-12, US-13
 ```
 
+As features do login ficam fora de `src/app/login/`: a rota chama a UI em `src/components/login/`,
+e a guarda de perfil compartilha `src/components/auth/AuthGuard.tsx`.
+
 ---
 
 ## ⚠️ Next 16: `params` e `searchParams` são **Promise**
