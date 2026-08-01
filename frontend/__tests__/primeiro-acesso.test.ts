@@ -12,9 +12,9 @@ import {
 
 describe('decidirEtapa (US-00)', () => {
   it('CA4 - cadastro existente sem login vai para a ativacao', () => {
-    expect(
-      decidirEtapa({ cadastro_existe: true, login_ativo: false, nome: 'Carlos Silva' })
-    ).toBe('ativar-login');
+    expect(decidirEtapa({ cadastro_existe: true, login_ativo: false, nome: 'Carlos Silva' })).toBe(
+      'ativar-login'
+    );
   });
 
   it('CA5 - CPF sem cadastro vai para o auto-cadastro', () => {
@@ -24,9 +24,9 @@ describe('decidirEtapa (US-00)', () => {
   });
 
   it('CA6 - CPF que ja tem login e mandado para a tela de login', () => {
-    expect(
-      decidirEtapa({ cadastro_existe: true, login_ativo: true, nome: 'Carlos Silva' })
-    ).toBe('login-ja-ativo');
+    expect(decidirEtapa({ cadastro_existe: true, login_ativo: true, nome: 'Carlos Silva' })).toBe(
+      'login-ja-ativo'
+    );
   });
 });
 

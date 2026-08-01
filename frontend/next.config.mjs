@@ -5,12 +5,7 @@ const nextConfig = {
   // Tree shaking recomendado pela doc do Mantine para o App Router.
   // Continua sob `experimental` no Next 16 (conferido na doc da v16.2).
   experimental: {
-    optimizePackageImports: [
-      '@mantine/core',
-      '@mantine/hooks',
-      '@mantine/dates',
-      '@mantine/form',
-    ],
+    optimizePackageImports: ['@mantine/core', '@mantine/hooks', '@mantine/dates', '@mantine/form'],
   },
 
   // Proxy para o backend: o browser fala com /api e o Next repassa para o FastAPI.

@@ -127,7 +127,10 @@ describe('PrimeiroAcesso (US-00)', () => {
     await verificarCpf();
 
     expect(await screen.findByText('Este CPF já possui login ativo')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /ir para o login/i })).toHaveAttribute('href', '/login');
+    expect(screen.getByRole('link', { name: /ir para o login/i })).toHaveAttribute(
+      'href',
+      '/login'
+    );
     expect(screen.queryByLabelText(/criar senha/i)).not.toBeInTheDocument();
   });
 });

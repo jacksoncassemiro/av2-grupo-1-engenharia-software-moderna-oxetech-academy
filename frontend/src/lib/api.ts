@@ -69,7 +69,10 @@ function extrairMensagem(conteudo: unknown): string | null {
   if (typeof detalhe === 'string') return detalhe;
   // Erro de validacao do Pydantic vem como lista de objetos.
   if (Array.isArray(detalhe)) {
-    return detalhe.map((item) => (item as { msg?: string }).msg).filter(Boolean).join('; ');
+    return detalhe
+      .map((item) => (item as { msg?: string }).msg)
+      .filter(Boolean)
+      .join('; ');
   }
   return null;
 }

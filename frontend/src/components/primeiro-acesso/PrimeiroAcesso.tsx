@@ -56,7 +56,10 @@ export function PrimeiroAcesso() {
         body: dados,
       });
       guardarToken(token.access_token);
-      notifications.show({ message: 'Acesso ativado. Bem-vindo!', color: 'green' });
+      notifications.show({
+        message: 'Acesso ativado. Bem-vindo!',
+        color: 'green',
+      });
       router.replace(ROTA_INICIAL_DO_PACIENTE);
     } catch (erro) {
       notificarFalha(erro);
