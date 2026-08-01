@@ -1,4 +1,4 @@
-export type TipoUsuario = 'PACIENTE' | 'ATENDENTE';
+import { TipoUsuario } from '@/types/dominio';
 
 export interface LoginPayload {
   login: string;

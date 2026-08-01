@@ -1,5 +1,5 @@
 import { api, guardarToken } from '@/lib/api';
-import { LoginPayload, LoginResponse } from '../types/auth.types';
+import { LoginPayload, LoginResponse } from '../_types/auth.types';
 
 export async function realizarLogin(payload: LoginPayload): Promise<LoginResponse> {
     const resposta = await api<LoginResponse>('/auth/login', {

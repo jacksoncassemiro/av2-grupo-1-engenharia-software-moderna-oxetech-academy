@@ -6,7 +6,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
 import { apenasDigitos, cpfEhValido, formatarCpf, pareceEmail } from '@/lib/cpf';
-import { realizarLogin } from '../services/auth.service';
+import { realizarLogin } from '../_services/auth.service';
 
 export function useLogin() {
     const router = useRouter();
