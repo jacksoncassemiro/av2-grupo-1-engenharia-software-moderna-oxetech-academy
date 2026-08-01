@@ -38,6 +38,13 @@ class EspecialidadeDuplicada(RegraDeNegocioViolada):
     mensagem = "Especialidade ja cadastrada"
 
 
+class CrmDuplicado(RegraDeNegocioViolada):
+    """US-02 / CA3."""
+
+    status_code = 409
+    mensagem = "CRM ja cadastrado"
+
+
 class HorarioIndisponivel(RegraDeNegocioViolada):
     """RN03."""
 

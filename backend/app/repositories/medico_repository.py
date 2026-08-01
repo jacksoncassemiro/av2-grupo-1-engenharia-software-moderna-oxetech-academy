@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.models.medico import Medico
 from app.repositories.base import RepositorioBase
@@ -8,10 +8,14 @@ class MedicoRepository(RepositorioBase[Medico]):
     modelo = Medico
 
     def buscar_por_email(self, email: str) -> Medico | None:
-        return self.db.scalars(select(Medico).where(Medico.email == email)).first()
+        return self.db.scalars(
+            select(Medico).where(func.lower(Medico.email) == email.strip().lower())
+        ).first()
 
     def buscar_por_crm(self, crm: str) -> Medico | None:
-        return self.db.scalars(select(Medico).where(Medico.crm == crm)).first()
+        return self.db.scalars(
+            select(Medico).where(func.lower(Medico.crm) == crm.strip().lower())
+        ).first()
 
     def listar_ativos(self, especialidade_id: int | None = None) -> list[Medico]:
         consulta = select(Medico).where(Medico.ativo.is_(True))
