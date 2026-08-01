@@ -48,4 +48,31 @@ describe('US00 - Tela de Login', () => {
             expect(pushMock).toHaveBeenCalledWith('/consultas');
         });
     });
+
+    it('deve exibir notificação de erro quando o login falhar', async () => {
+        const apiSpy = vi.spyOn(apiModule, 'api').mockRejectedValueOnce(new Error('falha'));
+        const notifSpy = vi.spyOn(notifications, 'show');
+
+        render(<LoginPage />);
+
+        fireEvent.change(screen.getByLabelText(/CPF ou E-mail/i), {
+            target: { value: '529.982.247-25' },
+        });
+        fireEvent.change(screen.getByLabelText(/Senha/i), {
+            target: { value: 'senha123' },
+        });
+
+        fireEvent.click(screen.getByRole('button', { name: /Entrar/i }));
+
+        await waitFor(() => {
+            expect(apiSpy).toHaveBeenCalled();
+            expect(notifSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    title: 'Erro ao entrar',
+                    color: 'red',
+                })
+            );
+            expect(pushMock).not.toHaveBeenCalled();
+        });
+    });
 });
