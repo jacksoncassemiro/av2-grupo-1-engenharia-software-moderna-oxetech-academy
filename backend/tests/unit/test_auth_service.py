@@ -139,4 +139,3 @@ def test_ca07_credenciais_invalidas_lança_exceção():
     # Senha incorreta
     with pytest.raises(CredenciaisInvalidas):
         service.autenticar(CPF, "senha_errada")
-
