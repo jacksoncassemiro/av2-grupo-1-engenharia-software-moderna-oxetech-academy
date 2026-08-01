@@ -31,8 +31,8 @@ class MedicoService:
 
         medico = Medico(
             nome=dados.nome.strip(),
-            email=dados.email.strip(),
-            crm=dados.crm.strip(),
+            email=str(dados.email).strip().lower(),
+            crm=dados.crm.strip().upper(),
             especialidade_id=dados.especialidade_id,
             ativo=True,
         )
