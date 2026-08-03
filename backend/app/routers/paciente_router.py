@@ -30,6 +30,15 @@ def cadastrar(
     return PacienteResposta.model_validate(paciente)
 
 
+@router.get("", response_model=list[PacienteResposta], summary="US-03")
+def listar(
+    service: Annotated[PacienteService, Depends(obter_service)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+) -> list[PacienteResposta]:
+    pacientes = service.listar()
+    return [PacienteResposta.model_validate(p) for p in pacientes]
+
+
 @router.put("/me", response_model=PacienteResposta, summary="US-04")
 def atualizar_meus_dados(
     dados: PacienteAtualizar,
