@@ -46,7 +46,7 @@ ITENS = RAIZ / "scripts" / "board-itens.json"
 
 REPO = "jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy"
 OWNER = "jacksoncassemiro"
-PROJETO = "3"
+PROJETO = "6"
 
 # Labels que marcam issue aberta pela equipe fora do planejamento — nunca tocar.
 LABELS_INTOCAVEIS = {"bug", "funcionalidade", "melhoria"}
