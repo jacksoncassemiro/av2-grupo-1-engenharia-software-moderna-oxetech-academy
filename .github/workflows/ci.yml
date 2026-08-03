@@ -111,6 +111,9 @@ jobs:
             yarn install
           fi
 
+      - name: Formatacao (Prettier)
+        run: yarn format:check
+
       - name: Lint (ESLint)
         run: yarn lint
 

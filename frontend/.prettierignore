@@ -1,0 +1,17 @@
+# Gerados
+.next/
+out/
+build/
+coverage/
+node_modules/
+next-env.d.ts
+yarn.lock
+
+# Especificacao visual entregue como HTML estatico (PR #163): e referencia,
+# nao codigo de producao. Reformatar so geraria ruido no diff.
+reference-ui/
+
+# Formatado a mao de proposito no commit 99bb942 ("ajustar formatacao e estrutura
+# do tsconfig.json para melhor legibilidade"). O Prettier compactaria os arrays de
+# volta para uma linha, desfazendo aquela decisao.
+tsconfig.json
