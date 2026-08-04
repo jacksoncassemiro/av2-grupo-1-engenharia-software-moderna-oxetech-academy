@@ -145,8 +145,69 @@ def test_listar_medicos_ativos_com_filtro():
     )
     service = MedicoService(FakeMedicoRepository([m1, m2, m3]), FakeEspecialidadeRepository())
 
-    todos_ativos = service.listar_ativos()
-    assert len(todos_ativos) == 2
+    ativos = service.listar_ativos(especialidade_id=1)
+    assert len(ativos) == 1
+    assert ativos[0].nome == "Dr. Silva"
+
+
+@pytest.mark.unit
+def test_us06_ca1_filtrar_medicos_por_especialidade():
+    """US-06 CA1 - Filtra medicos pela especialidade especificada."""
+    m1 = Medico(
+        id=1,
+        nome="Dr. Silva",
+        email="silva@clinica.com",
+        crm="CRM1",
+        especialidade_id=1,
+        ativo=True,
+    )
+    m2 = Medico(
+        id=2,
+        nome="Dra. Souza",
+        email="souza@clinica.com",
+        crm="CRM2",
+        especialidade_id=2,
+        ativo=True,
+    )
+    service = MedicoService(FakeMedicoRepository([m1, m2]), FakeEspecialidadeRepository())
+
+    filtrados = service.listar_ativos(especialidade_id=1)
+    assert len(filtrados) == 1
+    assert filtrados[0].nome == "Dr. Silva"
+
+
+@pytest.mark.unit
+def test_us06_ca2_ca3_sem_filtro_retorna_apenas_medicos_ativos():
+    """US-06 CA2/CA3 - Sem filtro retorna medicos ativos; inativos sao ignorados."""
+    m1 = Medico(
+        id=1,
+        nome="Dr. Silva",
+        email="silva@clinica.com",
+        crm="CRM1",
+        especialidade_id=1,
+        ativo=True,
+    )
+    m2 = Medico(
+        id=2,
+        nome="Dra. Souza",
+        email="souza@clinica.com",
+        crm="CRM2",
+        especialidade_id=2,
+        ativo=True,
+    )
+    m3 = Medico(
+        id=3,
+        nome="Dr. Inativo",
+        email="inativo@clinica.com",
+        crm="CRM3",
+        especialidade_id=1,
+        ativo=False,
+    )
+    service = MedicoService(FakeMedicoRepository([m1, m2, m3]), FakeEspecialidadeRepository())
+
+    ativos = service.listar_ativos(especialidade_id=None)
+    assert len(ativos) == 2
+    assert all(m.ativo for m in ativos)
 
     apenas_esp1 = service.listar_ativos(especialidade_id=1)
     assert len(apenas_esp1) == 1
