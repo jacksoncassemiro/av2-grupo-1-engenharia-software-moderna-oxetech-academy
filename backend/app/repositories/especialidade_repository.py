@@ -12,7 +12,8 @@ class EspecialidadeRepository(RepositorioBase[Especialidade]):
             select(Especialidade).where(func.lower(Especialidade.nome) == nome.strip().lower())
         ).first()
 
-    def listar_ativas(self) -> list[Especialidade]:
-        return list(
-            self.db.scalars(select(Especialidade).where(Especialidade.ativo.is_(True))).all()
-        )
+    def listar_ativas(self, apenas_ativas: bool = True) -> list[Especialidade]:
+        consulta = select(Especialidade)
+        if apenas_ativas:
+            consulta = consulta.where(Especialidade.ativo.is_(True))
+        return list(self.db.scalars(consulta).all())

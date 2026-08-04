@@ -28,9 +28,9 @@ class EspecialidadeService:
 
         return self.repositorio.salvar(Especialidade(nome=nome_limpo))
 
-    def listar_ativas(self) -> list[Especialidade]:
+    def listar_ativas(self, apenas_ativas: bool = True) -> list[Especialidade]:
         """Listagem de especialidades ativas (US-06 / CA3 da US-01)."""
-        return self.repositorio.listar_ativas()
+        return self.repositorio.listar_ativas(apenas_ativas=apenas_ativas)
 
     def alternar_status(self, especialidade_id: int) -> Especialidade:
         """Alterna o status ativo/inativo da especialidade."""

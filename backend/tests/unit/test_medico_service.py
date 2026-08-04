@@ -24,8 +24,12 @@ class FakeMedicoRepository:
         crm_norm = crm.strip().lower()
         return next((m for m in self._itens if m.crm.strip().lower() == crm_norm), None)
 
-    def listar_ativos(self, especialidade_id: int | None = None) -> list[Medico]:
-        resultado = [m for m in self._itens if m.ativo]
+    def listar_ativos(
+        self, especialidade_id: int | None = None, apenas_ativos: bool = True
+    ) -> list[Medico]:
+        resultado = list(self._itens)
+        if apenas_ativos:
+            resultado = [m for m in resultado if m.ativo]
         if especialidade_id is not None:
             resultado = [m for m in resultado if m.especialidade_id == especialidade_id]
         return resultado

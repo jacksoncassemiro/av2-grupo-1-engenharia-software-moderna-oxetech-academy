@@ -18,8 +18,10 @@ class FakeEspecialidadeRepository:
         nome_norm = nome.strip().lower()
         return next((e for e in self._itens if e.nome.strip().lower() == nome_norm), None)
 
-    def listar_ativas(self) -> list[Especialidade]:
-        return [e for e in self._itens if e.ativo]
+    def listar_ativas(self, apenas_ativas: bool = True) -> list[Especialidade]:
+        if apenas_ativas:
+            return [e for e in self._itens if e.ativo]
+        return list(self._itens)
 
     def salvar(self, entidade: Especialidade) -> Especialidade:
         if entidade.ativo is None:
