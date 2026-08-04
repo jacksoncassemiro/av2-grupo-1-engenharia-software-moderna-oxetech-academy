@@ -30,13 +30,28 @@ def cadastrar(
     return PacienteResposta.model_validate(paciente)
 
 
-@router.get("", response_model=list[PacienteResposta], summary="US-03")
-def listar(
+@router.get(
+    "/buscar-por-cpf/{cpf}",
+    response_model=PacienteResposta,
+    summary="US-09 - localizar paciente para agendar em nome dele",
+)
+def buscar_por_cpf(
+    cpf: str,
     service: Annotated[PacienteService, Depends(obter_service)],
     _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
-) -> list[PacienteResposta]:
-    pacientes = service.listar()
-    return [PacienteResposta.model_validate(p) for p in pacientes]
+) -> PacienteResposta:
+    paciente = service.buscar_por_cpf_ou_falhar(cpf)
+    return PacienteResposta.model_validate(paciente)
+
+
+@router.get("/me", response_model=PacienteResposta, summary="US-04")
+def meus_dados(
+    service: Annotated[PacienteService, Depends(obter_service)],
+    usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
+) -> PacienteResposta:
+    """RN12 - o paciente_id vem sempre do token, nunca de parametro."""
+    paciente = service.meus_dados(usuario.paciente_id)
+    return PacienteResposta.model_validate(paciente)
 
 
 @router.put("/me", response_model=PacienteResposta, summary="US-04")

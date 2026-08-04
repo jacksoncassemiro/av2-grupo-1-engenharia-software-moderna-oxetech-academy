@@ -20,6 +20,18 @@ class PacienteService:
         """US-03. Listagem de pacientes."""
         return self.repositorio.listar()
 
+    def buscar_por_cpf_ou_falhar(self, cpf: str) -> Paciente:
+        """US-09 - o atendente localiza o paciente pelo CPF para agendar em nome dele."""
+        digitos = "".join(c for c in cpf if c.isdigit())
+        paciente = self.repositorio.buscar_por_cpf(digitos)
+        if paciente is None:
+            raise RecursoNaoEncontrado("Paciente nao encontrado")
+        return paciente
+
+    def meus_dados(self, paciente_id: int) -> Paciente:
+        """US-04 - le os dados atuais para a tela de edicao pre-preencher."""
+        return self._buscar_ou_falhar(paciente_id)
+
     def atualizar(self, paciente_id: int, dados: PacienteAtualizar) -> Paciente:
         """US-04."""
         paciente = self._buscar_ou_falhar(paciente_id)
