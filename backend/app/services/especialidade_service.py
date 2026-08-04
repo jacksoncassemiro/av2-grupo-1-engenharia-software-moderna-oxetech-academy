@@ -1,6 +1,10 @@
 """Servico de especialidades (US-01, US-06)."""
 
-from app.exceptions.dominio import EspecialidadeDuplicada, RegraDeNegocioViolada
+from app.exceptions.dominio import (
+    EspecialidadeDuplicada,
+    RecursoNaoEncontrado,
+    RegraDeNegocioViolada,
+)
 from app.models.especialidade import Especialidade
 from app.repositories.especialidade_repository import EspecialidadeRepository
 
@@ -27,3 +31,11 @@ class EspecialidadeService:
     def listar_ativas(self) -> list[Especialidade]:
         """Listagem de especialidades ativas (US-06 / CA3 da US-01)."""
         return self.repositorio.listar_ativas()
+
+    def alternar_status(self, especialidade_id: int) -> Especialidade:
+        """Alterna o status ativo/inativo da especialidade."""
+        especialidade = self.repositorio.buscar_por_id(especialidade_id)
+        if especialidade is None:
+            raise RecursoNaoEncontrado("Especialidade nao encontrada")
+        especialidade.ativo = not especialidade.ativo
+        return self.repositorio.salvar(especialidade)

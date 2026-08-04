@@ -36,3 +36,15 @@ def listar(
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
 ) -> list[EspecialidadeResposta]:
     return [EspecialidadeResposta.model_validate(e) for e in service.listar_ativas()]
+
+
+@router.patch("/{especialidade_id}/status", response_model=EspecialidadeResposta)
+def alternar_status(
+    especialidade_id: int,
+    service: Annotated[EspecialidadeService, Depends(obter_service)],
+    db: Annotated[Session, Depends(get_db)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+) -> EspecialidadeResposta:
+    especialidade = service.alternar_status(especialidade_id)
+    db.commit()
+    return EspecialidadeResposta.model_validate(especialidade)

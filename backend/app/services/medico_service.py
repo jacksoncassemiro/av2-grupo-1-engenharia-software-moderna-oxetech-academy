@@ -41,3 +41,11 @@ class MedicoService:
     def listar_ativos(self, especialidade_id: int | None = None) -> list[Medico]:
         """Listagem de médicos ativos (US-06 / CA4 da US-02)."""
         return self.medicos.listar_ativos(especialidade_id)
+
+    def alternar_status(self, medico_id: int) -> Medico:
+        """Alterna o status ativo/inativo do médico."""
+        medico = self.medicos.buscar_por_id(medico_id)
+        if medico is None:
+            raise RecursoNaoEncontrado("Medico nao encontrado")
+        medico.ativo = not medico.ativo
+        return self.medicos.salvar(medico)

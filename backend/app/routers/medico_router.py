@@ -48,6 +48,18 @@ def listar(
     return [MedicoResposta.model_validate(m) for m in service.listar_ativos(especialidade_id)]
 
 
+@router.patch("/{medico_id}/status", response_model=MedicoResposta)
+def alternar_status(
+    medico_id: int,
+    service: Annotated[MedicoService, Depends(obter_medico_service)],
+    db: Annotated[Session, Depends(get_db)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+) -> MedicoResposta:
+    medico = service.alternar_status(medico_id)
+    db.commit()
+    return MedicoResposta.model_validate(medico)
+
+
 @router.post(
     "/{medico_id}/agenda",
     response_model=list[HorarioResposta],
