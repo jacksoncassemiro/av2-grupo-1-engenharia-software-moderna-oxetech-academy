@@ -7,6 +7,7 @@
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '/api';
 const CHAVE_TOKEN = 'clinica.token';
+const CHAVE_TIPO_USUARIO = 'clinica.tipoUsuario';
 
 export class ApiError extends Error {
   constructor(
@@ -30,6 +31,21 @@ export function lerToken(): string | null {
 
 export function limparToken(): void {
   sessionStorage.removeItem(CHAVE_TOKEN);
+}
+
+export function guardarTipoUsuario(tipoUsuario: string): void {
+  sessionStorage.setItem(CHAVE_TIPO_USUARIO, tipoUsuario);
+}
+
+export function lerTipoUsuario(): string | null {
+  if (typeof window === 'undefined') return null;
+  return sessionStorage.getItem(CHAVE_TIPO_USUARIO);
+}
+
+/** Usado no logout e quando o guard de rota encontra uma sessao invalida. */
+export function encerrarSessao(): void {
+  sessionStorage.removeItem(CHAVE_TOKEN);
+  sessionStorage.removeItem(CHAVE_TIPO_USUARIO);
 }
 
 type Opcoes = Omit<RequestInit, 'body'> & { body?: unknown };

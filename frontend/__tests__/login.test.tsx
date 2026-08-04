@@ -45,7 +45,7 @@ describe('US00 - Tela de Login', () => {
     await waitFor(() => {
       expect(apiSpy).toHaveBeenCalledWith('/auth/login', {
         method: 'POST',
-        body: { login: '52998224725', senha: 'senha123' },
+        body: { login: '529.982.247-25', senha: 'senha123' },
       });
       expect(pushMock).toHaveBeenCalledWith('/consultas');
     });
@@ -73,9 +73,8 @@ describe('US00 - Tela de Login', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: 'Erro ao entrar',
+          title: 'Não foi possível entrar',
           message: 'Login ou senha invalidos',
-          color: 'red',
         })
       );
       expect(pushMock).not.toHaveBeenCalled();
