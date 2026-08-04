@@ -39,3 +39,16 @@ def test_falha_ao_lancar_agenda_de_medico_inexistente():
 
     with pytest.raises(RecursoNaoEncontrado):
         service.cadastrar_slots(999, date(2026, 8, 10), [time(9, 0)])
+
+
+@pytest.mark.unit
+def test_rn09_horario_comercial_valida_grade():
+    """US-05 / RN09 - O schema GradeHorariaCriar bloqueia horarios fora de 08:00-18:00."""
+    from pydantic import ValidationError
+
+    from app.schemas.agenda_schema import GradeHorariaCriar
+
+    with pytest.raises(ValidationError) as erro:
+        GradeHorariaCriar(data=date(2026, 8, 10), horarios=[time(7, 0), time(19, 0)])
+
+    assert "Horarios fora do funcionamento" in str(erro.value)
