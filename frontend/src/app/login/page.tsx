@@ -4,7 +4,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Anchor, Button, Divider, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
+import {
+  Anchor,
+  Button,
+  Divider,
+  PasswordInput,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { Sparkles } from 'lucide-react';
