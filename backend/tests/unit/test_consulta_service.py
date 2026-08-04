@@ -107,3 +107,24 @@ def test_status_inicial_depende_de_quem_agenda(slot_livre):
     solicitada.status = StatusConsulta.CANCELADA  # libera o slot para o segundo agendamento
     confirmada = service.agendar(1, slot_livre.id, TipoUsuario.ATENDENTE)
     assert confirmada.status is StatusConsulta.CONFIRMADA
+
+
+@pytest.mark.unit
+def test_us13_mudar_status_consulta_valido_e_invalido(slot_livre):
+    """US-13 - Valida transições de status válidas e rejeita inválidas."""
+    consulta = montar_consulta(slot_livre, StatusConsulta.SOLICITADA)
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    # SOLICITADA -> CONFIRMADA
+    atualizada = service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+    assert atualizada.status is StatusConsulta.CONFIRMADA
+
+    # CONFIRMADA -> FINALIZADA
+    finalizada = service.mudar_status(consulta.id, StatusConsulta.FINALIZADA)
+    assert finalizada.status is StatusConsulta.FINALIZADA
+
+    # FINALIZADA -> CONFIRMADA (rejeitado)
+    with pytest.raises(TransicaoDeStatusInvalida):
+        service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
