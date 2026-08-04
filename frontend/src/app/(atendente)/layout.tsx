@@ -35,8 +35,12 @@ export default function LayoutAtendente({ children }: { children: React.ReactNod
 
   useEffect(() => {
     const sessaoValida = Boolean(lerToken()) && lerTipoUsuario() === 'ATENDENTE';
-    setAutorizado(sessaoValida);
-    if (!sessaoValida) router.replace('/login');
+
+    if (!sessaoValida) {
+      router.replace('/login');
+    } else {
+      queueMicrotask(() => setAutorizado(true));
+    }
   }, [router]);
 
   function sair() {

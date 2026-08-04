@@ -76,7 +76,9 @@ export default function MedicosPage() {
   }
 
   useEffect(() => {
-    carregar();
+    queueMicrotask(() => {
+      carregar();
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
