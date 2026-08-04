@@ -137,3 +137,24 @@ def test_us08_agendamento_paciente_sucesso(slot_livre):
     assert consulta.paciente_id == 1
     assert consulta.status is StatusConsulta.SOLICITADA
     assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
+def test_us13_mudar_status_consulta_valido_e_invalido(slot_livre):
+    """US-13 - Valida transições de status válidas e rejeita inválidas."""
+    consulta = montar_consulta(slot_livre, StatusConsulta.SOLICITADA)
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    # SOLICITADA -> CONFIRMADA
+    atualizada = service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+    assert atualizada.status is StatusConsulta.CONFIRMADA
+
+    # CONFIRMADA -> FINALIZADA
+    finalizada = service.mudar_status(consulta.id, StatusConsulta.FINALIZADA)
+    assert finalizada.status is StatusConsulta.FINALIZADA
+
+    # FINALIZADA -> CONFIRMADA (rejeitado)
+    with pytest.raises(TransicaoDeStatusInvalida):
+        service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
