@@ -64,8 +64,11 @@ def cancelar(
     dados: ConsultaCancelar,
     service: Annotated[ConsultaService, Depends(obter_service)],
     db: Annotated[Session, Depends(get_db)],
-    _: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
+    usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
 ) -> ConsultaResposta:
+    existente = ConsultaRepository(db).buscar_por_id(consulta_id)
+    if existente is None or existente.paciente_id != usuario.paciente_id:
+        raise RecursoNaoEncontrado("Consulta nao encontrada")
     consulta = service.cancelar(consulta_id, TipoUsuario.PACIENTE, dados.motivo)
     db.commit()
     return ConsultaResposta.model_validate(consulta)
