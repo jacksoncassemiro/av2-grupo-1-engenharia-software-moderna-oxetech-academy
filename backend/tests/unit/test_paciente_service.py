@@ -71,3 +71,50 @@ def test_listar_pacientes():
     assert len(resultado) == 2
     assert resultado[0].nome == "Carlos"
     assert resultado[1].nome == "Maria"
+
+
+@pytest.mark.unit
+def test_obter_paciente_por_id_com_sucesso():
+    """US-04 - Consulta de dados do paciente logado pelo ID."""
+    paciente = Paciente(id=1, nome="Carlos", cpf=CPF_VALIDO, telefone="8288887777")
+    service = PacienteService(FakePacienteRepository([paciente]))
+
+    resultado = service.meus_dados(1)
+
+    assert resultado.id == 1
+    assert resultado.nome == "Carlos"
+
+
+@pytest.mark.unit
+def test_atualizar_dados_do_paciente_com_sucesso():
+    """US-04 - Atualizacao de telefone e e-mail do paciente."""
+    from app.schemas.paciente_schema import PacienteAtualizar
+
+    paciente = Paciente(
+        id=1, nome="Carlos", cpf=CPF_VALIDO, email="antigo@email.com", telefone="8288887777"
+    )
+    service = PacienteService(FakePacienteRepository([paciente]))
+
+    atualizado = service.atualizar(
+        1, PacienteAtualizar(telefone="82999991111", email="novo@email.com")
+    )
+
+    assert atualizado.telefone == "82999991111"
+    assert atualizado.email == "novo@email.com"
+
+
+@pytest.mark.unit
+def test_atualizar_dados_paciente_email_duplicado_bloqueado():
+    """US-04 / RN02 - Bloqueio de e-mail duplicado ao atualizar dados."""
+    from app.schemas.paciente_schema import PacienteAtualizar
+
+    p1 = Paciente(
+        id=1, nome="Carlos", cpf=CPF_VALIDO, email="carlos@email.com", telefone="8288887777"
+    )
+    p2 = Paciente(
+        id=2, nome="Maria", cpf=OUTRO_CPF_VALIDO, email="maria@email.com", telefone="82999990000"
+    )
+    service = PacienteService(FakePacienteRepository([p1, p2]))
+
+    with pytest.raises(EmailDuplicado):
+        service.atualizar(1, PacienteAtualizar(email="maria@email.com"))
