@@ -107,3 +107,18 @@ def test_status_inicial_depende_de_quem_agenda(slot_livre):
     solicitada.status = StatusConsulta.CANCELADA  # libera o slot para o segundo agendamento
     confirmada = service.agendar(1, slot_livre.id, TipoUsuario.ATENDENTE)
     assert confirmada.status is StatusConsulta.CONFIRMADA
+
+
+@pytest.mark.unit
+def test_us08_agendamento_paciente_sucesso(slot_livre):
+    """US-08 - Paciente agenda consulta em slot livre, gerando status SOLICITADA e ocupando slot."""
+    horarios = FakeHorarioRepository([slot_livre])
+    service = ConsultaService(FakeConsultaRepository(), horarios)
+
+    consulta = service.agendar(
+        paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+    )
+
+    assert consulta.paciente_id == 1
+    assert consulta.status is StatusConsulta.SOLICITADA
+    assert slot_livre.disponivel is False
