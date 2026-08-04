@@ -57,3 +57,17 @@ def test_email_nulo_nao_colide_com_outro_email_nulo():
 
     assert criado.email is None
     assert criado.cpf == CPF_VALIDO
+
+
+@pytest.mark.unit
+def test_listar_pacientes():
+    """US-03 - Listagem de todos os pacientes."""
+    p1 = Paciente(id=1, nome="Carlos", cpf=CPF_VALIDO, telefone="8288887777")
+    p2 = Paciente(id=2, nome="Maria", cpf=OUTRO_CPF_VALIDO, telefone="82999990000")
+    service = PacienteService(FakePacienteRepository([p1, p2]))
+
+    resultado = service.listar()
+
+    assert len(resultado) == 2
+    assert resultado[0].nome == "Carlos"
+    assert resultado[1].nome == "Maria"

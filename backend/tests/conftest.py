@@ -30,6 +30,9 @@ class FakePacienteRepository:
     def buscar_por_email(self, email):
         return next((p for p in self._itens if p.email == email), None)
 
+    def listar(self):
+        return list(self._itens)
+
     def salvar(self, entidade):
         if entidade.id is None:
             entidade.id = self._proximo_id

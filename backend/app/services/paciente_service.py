@@ -16,6 +16,10 @@ class PacienteService:
         self._garantir_email_inedito(dados.email)
         return self.repositorio.salvar(Paciente(**dados.model_dump()))
 
+    def listar(self) -> list[Paciente]:
+        """US-03. Listagem de pacientes."""
+        return self.repositorio.listar()
+
     def atualizar(self, paciente_id: int, dados: PacienteAtualizar) -> Paciente:
         """US-04."""
         paciente = self._buscar_ou_falhar(paciente_id)
