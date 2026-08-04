@@ -2,12 +2,12 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import UsuarioAutenticado, exigir_atendente
-from app.models.enums import TipoUsuario
+from app.models.enums import StatusConsulta, TipoUsuario
 from app.repositories.consulta_repository import ConsultaRepository
 from app.repositories.horario_repository import HorarioRepository
 from app.schemas.consulta_schema import (
@@ -23,6 +23,18 @@ router = APIRouter(prefix="/atendente", tags=["Consultas (Atendente)"])
 
 def obter_service(db: Annotated[Session, Depends(get_db)]) -> ConsultaService:
     return ConsultaService(ConsultaRepository(db), HorarioRepository(db))
+
+
+@router.get("/consultas", response_model=list[ConsultaResposta], summary="US-13")
+def listar_consultas(
+    db: Annotated[Session, Depends(get_db)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+    status: Annotated[StatusConsulta | None, Query()] = None,
+) -> list[ConsultaResposta]:
+    """CA5 - a lista permite filtrar por status para achar as pendentes de confirmacao."""
+    repositorio = ConsultaRepository(db)
+    consultas = repositorio.listar_por_status(status) if status else repositorio.listar()
+    return [ConsultaResposta.model_validate(c) for c in consultas]
 
 
 @router.post("/consultas", response_model=ConsultaResposta, status_code=201, summary="US-09")

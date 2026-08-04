@@ -69,6 +69,21 @@ def test_paciente_pode_cancelar_com_mais_de_24h_e_slot_e_liberado(slot_livre):
 
 
 @pytest.mark.unit
+def test_us09_agendamento_atendente_gera_status_confirmada(slot_livre):
+    """US-09 - Atendente agenda diretamente para o paciente, gerando status CONFIRMADA."""
+    horarios = FakeHorarioRepository([slot_livre])
+    service = ConsultaService(FakeConsultaRepository(), horarios)
+
+    consulta = service.agendar(
+        paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.ATENDENTE
+    )
+
+    assert consulta.paciente_id == 1
+    assert consulta.status is StatusConsulta.CONFIRMADA
+    assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
 def test_atendente_cancela_ignorando_a_regra_de_24h(slot_livre):
     """US-12 - Strategy do atendente nao valida prazo."""
     consulta = montar_consulta(slot_livre)
