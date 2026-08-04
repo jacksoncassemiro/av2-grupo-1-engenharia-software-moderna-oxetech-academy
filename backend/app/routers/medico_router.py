@@ -44,8 +44,24 @@ def listar(
     service: Annotated[MedicoService, Depends(obter_medico_service)],
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
     especialidade_id: Annotated[int | None, Query()] = None,
+    apenas_ativos: Annotated[bool, Query(description="Filtrar apenas ativos")] = True,
 ) -> list[MedicoResposta]:
-    return [MedicoResposta.model_validate(m) for m in service.listar_ativos(especialidade_id)]
+    return [
+        MedicoResposta.model_validate(m)
+        for m in service.listar_ativos(especialidade_id, apenas_ativos=apenas_ativos)
+    ]
+
+
+@router.patch("/{medico_id}/status", response_model=MedicoResposta)
+def alternar_status(
+    medico_id: int,
+    service: Annotated[MedicoService, Depends(obter_medico_service)],
+    db: Annotated[Session, Depends(get_db)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+) -> MedicoResposta:
+    medico = service.alternar_status(medico_id)
+    db.commit()
+    return MedicoResposta.model_validate(medico)
 
 
 @router.post(

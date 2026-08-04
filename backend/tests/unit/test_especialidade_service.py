@@ -11,12 +11,17 @@ class FakeEspecialidadeRepository:
     def __init__(self, itens: list[Especialidade] | None = None):
         self._itens = list(itens or [])
 
+    def buscar_por_id(self, id_: int) -> Especialidade | None:
+        return next((e for e in self._itens if e.id == id_), None)
+
     def buscar_por_nome(self, nome: str) -> Especialidade | None:
         nome_norm = nome.strip().lower()
         return next((e for e in self._itens if e.nome.strip().lower() == nome_norm), None)
 
-    def listar_ativas(self) -> list[Especialidade]:
-        return [e for e in self._itens if e.ativo]
+    def listar_ativas(self, apenas_ativas: bool = True) -> list[Especialidade]:
+        if apenas_ativas:
+            return [e for e in self._itens if e.ativo]
+        return list(self._itens)
 
     def salvar(self, entidade: Especialidade) -> Especialidade:
         if entidade.ativo is None:
@@ -78,3 +83,17 @@ def test_listar_apenas_especialidades_ativas():
 
     assert len(resultado) == 1
     assert resultado[0].nome == "Cardiologia"
+
+
+@pytest.mark.unit
+def test_alternar_status_especialidade():
+    """Valida alternancia de status ativo/inativo de uma especialidade."""
+    esp = Especialidade(id=1, nome="Cardiologia", ativo=True)
+    repo = FakeEspecialidadeRepository([esp])
+    service = EspecialidadeService(repo)
+
+    atualizado = service.alternar_status(1)
+    assert atualizado.ativo is False
+
+    reativado = service.alternar_status(1)
+    assert reativado.ativo is True

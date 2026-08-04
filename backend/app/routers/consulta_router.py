@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import UsuarioAutenticado, exigir_paciente
+from app.exceptions.dominio import RecursoNaoEncontrado
 from app.models.enums import TipoUsuario
 from app.repositories.consulta_repository import ConsultaRepository
 from app.repositories.horario_repository import HorarioRepository
@@ -45,14 +46,29 @@ def minhas_consultas(
     ]
 
 
+@router.get("/{consulta_id}", response_model=ConsultaResposta, summary="US-10")
+def detalhar_consulta(
+    consulta_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
+) -> ConsultaResposta:
+    consulta = ConsultaRepository(db).buscar_por_id(consulta_id)
+    if consulta is None or consulta.paciente_id != usuario.paciente_id:
+        raise RecursoNaoEncontrado("Consulta nao encontrada")
+    return ConsultaResposta.model_validate(consulta)
+
+
 @router.patch("/{consulta_id}/cancelar", response_model=ConsultaResposta, summary="US-11 / RN04")
 def cancelar(
     consulta_id: int,
     dados: ConsultaCancelar,
     service: Annotated[ConsultaService, Depends(obter_service)],
     db: Annotated[Session, Depends(get_db)],
-    _: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
+    usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
 ) -> ConsultaResposta:
+    existente = ConsultaRepository(db).buscar_por_id(consulta_id)
+    if existente is None or existente.paciente_id != usuario.paciente_id:
+        raise RecursoNaoEncontrado("Consulta nao encontrada")
     consulta = service.cancelar(consulta_id, TipoUsuario.PACIENTE, dados.motivo)
     db.commit()
     return ConsultaResposta.model_validate(consulta)

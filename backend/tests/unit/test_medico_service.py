@@ -13,6 +13,9 @@ class FakeMedicoRepository:
     def __init__(self, itens: list[Medico] | None = None):
         self._itens = list(itens or [])
 
+    def buscar_por_id(self, id_: int) -> Medico | None:
+        return next((m for m in self._itens if m.id == id_), None)
+
     def buscar_por_email(self, email: str) -> Medico | None:
         email_norm = email.strip().lower()
         return next((m for m in self._itens if m.email.strip().lower() == email_norm), None)
@@ -21,8 +24,12 @@ class FakeMedicoRepository:
         crm_norm = crm.strip().lower()
         return next((m for m in self._itens if m.crm.strip().lower() == crm_norm), None)
 
-    def listar_ativos(self, especialidade_id: int | None = None) -> list[Medico]:
-        resultado = [m for m in self._itens if m.ativo]
+    def listar_ativos(
+        self, especialidade_id: int | None = None, apenas_ativos: bool = True
+    ) -> list[Medico]:
+        resultado = list(self._itens)
+        if apenas_ativos:
+            resultado = [m for m in resultado if m.ativo]
         if especialidade_id is not None:
             resultado = [m for m in resultado if m.especialidade_id == especialidade_id]
         return resultado
@@ -212,6 +219,26 @@ def test_us06_ca2_ca3_sem_filtro_retorna_apenas_medicos_ativos():
     apenas_esp1 = service.listar_ativos(especialidade_id=1)
     assert len(apenas_esp1) == 1
     assert apenas_esp1[0].nome == "Dr. Silva"
+
+
+@pytest.mark.unit
+def test_alternar_status_medico():
+    """Valida alternancia de status ativo/inativo de um medico."""
+    m1 = Medico(
+        id=1,
+        nome="Dr. Silva",
+        email="silva@clinica.com",
+        crm="CRM1",
+        especialidade_id=1,
+        ativo=True,
+    )
+    service = MedicoService(FakeMedicoRepository([m1]), FakeEspecialidadeRepository())
+
+    inativado = service.alternar_status(1)
+    assert inativado.ativo is False
+
+    reativado = service.alternar_status(1)
+    assert reativado.ativo is True
 
 
 @pytest.mark.unit

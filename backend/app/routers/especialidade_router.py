@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -34,5 +34,21 @@ def cadastrar(
 def listar(
     service: Annotated[EspecialidadeService, Depends(obter_service)],
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
+    apenas_ativas: Annotated[bool, Query(description="Filtrar apenas ativas")] = True,
 ) -> list[EspecialidadeResposta]:
-    return [EspecialidadeResposta.model_validate(e) for e in service.listar_ativas()]
+    return [
+        EspecialidadeResposta.model_validate(e)
+        for e in service.listar_ativas(apenas_ativas=apenas_ativas)
+    ]
+
+
+@router.patch("/{especialidade_id}/status", response_model=EspecialidadeResposta)
+def alternar_status(
+    especialidade_id: int,
+    service: Annotated[EspecialidadeService, Depends(obter_service)],
+    db: Annotated[Session, Depends(get_db)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+) -> EspecialidadeResposta:
+    especialidade = service.alternar_status(especialidade_id)
+    db.commit()
+    return EspecialidadeResposta.model_validate(especialidade)

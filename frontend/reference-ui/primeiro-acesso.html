@@ -7,251 +7,127 @@
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-  <!-- US-00: Primeiro acesso — ativação de login ou auto-cadastro -->
-  <!-- Referência: CA4 (vinculação por CPF), CA5 (auto-cadastro), CA6 (CPF já tem login) -->
+  <!-- US-00: Primeiro acesso — verificar CPF, depois ativar login ou auto-cadastro (ADR-005) -->
+  <!-- Sem logo/stepper na AuthShell real: so titulo + descricao + formulario -->
 
   <div class="auth-layout">
-    <div class="auth-card" style="max-width:480px;">
-      <!-- Logo -->
-      <div class="auth-logo">
-        <div class="logo-icon">🏥</div>
-        <div>
-          <div class="logo-text">Clínica Médica</div>
-          <div class="text-xs text-dimmed">Primeiro Acesso</div>
-        </div>
-      </div>
-
-      <!-- Stepper -->
-      <div class="stepper">
-        <div class="stepper-step completed">
-          <div class="stepper-circle">✓</div>
-          <span class="stepper-label">CPF</span>
-        </div>
-        <div class="stepper-separator completed"></div>
-        <div class="stepper-step active">
-          <div class="stepper-circle">2</div>
-          <span class="stepper-label">Dados</span>
-        </div>
-      </div>
-
-      <!-- ============================================================= -->
-      <!-- ESTADO 1: Paciente encontrado — apenas criar senha (CA4)      -->
-      <!-- ============================================================= -->
-      <div class="alert alert-success" style="margin-bottom:20px;">
-        <span class="alert-icon">✅</span>
-        <div>
-          <strong>Encontramos seu cadastro, Carlos!</strong><br>
-          <span class="text-sm">Crie uma senha para ativar seu login.</span>
-        </div>
-      </div>
-
-      <form onsubmit="return false">
-        <div class="stack gap-md">
-          <!-- CPF (readonly) -->
-          <div class="input-wrapper">
-            <label class="input-label" for="cpf">CPF</label>
-            <input id="cpf" class="input" type="text" value="529.982.247-25" disabled
-              style="background:var(--gray-1);color:var(--gray-6);">
-          </div>
-
-          <!-- Nome (pré-preenchido, readonly) -->
-          <div class="input-wrapper">
-            <label class="input-label" for="nome">Nome</label>
-            <input id="nome" class="input" type="text" value="Carlos Silva" disabled
-              style="background:var(--gray-1);color:var(--gray-6);">
-          </div>
-
-          <!-- Senha -->
-          <div class="input-wrapper">
-            <label class="input-label input-required" for="senha">Criar senha</label>
-            <input id="senha" class="input" type="password" placeholder="Mínimo 6 caracteres">
-          </div>
-
-          <!-- Confirmar senha -->
-          <div class="input-wrapper">
-            <label class="input-label input-required" for="confirmar-senha">Confirmar senha</label>
-            <input id="confirmar-senha" class="input" type="password" placeholder="Repita a senha">
-          </div>
-
-          <button class="btn btn-primary btn-full btn-lg" type="submit">
-            Ativar meu acesso
-          </button>
-        </div>
-      </form>
-
-      <div class="divider"></div>
-
-      <div class="text-center">
-        <a href="login.html" class="text-sm">← Já tenho login, voltar para entrar</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================= -->
-  <!-- ESTADO 2: CPF não encontrado — auto-cadastro completo (CA5)   -->
-  <!-- Descomente este bloco e comente o acima para ver este estado   -->
-  <!-- ============================================================= -->
-  <!--
-  <div class="auth-layout">
-    <div class="auth-card" style="max-width:480px;">
-      <div class="auth-logo">
-        <div class="logo-icon">🏥</div>
-        <div>
-          <div class="logo-text">Clínica Médica</div>
-          <div class="text-xs text-dimmed">Primeiro Acesso</div>
-        </div>
-      </div>
-
-      <div class="stepper">
-        <div class="stepper-step completed">
-          <div class="stepper-circle">✓</div>
-          <span class="stepper-label">CPF</span>
-        </div>
-        <div class="stepper-separator completed"></div>
-        <div class="stepper-step active">
-          <div class="stepper-circle">2</div>
-          <span class="stepper-label">Cadastro</span>
-        </div>
-      </div>
-
-      <div class="alert alert-info" style="margin-bottom:20px;">
-        <span class="alert-icon">ℹ️</span>
-        <div>
-          <strong>CPF não encontrado</strong><br>
-          <span class="text-sm">Preencha seus dados para se cadastrar.</span>
-        </div>
-      </div>
-
-      <form onsubmit="return false">
-        <div class="stack gap-md">
-          <div class="input-wrapper">
-            <label class="input-label" for="cpf2">CPF</label>
-            <input id="cpf2" class="input" type="text" value="123.456.789-09" disabled
-              style="background:var(--gray-1);color:var(--gray-6);">
-          </div>
-
-          <div class="input-wrapper">
-            <label class="input-label input-required" for="nome2">Nome completo</label>
-            <input id="nome2" class="input" type="text" placeholder="Seu nome completo">
-          </div>
-
-          <div class="input-wrapper">
-            <label class="input-label input-required" for="telefone2">Telefone</label>
-            <input id="telefone2" class="input" type="tel" placeholder="(82) 99999-0000">
-          </div>
-
-          <div class="input-wrapper">
-            <label class="input-label" for="email2">E-mail <span class="text-dimmed text-xs">(opcional)</span></label>
-            <input id="email2" class="input" type="email" placeholder="seu@email.com">
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="input-wrapper">
-            <label class="input-label input-required" for="senha2">Criar senha</label>
-            <input id="senha2" class="input" type="password" placeholder="Mínimo 6 caracteres">
-          </div>
-
-          <div class="input-wrapper">
-            <label class="input-label input-required" for="confirmar2">Confirmar senha</label>
-            <input id="confirmar2" class="input" type="password" placeholder="Repita a senha">
-          </div>
-
-          <button class="btn btn-primary btn-full btn-lg" type="submit">
-            Criar minha conta
-          </button>
-        </div>
-      </form>
-
-      <div class="divider"></div>
-
-      <div class="text-center">
-        <a href="login.html" class="text-sm">← Já tenho login, voltar para entrar</a>
-      </div>
-    </div>
-  </div>
-  -->
-
-  <!-- ============================================================= -->
-  <!-- ESTADO 0: Tela inicial — digitação do CPF (step 1)            -->
-  <!-- Descomente para ver                                           -->
-  <!-- ============================================================= -->
-  <!--
-  <div class="auth-layout">
-    <div class="auth-card" style="max-width:480px;">
-      <div class="auth-logo">
-        <div class="logo-icon">🏥</div>
-        <div>
-          <div class="logo-text">Clínica Médica</div>
-          <div class="text-xs text-dimmed">Primeiro Acesso</div>
-        </div>
-      </div>
-
-      <div class="stepper">
-        <div class="stepper-step active">
-          <div class="stepper-circle">1</div>
-          <span class="stepper-label">CPF</span>
-        </div>
-        <div class="stepper-separator"></div>
-        <div class="stepper-step pending">
-          <div class="stepper-circle">2</div>
-          <span class="stepper-label">Dados</span>
-        </div>
-      </div>
-
-      <h2 style="font-size:1.25rem; margin-bottom:8px;">Verificar CPF</h2>
-      <p class="text-dimmed text-sm" style="margin-bottom:20px;">
+    <div class="auth-card">
+      <!-- ===== Passo 1: Verificar CPF ===== -->
+      <h1 style="font-size:1.375rem; margin-bottom:4px;">Verificar CPF</h1>
+      <p class="text-dimmed text-sm" style="margin-bottom:24px;">
         Informe seu CPF para verificarmos se você já tem cadastro na clínica.
       </p>
 
       <form onsubmit="return false">
         <div class="stack gap-md">
           <div class="input-wrapper">
-            <label class="input-label input-required" for="cpf-check">CPF</label>
-            <input id="cpf-check" class="input" type="text" placeholder="000.000.000-00">
+            <label class="input-label input-required" for="cpf">CPF</label>
+            <input id="cpf" class="input" type="text" placeholder="000.000.000-00">
             <span class="input-description">Pode digitar com ou sem pontos e traço</span>
           </div>
-
-          <button class="btn btn-primary btn-full btn-lg" type="submit">
-            Verificar
-          </button>
+          <button class="btn btn-primary btn-full btn-lg" type="submit">Verificar</button>
         </div>
       </form>
 
-      <div class="divider"></div>
+      <p class="text-center text-xs" style="margin-top:24px;">
+        <a href="login.html">← Já tenho login, voltar para entrar</a>
+      </p>
+    </div>
+  </div>
 
-      <div class="text-center">
-        <a href="login.html" class="text-sm">← Já tenho login, voltar para entrar</a>
+  <!-- ============================================================= -->
+  <!-- ESTADO 2 — CPF encontrado, ativar login (CA4)                  -->
+  <!-- Descomente este bloco e comente o Passo 1 acima para ver       -->
+  <!-- ============================================================= -->
+  <!--
+  <div class="auth-layout">
+    <div class="auth-card">
+      <div class="alert alert-success" style="margin-bottom:20px;">
+        <strong>Encontramos seu cadastro, Carlos Silva!</strong>
+        <div class="text-sm">Crie uma senha para ativar seu login.</div>
       </div>
+
+      <form onsubmit="return false">
+        <div class="stack gap-md">
+          <div class="input-wrapper">
+            <label class="input-label">CPF</label>
+            <input class="input" value="529.982.247-25" disabled style="background:var(--gray-0);">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label">Nome</label>
+            <input class="input" value="Carlos Silva" disabled style="background:var(--gray-0);">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Criar senha</label>
+            <input class="input" type="password" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Confirmar senha</label>
+            <input class="input" type="password" placeholder="Repita a senha">
+          </div>
+          <button class="btn btn-primary btn-full btn-lg" type="submit">Ativar meu acesso</button>
+        </div>
+      </form>
     </div>
   </div>
   -->
 
   <!-- ============================================================= -->
-  <!-- ESTADO 3: CPF já tem login ativo (CA6)                        -->
+  <!-- ESTADO 3 — CPF não encontrado, auto-cadastro (CA5 / ADR-005)   -->
   <!-- ============================================================= -->
   <!--
   <div class="auth-layout">
-    <div class="auth-card" style="max-width:480px;">
-      <div class="auth-logo">
-        <div class="logo-icon">🏥</div>
-        <div>
-          <div class="logo-text">Clínica Médica</div>
-          <div class="text-xs text-dimmed">Primeiro Acesso</div>
-        </div>
+    <div class="auth-card">
+      <div class="alert alert-info" style="margin-bottom:20px;">
+        <strong>CPF não encontrado</strong>
+        <div class="text-sm">Preencha seus dados para se cadastrar.</div>
       </div>
 
+      <form onsubmit="return false">
+        <div class="stack gap-md">
+          <div class="input-wrapper">
+            <label class="input-label">CPF</label>
+            <input class="input" value="123.456.789-09" disabled style="background:var(--gray-0);">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Nome completo</label>
+            <input class="input" placeholder="Seu nome completo">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Telefone</label>
+            <input class="input" placeholder="(82) 99999-0000">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label">E-mail</label>
+            <input class="input" placeholder="seu@email.com">
+            <span class="input-description">Opcional</span>
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Criar senha</label>
+            <input class="input" type="password" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Confirmar senha</label>
+            <input class="input" type="password" placeholder="Repita a senha">
+          </div>
+          <button class="btn btn-primary btn-full btn-lg" type="submit">Criar minha conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  -->
+
+  <!-- ============================================================= -->
+  <!-- ESTADO 4 — CPF já tem login ativo (CA6)                        -->
+  <!-- ============================================================= -->
+  <!--
+  <div class="auth-layout">
+    <div class="auth-card">
       <div class="alert alert-warning" style="margin-bottom:20px;">
-        <span class="alert-icon">⚠️</span>
-        <div>
-          <strong>Este CPF já possui login ativo</strong><br>
-          <span class="text-sm">Você já criou sua senha anteriormente. Use a tela de login.</span>
-        </div>
+        <strong>Este CPF já possui login ativo</strong>
+        <div class="text-sm">Você já criou sua senha anteriormente. Use a tela de login.</div>
       </div>
-
-      <a href="login.html" class="btn btn-primary btn-full btn-lg">
-        Ir para o login
-      </a>
+      <a href="login.html" class="btn btn-primary btn-full btn-lg">Ir para o login</a>
     </div>
   </div>
   -->

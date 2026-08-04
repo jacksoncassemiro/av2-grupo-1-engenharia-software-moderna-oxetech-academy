@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login — Clínica Médica</title>
   <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
   <!-- US-00: Login com campo único "CPF ou E-mail" -->
@@ -12,18 +13,9 @@
 
   <div class="auth-layout">
     <div class="auth-card">
-      <!-- Logo -->
-      <div class="auth-logo">
-        <div class="logo-icon">🏥</div>
-        <div>
-          <div class="logo-text">Clínica Médica</div>
-          <div class="text-xs text-dimmed">Sistema de Gestão</div>
-        </div>
-      </div>
-
       <!-- Título -->
-      <h1 style="font-size:1.375rem; text-align:center; margin-bottom:4px;">Bem-vindo de volta</h1>
-      <p class="text-center text-dimmed text-sm" style="margin-bottom:24px;">
+      <h1 style="font-size:1.375rem; margin-bottom:4px;">Bem-vindo de volta</h1>
+      <p class="text-dimmed text-sm" style="margin-bottom:24px;">
         Entre com suas credenciais para acessar o sistema
       </p>
 
@@ -69,8 +61,8 @@
 
       <!-- Link para primeiro acesso -->
       <div class="text-center">
-        <a href="primeiro-acesso.html" class="btn btn-light btn-full">
-          ✨ Primeiro acesso
+        <a href="primeiro-acesso.html" class="btn btn-light btn-full" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;">
+          <i data-lucide="sparkles" style="width:16px;height:16px;"></i> Primeiro acesso
         </a>
         <p class="text-xs text-dimmed" style="margin-top:8px;">
           Nunca entrou no sistema? Ative seu login pelo CPF
@@ -87,7 +79,7 @@
   <div class="auth-layout">
     <div class="auth-card">
       <div class="auth-logo">
-        <div class="logo-icon">🏥</div>
+        <div class="logo-icon"><i data-lucide="hospital"></i></div>
         <div>
           <div class="logo-text">Clínica Médica</div>
           <div class="text-xs text-dimmed">Sistema de Gestão</div>
@@ -95,7 +87,7 @@
       </div>
 
       <div class="alert alert-error" style="margin-bottom:20px;">
-        <span class="alert-icon">⚠️</span>
+        <span class="alert-icon"><i data-lucide="triangle-alert"></i></span>
         <div>Login ou senha inválidos</div>
       </div>
 
@@ -120,5 +112,7 @@
   <div style="position:fixed;bottom:16px;left:16px;right:16px;text-align:center;">
     <a href="index.html" class="btn btn-white btn-sm">← Voltar ao índice</a>
   </div>
+
+  <script>lucide.createIcons();</script>
 </body>
 </html>
