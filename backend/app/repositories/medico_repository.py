@@ -18,11 +18,11 @@ class MedicoRepository(RepositorioBase[Medico]):
         ).first()
 
     def listar_ativos(
-        self, especialidade_id: int | None = None, apenas_ativos: bool = True
+        self, especialidade_id: int | None = None, apenas_ativos: bool | None = None
     ) -> list[Medico]:
         consulta = select(Medico)
-        if apenas_ativos:
-            consulta = consulta.where(Medico.ativo.is_(True))
+        if apenas_ativos is not None:
+            consulta = consulta.where(Medico.ativo.is_(apenas_ativos))
         if especialidade_id is not None:
             consulta = consulta.where(Medico.especialidade_id == especialidade_id)
         return list(self.db.scalars(consulta).all())

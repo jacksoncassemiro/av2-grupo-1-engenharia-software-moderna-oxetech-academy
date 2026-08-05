@@ -39,9 +39,13 @@ class MedicoService:
         return self.medicos.salvar(medico)
 
     def listar_ativos(
-        self, especialidade_id: int | None = None, apenas_ativos: bool = True
+        self, especialidade_id: int | None = None, apenas_ativos: bool | None = None
     ) -> list[Medico]:
-        """Listagem de médicos ativos (US-06 / CA4 da US-02)."""
+        """Listagem de médicos (US-06 / CA4 da US-02).
+
+        Se apenas_ativos for None, retorna todos os médicos.
+        Se True, apenas os ativos. Se False, apenas os inativos.
+        """
         return self.medicos.listar_ativos(especialidade_id, apenas_ativos=apenas_ativos)
 
     def alternar_status(self, medico_id: int) -> Medico:

@@ -25,11 +25,11 @@ class FakeMedicoRepository:
         return next((m for m in self._itens if m.crm.strip().lower() == crm_norm), None)
 
     def listar_ativos(
-        self, especialidade_id: int | None = None, apenas_ativos: bool = True
+        self, especialidade_id: int | None = None, apenas_ativos: bool | None = None
     ) -> list[Medico]:
         resultado = list(self._itens)
-        if apenas_ativos:
-            resultado = [m for m in resultado if m.ativo]
+        if apenas_ativos is not None:
+            resultado = [m for m in resultado if m.ativo is apenas_ativos]
         if especialidade_id is not None:
             resultado = [m for m in resultado if m.especialidade_id == especialidade_id]
         return resultado
@@ -152,7 +152,7 @@ def test_listar_medicos_ativos_com_filtro():
     )
     service = MedicoService(FakeMedicoRepository([m1, m2, m3]), FakeEspecialidadeRepository())
 
-    ativos = service.listar_ativos(especialidade_id=1)
+    ativos = service.listar_ativos(especialidade_id=1, apenas_ativos=True)
     assert len(ativos) == 1
     assert ativos[0].nome == "Dr. Silva"
 
@@ -178,14 +178,14 @@ def test_us06_ca1_filtrar_medicos_por_especialidade():
     )
     service = MedicoService(FakeMedicoRepository([m1, m2]), FakeEspecialidadeRepository())
 
-    filtrados = service.listar_ativos(especialidade_id=1)
+    filtrados = service.listar_ativos(especialidade_id=1, apenas_ativos=True)
     assert len(filtrados) == 1
     assert filtrados[0].nome == "Dr. Silva"
 
 
 @pytest.mark.unit
-def test_us06_ca2_ca3_sem_filtro_retorna_apenas_medicos_ativos():
-    """US-06 CA2/CA3 - Sem filtro retorna medicos ativos; inativos sao ignorados."""
+def test_listar_medicos_filtro_status_ativo_inativo_e_todos():
+    """Filtra medicos por status: apenas_ativos=None (todos), True (ativos), False (inativos)."""
     m1 = Medico(
         id=1,
         nome="Dr. Silva",
@@ -212,13 +212,19 @@ def test_us06_ca2_ca3_sem_filtro_retorna_apenas_medicos_ativos():
     )
     service = MedicoService(FakeMedicoRepository([m1, m2, m3]), FakeEspecialidadeRepository())
 
-    ativos = service.listar_ativos(especialidade_id=None)
+    # apenas_ativos=None -> Todos
+    todos = service.listar_ativos(especialidade_id=None, apenas_ativos=None)
+    assert len(todos) == 3
+
+    # apenas_ativos=True -> Apenas ativos
+    ativos = service.listar_ativos(especialidade_id=None, apenas_ativos=True)
     assert len(ativos) == 2
     assert all(m.ativo for m in ativos)
 
-    apenas_esp1 = service.listar_ativos(especialidade_id=1)
-    assert len(apenas_esp1) == 1
-    assert apenas_esp1[0].nome == "Dr. Silva"
+    # apenas_ativos=False -> Apenas inativos
+    inativos = service.listar_ativos(especialidade_id=None, apenas_ativos=False)
+    assert len(inativos) == 1
+    assert inativos[0].nome == "Dr. Inativo"
 
 
 @pytest.mark.unit
