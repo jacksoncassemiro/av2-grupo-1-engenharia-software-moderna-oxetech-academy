@@ -50,7 +50,10 @@ export default function EspecialidadesPage() {
       } catch (erro) {
         if (!cancel) {
           notifications.show({
-            message: erro instanceof ApiError ? erro.message : 'Não foi possível carregar as especialidades',
+            message:
+              erro instanceof ApiError
+                ? erro.message
+                : 'Não foi possível carregar as especialidades',
             color: 'red',
           });
         }
