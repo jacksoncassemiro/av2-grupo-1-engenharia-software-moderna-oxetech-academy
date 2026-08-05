@@ -34,7 +34,10 @@ def cadastrar(
 def listar(
     service: Annotated[EspecialidadeService, Depends(obter_service)],
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
-    apenas_ativas: Annotated[bool, Query(description="Filtrar apenas ativas")] = True,
+    apenas_ativas: Annotated[
+        bool | None,
+        Query(description="Filtrar status: True=ativas, False=inativas, None=todas"),
+    ] = None,
 ) -> list[EspecialidadeResposta]:
     return [
         EspecialidadeResposta.model_validate(e)
