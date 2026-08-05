@@ -31,9 +31,7 @@ const mockEspecialidades = [
   { id: 2, nome: 'Dermatologia' },
 ];
 
-const mockMedicos = [
-  { id: 10, nome: 'Dr. Carlos', crm: '12345/SP', especialidade_id: 1 },
-];
+const mockMedicos = [{ id: 10, nome: 'Dr. Carlos', crm: '12345/SP', especialidade_id: 1 }];
 
 const renderComProvedor = () =>
   render(
