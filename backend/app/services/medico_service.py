@@ -42,7 +42,7 @@ class MedicoService:
         self, especialidade_id: int | None = None, apenas_ativos: bool | None = None
     ) -> list[Medico]:
         """Listagem de médicos (US-06 / CA4 da US-02).
-        
+
         Se apenas_ativos for None, retorna todos os médicos.
         Se True, apenas os ativos. Se False, apenas os inativos.
         """

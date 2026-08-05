@@ -45,7 +45,8 @@ def listar(
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
     especialidade_id: Annotated[int | None, Query()] = None,
     apenas_ativos: Annotated[
-        bool | None, Query(description="Filtrar por status ativo/inativo (True=ativos, False=inativos, omitido=todos)")
+        bool | None,
+        Query(description="Filtrar status: True=ativos, False=inativos, None=todos"),
     ] = None,
 ) -> list[MedicoResposta]:
     return [

@@ -30,7 +30,7 @@ class EspecialidadeService:
 
     def listar_ativas(self, apenas_ativas: bool | None = None) -> list[Especialidade]:
         """Listagem de especialidades (US-06 / CA3 da US-01).
-        
+
         Se apenas_ativas for None, retorna todas as especialidades.
         Se True, apenas as ativas. Se False, apenas as inativas.
         """

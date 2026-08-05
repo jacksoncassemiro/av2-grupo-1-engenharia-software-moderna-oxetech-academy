@@ -185,7 +185,7 @@ def test_us06_ca1_filtrar_medicos_por_especialidade():
 
 @pytest.mark.unit
 def test_listar_medicos_filtro_status_ativo_inativo_e_todos():
-    """Sem filtro (apenas_ativos=None) retorna todos os medicos; True apenas ativos; False apenas inativos."""
+    """Filtra medicos por status: apenas_ativos=None (todos), True (ativos), False (inativos)."""
     m1 = Medico(
         id=1,
         nome="Dr. Silva",

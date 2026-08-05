@@ -35,7 +35,8 @@ def listar(
     service: Annotated[EspecialidadeService, Depends(obter_service)],
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
     apenas_ativas: Annotated[
-        bool | None, Query(description="Filtrar por status ativas/inativas (True=ativas, False=inativas, omitido=todas)")
+        bool | None,
+        Query(description="Filtrar status: True=ativas, False=inativas, None=todas"),
     ] = None,
 ) -> list[EspecialidadeResposta]:
     return [
