@@ -9,6 +9,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '/api';
 const CHAVE_TOKEN = 'clinica.token';
 const CHAVE_TIPO_USUARIO = 'clinica.tipoUsuario';
 
+/**
+ * Nome do cookie leve que o proxy.ts le no servidor para fazer redirecionamentos.
+ * NAO contem o JWT — apenas o tipo de usuario (PACIENTE | ATENDENTE).
+ * Nao e HttpOnly para que o JS possa limpa-lo no logout.
+ */
+const COOKIE_PERFIL = 'clinica_perfil';
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -35,6 +42,9 @@ export function limparToken(): void {
 
 export function guardarTipoUsuario(tipoUsuario: string): void {
   sessionStorage.setItem(CHAVE_TIPO_USUARIO, tipoUsuario);
+  // Sincroniza com cookie leve para que o proxy.ts possa ler no servidor.
+  // SameSite=Strict impede CSRF; sem HttpOnly para o JS limpar no logout.
+  document.cookie = `${COOKIE_PERFIL}=${tipoUsuario}; Path=/; SameSite=Strict; Max-Age=86400`;
 }
 
 export function lerTipoUsuario(): string | null {
@@ -46,6 +56,8 @@ export function lerTipoUsuario(): string | null {
 export function encerrarSessao(): void {
   sessionStorage.removeItem(CHAVE_TOKEN);
   sessionStorage.removeItem(CHAVE_TIPO_USUARIO);
+  // Expira o cookie de perfil imediatamente.
+  document.cookie = `${COOKIE_PERFIL}=; Path=/; SameSite=Strict; Max-Age=0`;
 }
 
 type Opcoes = Omit<RequestInit, 'body'> & { body?: unknown };
