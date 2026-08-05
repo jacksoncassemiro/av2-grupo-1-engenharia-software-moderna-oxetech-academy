@@ -3,13 +3,13 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
 
 from app.core.security import decodificar_token
 from app.models.enums import TipoUsuario
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+http_bearer = HTTPBearer()
 
 
 class UsuarioAutenticado:
@@ -21,7 +21,10 @@ class UsuarioAutenticado:
         self.paciente_id = paciente_id
 
 
-def usuario_atual(token: Annotated[str, Depends(oauth2_scheme)]) -> UsuarioAutenticado:
+def usuario_atual(
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(http_bearer)],
+) -> UsuarioAutenticado:
+    token = auth.credentials
     try:
         payload = decodificar_token(token)
     except JWTError as erro:
