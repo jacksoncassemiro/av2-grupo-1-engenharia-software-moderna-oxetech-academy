@@ -1,10 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 
-import { lerToken, lerTipoUsuario } from '@/lib/api';
+import { lerTipoUsuario, lerToken } from '@/lib/api';
 import type { TipoUsuario } from '@/types/dominio';
 
 /** Home de cada perfil — fonte única de verdade usada por proxy.ts e AuthGuard. */

@@ -16,8 +16,8 @@
  * AVISO: a autorização real é do backend (RN12). Este proxy é apenas UX.
  */
 
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 // ---------------------------------------------------------------------------
 // Mapa de rotas por perfil — manter sincronizado com src/app/
@@ -31,16 +31,10 @@ const ROTAS_ATENDENTE = new Set([
   '/agenda',
 ]);
 
-const ROTAS_PACIENTE = new Set([
-  '/consultas',
-  '/meus-dados',
-  '/buscar-medicos',
-  '/agendar',
-]);
+const ROTAS_PACIENTE = new Set(['/consultas', '/meus-dados', '/buscar-medicos', '/agendar']);
 
 /** Rotas acessíveis sem autenticação. "/" não está aqui: ela redireciona todos (ver bloco de rota desconhecida). */
 const ROTAS_PUBLICAS = new Set(['/login', '/primeiro-acesso']);
-
 
 const HOME_POR_PERFIL: Record<string, string> = {
   ATENDENTE: '/gerenciar-consultas',
