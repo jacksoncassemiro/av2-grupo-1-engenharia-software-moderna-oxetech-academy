@@ -1,35 +1,77 @@
-// Setup do Mantine para App Router conforme a doc oficial:
-// https://mantine.dev/guides/next/#setup-with-app-router
-import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/notifications/styles.css';
+'use client';
 
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
-import { ModalsProvider } from '@mantine/modals';
-import { Notifications } from '@mantine/notifications';
-import type { Metadata } from 'next';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
-import { theme } from '@/theme';
+import { AppShell, Burger, Group, NavLink, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { Building2, CalendarDays, ClipboardList, LogOut, Search, UserRound } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Clinica Medica - MVP',
-  description: 'Sistema de Gestao de Clinica Medica - AV2 Oxetech Academy, Equipe 01',
-};
+import { AuthGuard } from '@/components/auth/AuthGuard';
+import { encerrarSessao } from '@/lib/api';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const ICON_SIZE = 18;
+
+const ROTAS_PACIENTE = [
+  { href: '/consultas', rotulo: 'Minhas Consultas', Icone: ClipboardList },
+  { href: '/buscar-medicos', rotulo: 'Buscar Médicos', Icone: Search },
+  { href: '/agendar', rotulo: 'Agendar Consulta', Icone: CalendarDays },
+  { href: '/meus-dados', rotulo: 'Meus Dados', Icone: UserRound },
+];
+
+export default function LayoutPaciente({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [opened, { toggle, close }] = useDisclosure(false);
+
+  function sair() {
+    encerrarSessao();
+    router.replace('/login');
+  }
+
   return (
-    <html lang="pt-BR" {...mantineHtmlProps}>
-      <head>
-        <ColorSchemeScript defaultColorScheme="auto" />
-      </head>
-      <body>
-        <MantineProvider theme={theme}>
-          <ModalsProvider>
-            <Notifications position="top-right" />
-            {children}
-          </ModalsProvider>
-        </MantineProvider>
-      </body>
-    </html>
+    <AuthGuard perfil="PACIENTE">
+      <AppShell
+        header={{ height: 60 }}
+        navbar={{ width: 240, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+        padding="md"
+      >
+        <AppShell.Header>
+          <Group h="100%" px="md" justify="space-between">
+            <Group gap="sm">
+              <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+              <Group gap={8}>
+                <Building2 size={22} />
+                <Title order={4}>Clínica Médica</Title>
+              </Group>
+            </Group>
+            <NavLink
+              label="Sair"
+              onClick={sair}
+              w="auto"
+              c="red"
+              leftSection={<LogOut size={16} />}
+            />
+          </Group>
+        </AppShell.Header>
+
+        <AppShell.Navbar p="md">
+          {ROTAS_PACIENTE.map((rota) => (
+            <NavLink
+              key={rota.href}
+              component={Link}
+              href={rota.href}
+              label={rota.rotulo}
+              leftSection={<rota.Icone size={ICON_SIZE} />}
+              active={pathname === rota.href || pathname.startsWith(rota.href + '/')}
+              onClick={close}
+            />
+          ))}
+        </AppShell.Navbar>
+
+        <AppShell.Main>{children}</AppShell.Main>
+      </AppShell>
+    </AuthGuard>
   );
 }
