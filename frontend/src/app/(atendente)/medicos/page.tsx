@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import {
+  ActionIcon,
   Badge,
   Button,
   Card,
@@ -13,10 +14,11 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { Stethoscope } from 'lucide-react';
+import { Ban, CheckCircle2, Stethoscope } from 'lucide-react';
 
 import { api, ApiError } from '@/lib/api';
 import {
@@ -30,8 +32,10 @@ export default function MedicosPage() {
   const [medicos, setMedicos] = useState<Medico[]>([]);
   const [especialidades, setEspecialidades] = useState<Especialidade[]>([]);
   const [filtroEspecialidade, setFiltroEspecialidade] = useState<string | null>(null);
+  const [statusFiltro, setStatusFiltro] = useState<string>('true');
   const [carregando, setCarregando] = useState(true);
   const [enviando, setEnviando] = useState(false);
+  const [alterandoId, setAlterandoId] = useState<string | number | null>(null);
 
   const form = useForm({
     initialValues: { nome: '', email: '', crm: '', especialidadeId: '' },
@@ -39,11 +43,19 @@ export default function MedicosPage() {
       nome: (valor: string) => validarNomeCompleto(valor),
       email: validarEmailObrigatorio,
       crm: (valor: string) => validarTextoMinimo(valor, 4, 'CRM inválido'),
-      especialidadeId: (valor) => (valor ? null : 'Selecione uma especialidade'), // CA1
+      especialidadeId: (valor) => (valor ? null : 'Selecione uma especialidade'),
     },
   });
 
-  const opcoesEspecialidade = useMemo(
+  const opcoesEspecialidadeForm = useMemo(
+    () =>
+      especialidades
+        .filter((e) => e.ativo !== false)
+        .map((e) => ({ value: String(e.id), label: e.nome })),
+    [especialidades]
+  );
+
+  const opcoesEspecialidadeFiltro = useMemo(
     () => especialidades.map((e) => ({ value: String(e.id), label: e.nome })),
     [especialidades]
   );
@@ -53,39 +65,67 @@ export default function MedicosPage() {
     return (id: number) => mapa.get(id) ?? `#${id}`;
   }, [especialidades]);
 
-  async function carregar(especialidadeId?: string | null) {
-    setCarregando(true);
-    try {
-      const query = especialidadeId ? `?especialidade_id=${especialidadeId}` : '';
-      const [listaMedicos, listaEspecialidades] = await Promise.all([
-        api<Medico[]>(`/medicos${query}`),
-        especialidades.length === 0
-          ? api<Especialidade[]>('/especialidades')
-          : Promise.resolve(especialidades),
-      ]);
-      setMedicos(listaMedicos);
-      if (especialidades.length === 0) setEspecialidades(listaEspecialidades);
-    } catch (erro) {
-      notifications.show({
-        message: erro instanceof ApiError ? erro.message : 'Não foi possível carregar os médicos',
-        color: 'red',
-      });
-    } finally {
-      setCarregando(false);
-    }
-  }
-
+  // Carrega as especialidades uma vez ao montar o componente
   useEffect(() => {
-    queueMicrotask(() => {
-      carregar();
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let cancel = false;
+
+    async function buscarEspecialidades() {
+      try {
+        const dados = await api<Especialidade[]>('/especialidades?apenas_ativas=true');
+        if (!cancel) setEspecialidades(dados);
+      } catch (erro) {
+        if (!cancel) {
+          notifications.show({
+            message:
+              erro instanceof ApiError
+                ? erro.message
+                : 'Não foi possível carregar as especialidades',
+            color: 'red',
+          });
+        }
+      }
+    }
+
+    buscarEspecialidades();
+
+    return () => {
+      cancel = true;
+    };
   }, []);
 
-  function aoFiltrar(valor: string | null) {
-    setFiltroEspecialidade(valor);
-    carregar(valor);
-  }
+  // Busca lista de médicos quando os filtros se alteram
+  useEffect(() => {
+    let cancel = false;
+
+    async function buscarMedicos() {
+      try {
+        const queryParams = new URLSearchParams();
+        if (filtroEspecialidade) queryParams.append('especialidade_id', filtroEspecialidade);
+        if (statusFiltro !== 'todos') queryParams.append('apenas_ativos', statusFiltro);
+
+        const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+        const dados = await api<Medico[]>(`/medicos${queryString}`);
+
+        if (!cancel) setMedicos(dados);
+      } catch (erro) {
+        if (!cancel) {
+          notifications.show({
+            message:
+              erro instanceof ApiError ? erro.message : 'Não foi possível carregar os médicos',
+            color: 'red',
+          });
+        }
+      } finally {
+        if (!cancel) setCarregando(false);
+      }
+    }
+
+    buscarMedicos();
+
+    return () => {
+      cancel = true;
+    };
+  }, [filtroEspecialidade, statusFiltro]);
 
   async function cadastrar(valores: typeof form.values) {
     setEnviando(true);
@@ -99,13 +139,17 @@ export default function MedicosPage() {
           especialidade_id: Number(valores.especialidadeId),
         },
       });
-      if (!filtroEspecialidade || filtroEspecialidade === valores.especialidadeId) {
+
+      if (
+        (!filtroEspecialidade || filtroEspecialidade === valores.especialidadeId) &&
+        statusFiltro !== 'false'
+      ) {
         setMedicos((atual) => [...atual, criado]);
       }
+
       notifications.show({ message: 'Médico cadastrado', color: 'teal' });
       form.reset();
     } catch (erro) {
-      // CA2 (e-mail) e CA3 (CRM) chegam aqui como 409 com mensagem pronta do backend.
       notifications.show({
         title: 'Não foi possível cadastrar',
         message: erro instanceof ApiError ? erro.message : 'Falha inesperada',
@@ -115,6 +159,37 @@ export default function MedicosPage() {
       setEnviando(false);
     }
   }
+
+  async function alternarStatus(medico: Medico) {
+    setAlterandoId(medico.id);
+
+    try {
+      const atualizado = await api<Medico>(`/medicos/${medico.id}/status`, {
+        method: 'PATCH',
+      });
+
+      setMedicos((atual) => atual.map((item) => (item.id === atualizado.id ? atualizado : item)));
+
+      notifications.show({
+        message: `Médico ${atualizado.ativo ? 'ativado' : 'inativado'} com sucesso!`,
+        color: 'teal',
+      });
+    } catch (erro) {
+      notifications.show({
+        title: 'Não foi possível alterar o status',
+        message: erro instanceof ApiError ? erro.message : 'Falha na requisição',
+        color: 'red',
+      });
+    } finally {
+      setAlterandoId(null);
+    }
+  }
+
+  const medicosFiltrados = medicos.filter((medico) => {
+    if (statusFiltro === 'true') return medico.ativo === true;
+    if (statusFiltro === 'false') return medico.ativo === false;
+    return true;
+  });
 
   return (
     <Stack gap="lg">
@@ -135,7 +210,7 @@ export default function MedicosPage() {
               <Select
                 label="Especialidade"
                 placeholder="Selecione"
-                data={opcoesEspecialidade}
+                data={opcoesEspecialidadeForm}
                 withAsterisk
                 {...form.getInputProps('especialidadeId')}
               />
@@ -161,13 +236,17 @@ export default function MedicosPage() {
               />
             </Group>
             <Group justify="flex-end">
-              <Button type="submit" loading={enviando} disabled={opcoesEspecialidade.length === 0}>
+              <Button
+                type="submit"
+                loading={enviando}
+                disabled={opcoesEspecialidadeForm.length === 0}
+              >
                 Cadastrar
               </Button>
             </Group>
-            {opcoesEspecialidade.length === 0 && !carregando && (
+            {opcoesEspecialidadeForm.length === 0 && !carregando && (
               <Text size="xs" c="dimmed">
-                Cadastre uma especialidade antes de cadastrar um médico.
+                Cadastre e ative uma especialidade antes de cadastrar um médico.
               </Text>
             )}
           </Stack>
@@ -175,17 +254,40 @@ export default function MedicosPage() {
       </Card>
 
       <Card withBorder radius="md" p={{ base: 'md', sm: 'lg' }}>
-        <Group justify="space-between" mb="md" wrap="wrap">
+        <Group justify="space-between" align="center" mb="md" wrap="wrap">
           <Text fw={600}>Médicos cadastrados</Text>
-          <Select
-            placeholder="Filtrar por especialidade"
-            data={opcoesEspecialidade}
-            value={filtroEspecialidade}
-            onChange={aoFiltrar}
-            clearable
-            w={{ base: '100%', xs: 240 }}
-          />
+          <Group gap="xs" wrap="wrap">
+            <Select
+              aria-label="Filtrar por especialidade"
+              placeholder="Especialidade"
+              data={opcoesEspecialidadeFiltro}
+              value={filtroEspecialidade}
+              onChange={(val) => {
+                setFiltroEspecialidade(val);
+                setCarregando(true);
+              }}
+              clearable
+              w={{ base: '100%', xs: 200 }}
+            />
+            <Select
+              aria-label="Filtrar por status"
+              size="xs"
+              w={{ base: '100%', xs: 130 }}
+              value={statusFiltro}
+              onChange={(val) => {
+                setStatusFiltro(val || 'true');
+                setCarregando(true);
+              }}
+              data={[
+                { value: 'true', label: 'Ativos' },
+                { value: 'false', label: 'Inativos' },
+                { value: 'todos', label: 'Todos' },
+              ]}
+              allowDeselect={false}
+            />
+          </Group>
         </Group>
+
         <Table.ScrollContainer minWidth={520}>
           <Table verticalSpacing="sm">
             <Table.Thead>
@@ -194,10 +296,11 @@ export default function MedicosPage() {
                 <Table.Th>CRM</Table.Th>
                 <Table.Th visibleFrom="sm">Especialidade</Table.Th>
                 <Table.Th>Status</Table.Th>
+                <Table.Th ta="right">Ações</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {medicos.map((medico) => (
+              {medicosFiltrados.map((medico) => (
                 <Table.Tr key={medico.id}>
                   <Table.Td>{medico.nome}</Table.Td>
                   <Table.Td>{medico.crm}</Table.Td>
@@ -209,13 +312,26 @@ export default function MedicosPage() {
                       {medico.ativo ? 'Ativo' : 'Inativo'}
                     </Badge>
                   </Table.Td>
+                  <Table.Td ta="right">
+                    <Tooltip label={medico.ativo ? 'Inativar' : 'Ativar'}>
+                      <ActionIcon
+                        variant="light"
+                        color={medico.ativo ? 'red' : 'green'}
+                        onClick={() => alternarStatus(medico)}
+                        loading={alterandoId === medico.id}
+                        aria-label={medico.ativo ? 'Inativar' : 'Ativar'}
+                      >
+                        {medico.ativo ? <Ban size={16} /> : <CheckCircle2 size={16} />}
+                      </ActionIcon>
+                    </Tooltip>
+                  </Table.Td>
                 </Table.Tr>
               ))}
-              {!carregando && medicos.length === 0 && (
+              {!carregando && medicosFiltrados.length === 0 && (
                 <Table.Tr>
-                  <Table.Td colSpan={4}>
+                  <Table.Td colSpan={5}>
                     <Text c="dimmed" ta="center" py="md">
-                      Nenhum médico cadastrado ainda.
+                      Nenhum médico encontrado.
                     </Text>
                   </Table.Td>
                 </Table.Tr>
