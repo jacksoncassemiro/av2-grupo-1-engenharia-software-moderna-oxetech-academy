@@ -44,7 +44,9 @@ def listar(
     service: Annotated[MedicoService, Depends(obter_medico_service)],
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
     especialidade_id: Annotated[int | None, Query()] = None,
-    apenas_ativos: Annotated[bool, Query(description="Filtrar apenas ativos")] = True,
+    apenas_ativos: Annotated[
+        bool | None, Query(description="Filtrar por status ativo/inativo (True=ativos, False=inativos, omitido=todos)")
+    ] = None,
 ) -> list[MedicoResposta]:
     return [
         MedicoResposta.model_validate(m)

@@ -18,9 +18,9 @@ class FakeEspecialidadeRepository:
         nome_norm = nome.strip().lower()
         return next((e for e in self._itens if e.nome.strip().lower() == nome_norm), None)
 
-    def listar_ativas(self, apenas_ativas: bool = True) -> list[Especialidade]:
-        if apenas_ativas:
-            return [e for e in self._itens if e.ativo]
+    def listar_ativas(self, apenas_ativas: bool | None = None) -> list[Especialidade]:
+        if apenas_ativas is not None:
+            return [e for e in self._itens if e.ativo is apenas_ativas]
         return list(self._itens)
 
     def salvar(self, entidade: Especialidade) -> Especialidade:
@@ -72,17 +72,26 @@ def test_bloquear_cadastro_nome_vazio_ou_curto_apos_strip():
 
 
 @pytest.mark.unit
-def test_listar_apenas_especialidades_ativas():
-    """US-01 CA3 / US-06 - Deve listar apenas especialidades com ativo = True."""
+def test_listar_especialidades_filtro_status_ativa_inativa_e_todas():
+    """Sem filtro (apenas_ativas=None) retorna todas; True apenas ativas; False apenas inativas."""
     esp1 = Especialidade(id=1, nome="Cardiologia", ativo=True)
     esp2 = Especialidade(id=2, nome="Dermatologia Inativa", ativo=False)
     repo = FakeEspecialidadeRepository([esp1, esp2])
     service = EspecialidadeService(repo)
 
-    resultado = service.listar_ativas()
+    # apenas_ativas=None -> Todas
+    todas = service.listar_ativas(apenas_ativas=None)
+    assert len(todas) == 2
 
-    assert len(resultado) == 1
-    assert resultado[0].nome == "Cardiologia"
+    # apenas_ativas=True -> Apenas ativas
+    ativas = service.listar_ativas(apenas_ativas=True)
+    assert len(ativas) == 1
+    assert ativas[0].nome == "Cardiologia"
+
+    # apenas_ativas=False -> Apenas inativas
+    inativas = service.listar_ativas(apenas_ativas=False)
+    assert len(inativas) == 1
+    assert inativas[0].nome == "Dermatologia Inativa"
 
 
 @pytest.mark.unit
