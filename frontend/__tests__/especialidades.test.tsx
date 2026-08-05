@@ -58,8 +58,10 @@ describe('EspecialidadesPage', () => {
   test('altera o filtro de status e refaz a busca com o query param correto', async () => {
     const user = userEvent.setup();
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
-      if (endpoint === '/especialidades?apenas_ativas=true') return Promise.resolve([mockEspecialidades[0]]);
-      if (endpoint === '/especialidades?apenas_ativas=false') return Promise.resolve([mockEspecialidades[1]]);
+      if (endpoint === '/especialidades?apenas_ativas=true')
+        return Promise.resolve([mockEspecialidades[0]]);
+      if (endpoint === '/especialidades?apenas_ativas=false')
+        return Promise.resolve([mockEspecialidades[1]]);
       return Promise.resolve([]);
     });
 
@@ -82,10 +84,12 @@ describe('EspecialidadesPage', () => {
     const user = userEvent.setup();
     const novaEspecialidade = { id: 3, nome: 'Dermatologia', descricao: 'Pele', ativo: true };
 
-    (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string, options?: { method?: string; body?: unknown }) => {
-      if (options?.method === 'POST') return Promise.resolve(novaEspecialidade);
-      return Promise.resolve([mockEspecialidades[0]]);
-    });
+    (api as ReturnType<typeof vi.fn>).mockImplementation(
+      (endpoint: string, options?: { method?: string; body?: unknown }) => {
+        if (options?.method === 'POST') return Promise.resolve(novaEspecialidade);
+        return Promise.resolve([mockEspecialidades[0]]);
+      }
+    );
 
     renderComProvedor();
     await screen.findByText('Cardiologia');
@@ -111,12 +115,14 @@ describe('EspecialidadesPage', () => {
   test('exibe notificação de erro ao falhar o cadastro de duplicata (409)', async () => {
     const user = userEvent.setup();
 
-    (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string, options?: { method?: string; body?: unknown }) => {
-      if (options?.method === 'POST') {
-        return Promise.reject(new ApiError('Especialidade já cadastrada', 409));
+    (api as ReturnType<typeof vi.fn>).mockImplementation(
+      (endpoint: string, options?: { method?: string; body?: unknown }) => {
+        if (options?.method === 'POST') {
+          return Promise.reject(new ApiError('Especialidade já cadastrada', 409));
+        }
+        return Promise.resolve([mockEspecialidades[0]]);
       }
-      return Promise.resolve([mockEspecialidades[0]]);
-    });
+    );
 
     renderComProvedor();
     await screen.findByText('Cardiologia');
@@ -137,12 +143,14 @@ describe('EspecialidadesPage', () => {
     const user = userEvent.setup();
     const especialidadeInativada = { ...mockEspecialidades[0], ativo: false };
 
-    (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string, options?: { method?: string; body?: unknown }) => {
-      if (endpoint === '/especialidades/1/status' && options?.method === 'PATCH') {
-        return Promise.resolve(especialidadeInativada);
+    (api as ReturnType<typeof vi.fn>).mockImplementation(
+      (endpoint: string, options?: { method?: string; body?: unknown }) => {
+        if (endpoint === '/especialidades/1/status' && options?.method === 'PATCH') {
+          return Promise.resolve(especialidadeInativada);
+        }
+        return Promise.resolve([mockEspecialidades[0]]);
       }
-      return Promise.resolve([mockEspecialidades[0]]);
-    });
+    );
 
     renderComProvedor();
     await screen.findByText('Cardiologia');
@@ -167,9 +175,7 @@ describe('EspecialidadesPage', () => {
 
     renderComProvedor();
 
-    expect(
-      await screen.findByText('Nenhuma especialidade encontrada.')
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Nenhuma especialidade encontrada.')).toBeInTheDocument();
   });
 
   test('exibe notificação de erro quando a chamada da API falha no carregamento', async () => {
