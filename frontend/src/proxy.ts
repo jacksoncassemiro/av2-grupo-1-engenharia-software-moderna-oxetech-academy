@@ -117,11 +117,14 @@ export const config = {
   matcher: [
     /*
      * Intercepta todos os caminhos EXCETO:
+     *   - api            (rewrite para o backend — ver next.config.mjs; a
+     *                      autorizacao real e do JWT/RN12, o proxy nao deve
+     *                      redirecionar chamadas de API para /login)
      *   - _next/static  (bundle JS/CSS gerado)
      *   - _next/image   (otimizador de imagens)
      *   - favicon.ico
      *   - qualquer arquivo com extensão (ex.: .png, .svg, .woff2)
      */
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\..*).*)',
+    '/((?!api/|_next/static|_next/image|favicon\\.ico|.*\\..*).*)',
   ],
 };
