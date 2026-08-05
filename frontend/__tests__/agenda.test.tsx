@@ -144,7 +144,8 @@ describe('AgendaPage', () => {
 
     // Localiza o elemento do Pill e o botão de remoção interno
     const pillLabel = screen.getByText('11:00');
-    const removePillBtn = pillLabel.closest('.mantine-Pill-root')?.querySelector('button')!;
+    const pillRoot = pillLabel.closest('.mantine-Pill-root')!;
+    const removePillBtn = pillRoot.querySelector('button')!;
     await userEvent.click(removePillBtn);
 
     expect(screen.queryByText('11:00')).not.toBeInTheDocument();
