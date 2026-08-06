@@ -64,3 +64,12 @@ def atualizar_meus_dados(
     paciente = service.atualizar(usuario.paciente_id, dados)
     db.commit()
     return PacienteResposta.model_validate(paciente)
+
+
+@router.get("", response_model=list[PacienteResposta], summary="Listar pacientes")
+def listar(
+    service: Annotated[PacienteService, Depends(obter_service)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+) -> list[PacienteResposta]:
+    pacientes = service.listar()
+    return [PacienteResposta.model_validate(p) for p in pacientes]
