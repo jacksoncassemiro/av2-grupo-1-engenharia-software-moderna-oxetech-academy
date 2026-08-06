@@ -103,7 +103,8 @@ export default function MedicosPage() {
         if (filtroEspecialidade) queryParams.append('especialidade_id', filtroEspecialidade);
         if (statusFiltro !== 'todos') queryParams.append('apenas_ativos', statusFiltro);
 
-        const dados = await api<Medico[]>(`/medicos${queryParams}`);
+        const query = queryParams.toString();
+        const dados = await api<Medico[]>(`/medicos${query ? `?${query}` : ''}`);
 
         if (!cancel) setMedicos(dados);
       } catch (erro) {
