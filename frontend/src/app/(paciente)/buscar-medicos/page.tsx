@@ -47,8 +47,10 @@ export default function MedicosPage() {
 
     async function carregarMedicos() {
       try {
-        const query = filtroEspecialidade ? `?especialidade_id=${filtroEspecialidade}` : '';
-        const listaMedicos = await api<Medico[]>(`/medicos${query}`);
+        const queryParams = new URLSearchParams();
+        queryParams.append('apenas_ativos', 'true');
+        if (filtroEspecialidade) queryParams.append('especialidade_id', filtroEspecialidade);
+        const listaMedicos = await api<Medico[]>(`/medicos${queryParams}`);
         if (!ignorar) setMedicos(listaMedicos);
       } catch (erro) {
         if (!ignorar) {
