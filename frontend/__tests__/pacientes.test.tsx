@@ -3,6 +3,7 @@ import { render, screen, userEvent, within } from '@test-utils';
 import { notifications } from '@mantine/notifications';
 import PacientesPage from '@/app/(atendente)/pacientes/page';
 import * as apiModule from '@/lib/api';
+import { api } from '@/lib/api';
 
 vi.mock('@/lib/api', async () => {
   const actual = await vi.importActual<typeof apiModule>('@/lib/api');
@@ -21,11 +22,18 @@ vi.mock('@mantine/notifications', () => ({
 describe('PacientesPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Handler padrão: GET /pacientes retorna lista vazia
+    vi.mocked(api).mockImplementation(async (url, config) => {
+      if (url === '/pacientes' && (!config || config.method === 'GET')) {
+        return [];
+      }
+      return {};
+    });
   });
 
   // --- CENÁRIOS DE ACERTO (SUCESSO) ---
 
-  it('deve cadastrar paciente com sucesso e exibir na tabela da sessão', async () => {
+  it('deve cadastrar paciente com sucesso e exibir na tabela', async () => {
     const mockPacienteCriado = {
       id: '1',
       nome: 'Maria Silva Santos',
@@ -35,7 +43,13 @@ describe('PacientesPage', () => {
       data_nascimento: '1990-10-10',
     };
 
-    vi.mocked(apiModule.api).mockResolvedValueOnce(mockPacienteCriado);
+    // Distingue GET (carregamento) de POST (cadastro)
+    vi.mocked(api).mockImplementation(async (url, config) => {
+      if (url === '/pacientes' && config?.method === 'POST') {
+        return mockPacienteCriado;
+      }
+      return [];
+    });
 
     render(<PacientesPage />);
 
@@ -50,7 +64,7 @@ describe('PacientesPage', () => {
     await userEvent.click(screen.getByRole('button', { name: /cadastrar paciente/i }));
 
     await vi.waitFor(() => {
-      expect(apiModule.api).toHaveBeenCalledWith('/pacientes', {
+      expect(api).toHaveBeenCalledWith('/pacientes', {
         method: 'POST',
         body: {
           nome: 'Maria Silva Santos',
@@ -104,7 +118,12 @@ describe('PacientesPage', () => {
       data_nascimento: null,
     };
 
-    vi.mocked(apiModule.api).mockResolvedValueOnce(mockPacienteSimples);
+    vi.mocked(api).mockImplementation(async (url, config) => {
+      if (url === '/pacientes' && config?.method === 'POST') {
+        return mockPacienteSimples;
+      }
+      return [];
+    });
 
     render(<PacientesPage />);
 
@@ -115,7 +134,7 @@ describe('PacientesPage', () => {
     await userEvent.click(screen.getByRole('button', { name: /cadastrar paciente/i }));
 
     await vi.waitFor(() => {
-      expect(apiModule.api).toHaveBeenCalledWith('/pacientes', {
+      expect(api).toHaveBeenCalledWith('/pacientes', {
         method: 'POST',
         body: {
           nome: 'João Pedro Alves',
@@ -146,7 +165,13 @@ describe('PacientesPage', () => {
 
   it('deve exibir notificação de erro quando a API retornar 409 (CPF já cadastrado)', async () => {
     const error409 = new apiModule.ApiError('CPF já cadastrado no sistema', 409);
-    vi.mocked(apiModule.api).mockRejectedValueOnce(error409);
+
+    vi.mocked(api).mockImplementation(async (url, config) => {
+      if (url === '/pacientes' && config?.method === 'POST') {
+        throw error409;
+      }
+      return [];
+    });
 
     render(<PacientesPage />);
 
@@ -168,7 +193,12 @@ describe('PacientesPage', () => {
   });
 
   it('deve exibir "Falha inesperada" quando ocorrer erro genérico no envio', async () => {
-    vi.mocked(apiModule.api).mockRejectedValueOnce(new Error('Network Error'));
+    vi.mocked(api).mockImplementation(async (url, config) => {
+      if (url === '/pacientes' && config?.method === 'POST') {
+        throw new Error('Network Error');
+      }
+      return [];
+    });
 
     render(<PacientesPage />);
 
