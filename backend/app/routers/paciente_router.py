@@ -65,6 +65,7 @@ def atualizar_meus_dados(
     db.commit()
     return PacienteResposta.model_validate(paciente)
 
+
 @router.get("", response_model=list[PacienteResposta], summary="Listar pacientes")
 def listar(
     service: Annotated[PacienteService, Depends(obter_service)],
