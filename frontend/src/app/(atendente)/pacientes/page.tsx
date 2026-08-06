@@ -1,8 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Alert, Button, Card, Group, Stack, Table, Text, TextInput, Title } from '@mantine/core';
+import {
+  Alert,
+  Button,
+  Card,
+  Group,
+  Skeleton,
+  Stack,
+  Table,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -17,7 +28,28 @@ import type { Paciente } from '@/types/dominio';
 
 export default function PacientesPage() {
   const [enviando, setEnviando] = useState(false);
-  const [cadastradosNaSessao, setCadastradosNaSessao] = useState<Paciente[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+
+  // Busca os pacientes do backend ao carregar a página
+  useEffect(() => {
+    async function carregarPacientes() {
+      try {
+        const dados = await api<Paciente[]>('/pacientes');
+        setPacientes(dados);
+      } catch (erro) {
+        notifications.show({
+          title: 'Erro ao carregar pacientes',
+          message: erro instanceof ApiError ? erro.message : 'Falha ao buscar dados',
+          color: 'red',
+        });
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarPacientes();
+  }, []);
 
   const form = useForm({
     initialValues: {
@@ -50,7 +82,7 @@ export default function PacientesPage() {
             : null,
         },
       });
-      setCadastradosNaSessao((atual) => [criado, ...atual]);
+      setPacientes((atual) => [criado, ...atual]);
       notifications.show({ message: 'Paciente cadastrado', color: 'teal' });
       form.reset();
     } catch (erro) {
@@ -145,11 +177,21 @@ export default function PacientesPage() {
         </form>
       </Card>
 
-      {cadastradosNaSessao.length > 0 && (
-        <Card withBorder radius="md" p={{ base: 'md', sm: 'lg' }}>
-          <Text fw={600} mb="md">
-            Cadastrados nesta sessão
+      <Card withBorder radius="md" p={{ base: 'md', sm: 'lg' }}>
+        <Text fw={600} mb="md">
+          Pacientes cadastrados
+        </Text>
+
+        {carregando ? (
+          <Stack gap="xs">
+            <Skeleton height={30} radius="sm" />
+            <Skeleton height={30} radius="sm" />
+          </Stack>
+        ) : pacientes.length === 0 ? (
+          <Text c="dimmed" size="sm">
+            Nenhum paciente cadastrado até o momento.
           </Text>
+        ) : (
           <Table.ScrollContainer minWidth={480}>
             <Table verticalSpacing="sm">
               <Table.Thead>
@@ -161,7 +203,7 @@ export default function PacientesPage() {
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {cadastradosNaSessao.map((paciente) => (
+                {pacientes.map((paciente) => (
                   <Table.Tr key={paciente.id}>
                     <Table.Td>{paciente.nome}</Table.Td>
                     <Table.Td>{formatarCpf(paciente.cpf)}</Table.Td>
@@ -176,8 +218,8 @@ export default function PacientesPage() {
               </Table.Tbody>
             </Table>
           </Table.ScrollContainer>
-        </Card>
-      )}
+        )}
+      </Card>
     </Stack>
   );
 }
