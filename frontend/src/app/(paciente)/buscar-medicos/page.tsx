@@ -29,7 +29,7 @@ export default function MedicosPage() {
   // Carrega as especialidades uma única vez na montagem
   useEffect(() => {
     let ignorar = false;
-    api<Especialidade[]>('/especialidades')
+    api<Especialidade[]>('/especialidades?apenas_ativas=true')
       .then((dados) => {
         if (!ignorar) setEspecialidades(dados);
       })
@@ -50,7 +50,7 @@ export default function MedicosPage() {
         const queryParams = new URLSearchParams();
         queryParams.append('apenas_ativos', 'true');
         if (filtroEspecialidade) queryParams.append('especialidade_id', filtroEspecialidade);
-        const listaMedicos = await api<Medico[]>(`/medicos${queryParams}`);
+        const listaMedicos = await api<Medico[]>(`/medicos?${queryParams.toString()}`);
         if (!ignorar) setMedicos(listaMedicos);
       } catch (erro) {
         if (!ignorar) {

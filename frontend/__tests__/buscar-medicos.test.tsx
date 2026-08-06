@@ -47,8 +47,9 @@ describe('MedicosPage (US-06)', () => {
 
   test('carrega e exibe a lista de médicos com os atributos do botão da US-06', async () => {
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
-      if (endpoint === '/especialidades') return Promise.resolve(mockEspecialidades);
-      if (endpoint === '/medicos') return Promise.resolve(mockMedicos);
+      if (endpoint === '/especialidades?apenas_ativas=true')
+        return Promise.resolve(mockEspecialidades);
+      if (endpoint === '/medicos?apenas_ativos=true') return Promise.resolve(mockMedicos);
       return Promise.resolve([]);
     });
 
@@ -66,9 +67,11 @@ describe('MedicosPage (US-06)', () => {
   test('refaz a busca na API ao selecionar uma especialidade no filtro', async () => {
     const user = userEvent.setup();
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
-      if (endpoint === '/especialidades') return Promise.resolve(mockEspecialidades);
-      if (endpoint === '/medicos') return Promise.resolve(mockMedicos);
-      if (endpoint === '/medicos?especialidade_id=1') return Promise.resolve(mockMedicos);
+      if (endpoint === '/especialidades?apenas_ativas=true')
+        return Promise.resolve(mockEspecialidades);
+      if (endpoint === '/medicos?apenas_ativos=true') return Promise.resolve(mockMedicos);
+      if (endpoint === '/medicos?apenas_ativos=true&especialidade_id=1')
+        return Promise.resolve(mockMedicos);
       return Promise.resolve([]);
     });
 
@@ -82,14 +85,15 @@ describe('MedicosPage (US-06)', () => {
     await user.click(opcaoCardiologia);
 
     await waitFor(() => {
-      expect(api).toHaveBeenCalledWith('/medicos?especialidade_id=1');
+      expect(api).toHaveBeenCalledWith('/medicos?apenas_ativos=true&especialidade_id=1');
     });
   });
 
   test('exibe mensagem quando não houver médicos para o filtro selecionado', async () => {
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
-      if (endpoint === '/especialidades') return Promise.resolve(mockEspecialidades);
-      if (endpoint === '/medicos') return Promise.resolve([]);
+      if (endpoint === '/especialidades?apenas_ativas=true')
+        return Promise.resolve(mockEspecialidades);
+      if (endpoint === '/medicos?apenas_ativos=true') return Promise.resolve([]);
       return Promise.resolve([]);
     });
 
@@ -102,7 +106,8 @@ describe('MedicosPage (US-06)', () => {
 
   test('exibe notificação de erro quando a chamada da API falha', async () => {
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
-      if (endpoint === '/especialidades') return Promise.resolve(mockEspecialidades);
+      if (endpoint === '/especialidades?apenas_ativas=true')
+        return Promise.resolve(mockEspecialidades);
       if (endpoint.startsWith('/medicos')) {
         return Promise.reject(new ApiError('Erro ao conectar ao servidor', 500));
       }
@@ -123,7 +128,8 @@ describe('MedicosPage (US-06)', () => {
     const user = userEvent.setup();
 
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
-      if (endpoint === '/especialidades') return Promise.resolve(mockEspecialidades);
+      if (endpoint === '/especialidades?apenas_ativas=true')
+        return Promise.resolve(mockEspecialidades);
       return Promise.resolve(mockMedicos);
     });
 
@@ -143,7 +149,7 @@ describe('MedicosPage (US-06)', () => {
     await user.click(botaoLimpar);
 
     await waitFor(() => {
-      expect(api).toHaveBeenLastCalledWith('/medicos');
+      expect(api).toHaveBeenLastCalledWith('/medicos?apenas_ativos=true');
     });
   });
 });
