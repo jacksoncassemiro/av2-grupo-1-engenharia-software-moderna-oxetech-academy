@@ -65,9 +65,16 @@ export interface HorarioDisponivel {
 export interface Consulta {
   id: number;
   paciente_id: number;
+  paciente_nome: string;
   medico_id: number;
+  medico_nome: string;
+  especialidade_nome: string;
   horario_disponivel_id: number;
+  data: string;
+  horario: string;
   status: StatusConsulta;
   data_agendamento: string;
   motivo_cancelamento: string | null;
+  pode_cancelar: boolean;
 }
+
