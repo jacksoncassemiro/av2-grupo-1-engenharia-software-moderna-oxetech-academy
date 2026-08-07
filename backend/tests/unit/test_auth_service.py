@@ -1,9 +1,14 @@
 """Login flexivel CPF|e-mail e primeiro acesso / auto-cadastro (US-00, ADR-005)."""
 
 import pytest
+from pydantic import ValidationError
 
 from app.core.security import gerar_hash_senha
-from app.exceptions.dominio import CredenciaisInvalidas
+from app.exceptions.dominio import (
+    CredenciaisInvalidas,
+    DadosDeAutoCadastroIncompletos,
+    LoginJaAtivo,
+)
 from app.models.enums import TipoUsuario
 from app.models.paciente import Paciente
 from app.models.usuario import Usuario
@@ -45,9 +50,10 @@ def test_paciente_loga_com_cpf_formatado():
     )
     service = AuthService(FakeUsuarioRepository([usuario]), FakePacienteRepository())
 
-    token = service.autenticar("529.982.247-25", "senha123")
+    autenticacao = service.autenticar("529.982.247-25", "senha123")
 
-    assert isinstance(token, str) and token.count(".") == 2
+    assert autenticacao.token.count(".") == 2
+    assert autenticacao.tipo_usuario == "PACIENTE"
 
 
 @pytest.mark.unit
@@ -62,7 +68,11 @@ def test_atendente_loga_com_email_case_insensitive():
     )
     service = AuthService(FakeUsuarioRepository([usuario]), FakePacienteRepository())
 
-    assert service.autenticar("Recepcao@Clinica.COM", "admin123")
+    autenticacao = service.autenticar("Recepcao@Clinica.COM", "admin123")
+
+    assert autenticacao.token
+    # O perfil sai do service junto com o token: o router nao consulta o banco de novo.
+    assert autenticacao.tipo_usuario == "ATENDENTE"
 
 
 @pytest.mark.unit
@@ -102,7 +112,8 @@ def test_auto_cadastro_cria_paciente_e_credencial_no_mesmo_fluxo():
 
 
 @pytest.mark.unit
-def test_primeiro_acesso_falha_se_login_ja_existe():
+def test_ca06_primeiro_acesso_com_login_ja_ativo_responde_409():
+    """US-00 CA6 - CPF que ja tem login e conflito de estado (409), nao 401."""
     paciente = Paciente(id=1, nome="Joao", cpf=CPF, telefone="8299990000")
     usuario = Usuario(
         id=1,
@@ -114,8 +125,46 @@ def test_primeiro_acesso_falha_se_login_ja_existe():
     )
     service = AuthService(FakeUsuarioRepository([usuario]), FakePacienteRepository([paciente]))
 
-    with pytest.raises(CredenciaisInvalidas):
+    with pytest.raises(LoginJaAtivo) as erro:
         service.vincular_ou_criar(PrimeiroAcesso(cpf=CPF, senha="senha123"))
+
+    assert erro.value.status_code == 409
+
+
+@pytest.mark.unit
+def test_ca05_auto_cadastro_sem_nome_e_telefone_responde_422():
+    """US-00 CA5 - falta de dados obrigatorios e erro de validacao, nao de credencial."""
+    service = AuthService(FakeUsuarioRepository(), FakePacienteRepository())
+
+    with pytest.raises(DadosDeAutoCadastroIncompletos) as erro:
+        service.vincular_ou_criar(PrimeiroAcesso(cpf=CPF, senha="senha123"))
+
+    assert erro.value.status_code == 422
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("cpf_invalido", ["00000000000", "12345678900", "111", "abcdefghijk"])
+def test_rn07_primeiro_acesso_recusa_cpf_com_digito_verificador_invalido(cpf_invalido):
+    """RN07 - o auto-cadastro publico usa a mesma validacao de CPF da US-03."""
+    with pytest.raises(ValidationError):
+        PrimeiroAcesso(cpf=cpf_invalido, senha="senha123", nome="Fulano", telefone="8299990000")
+
+
+@pytest.mark.unit
+def test_rn07_primeiro_acesso_aceita_cpf_valido_com_mascara():
+    """RN07 - CPF valido com mascara e normalizado para so digitos."""
+    dados = PrimeiroAcesso(
+        cpf="529.982.247-25", senha="senha123", nome="Fulano", telefone="8299990000"
+    )
+
+    assert dados.cpf == CPF
+
+
+@pytest.mark.unit
+def test_auto_cadastro_recusa_telefone_curto_como_na_us03():
+    """Mesmo minimo de telefone de PacienteCriar - as duas portas de criacao sao iguais."""
+    with pytest.raises(ValidationError):
+        PrimeiroAcesso(cpf=CPF, senha="senha123", nome="Fulano", telefone="1")
 
 
 @pytest.mark.unit
