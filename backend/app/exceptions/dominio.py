@@ -53,10 +53,10 @@ class HorarioIndisponivel(RegraDeNegocioViolada):
 
 
 class CancelamentoNaoPermitido(RegraDeNegocioViolada):
-    """RN04."""
+    """RN04. O prazo vem de settings.CANCELAMENTO_ANTECEDENCIA_HORAS - nunca hardcoded."""
 
     status_code = 422
-    mensagem = "Cancelamento indisponivel. Prazo de antecedencia menor que 24 horas"
+    mensagem = "Cancelamento indisponivel: fora do prazo minimo de antecedencia"
 
 
 class MedicoJaAlocado(RegraDeNegocioViolada):
@@ -79,5 +79,21 @@ class RecursoNaoEncontrado(RegraDeNegocioViolada):
 
 
 class CredenciaisInvalidas(RegraDeNegocioViolada):
+    """US-00 / CA7 - mensagem generica de proposito: nao revela se o login existe."""
+
     status_code = 401
     mensagem = "Login ou senha invalidos"
+
+
+class LoginJaAtivo(RegraDeNegocioViolada):
+    """US-00 / CA6 - conflito de estado, nao falha de credencial."""
+
+    status_code = 409
+    mensagem = "Este CPF ja possui login ativo. Use a tela de login."
+
+
+class DadosDeAutoCadastroIncompletos(RegraDeNegocioViolada):
+    """US-00 / CA5 - campos exigidos so quando o CPF ainda nao tem cadastro."""
+
+    status_code = 422
+    mensagem = "Nome e telefone sao obrigatorios no auto-cadastro"
