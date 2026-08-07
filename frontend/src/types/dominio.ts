@@ -77,4 +77,3 @@ export interface Consulta {
   motivo_cancelamento: string | null;
   pode_cancelar: boolean;
 }
-
