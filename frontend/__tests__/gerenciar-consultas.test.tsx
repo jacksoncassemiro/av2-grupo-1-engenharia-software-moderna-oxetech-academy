@@ -60,8 +60,8 @@ describe('GerenciarConsultasPage', () => {
 
     const mockError = new apiModule.ApiError('Horário indisponível', 409);
     notifications.show({
-        message: mockError.message,
-        color: 'red',
+      message: mockError.message,
+      color: 'red',
     });
 
     expect(notifications.show).toHaveBeenCalledWith(
