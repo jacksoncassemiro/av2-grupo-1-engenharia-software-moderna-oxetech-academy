@@ -13,7 +13,7 @@ class EspecialidadeService:
     def __init__(self, repositorio: EspecialidadeRepository):
         self.repositorio = repositorio
 
-    def cadastrar(self, nome: str) -> Especialidade:
+    def cadastrar(self, nome: str, descricao: str | None = None) -> Especialidade:
         """Cadastra uma nova especialidade médica.
 
         RN12 - Autorização validada na controller via `exigir_atendente`.
@@ -26,7 +26,17 @@ class EspecialidadeService:
         if self.repositorio.buscar_por_nome(nome_limpo):
             raise EspecialidadeDuplicada()
 
-        return self.repositorio.salvar(Especialidade(nome=nome_limpo))
+        return self.repositorio.salvar(
+            Especialidade(nome=nome_limpo, descricao=self._normalizar_descricao(descricao))
+        )
+
+    @staticmethod
+    def _normalizar_descricao(descricao: str | None) -> str | None:
+        """Descricao em branco e equivalente a ausente."""
+        if descricao is None:
+            return None
+        limpa = descricao.strip()
+        return limpa or None
 
     def listar_ativas(self, apenas_ativas: bool | None = None) -> list[Especialidade]:
         """Listagem de especialidades (US-06 / CA3 da US-01).
