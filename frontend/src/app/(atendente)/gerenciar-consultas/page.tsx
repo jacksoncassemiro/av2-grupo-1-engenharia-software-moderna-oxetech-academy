@@ -1,5 +1,5 @@
 // src\app\(atendente)\gerenciar-consultas\page.tsx
-'use client'
+'use client';
 
 import { useState } from 'react';
 
