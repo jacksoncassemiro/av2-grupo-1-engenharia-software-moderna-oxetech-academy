@@ -21,7 +21,7 @@ import { Info, UsersRound } from 'lucide-react';
 
 import { api, ApiError } from '@/lib/api';
 import { cpfEhValido, formatarCpf } from '@/lib/cpf';
-import { formatarTelefone } from '@/lib/teleforne';
+import { formatarTelefone } from '@/lib/telefone';
 import dayjs from '@/lib/dayjs';
 import { validarEmailOpcional, validarNomeCompleto, validarTelefone } from '@/lib/validadores';
 import type { Paciente } from '@/types/dominio';
