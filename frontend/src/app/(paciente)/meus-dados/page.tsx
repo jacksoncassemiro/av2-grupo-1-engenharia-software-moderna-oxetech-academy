@@ -2,16 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import {
-  Button,
-  Card,
-  Group,
-  LoadingOverlay,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { Button, Card, Group, LoadingOverlay, Stack, Text, TextInput, Title } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -19,11 +10,7 @@ import { notifications } from '@mantine/notifications';
 import { api, ApiError } from '@/lib/api';
 import dayjs from '@/lib/dayjs';
 import { formatarCpf } from '@/lib/cpf';
-import {
-  validarEmailOpcional,
-  validarNomeCompleto,
-  validarTelefone,
-} from '@/lib/validadores';
+import { validarEmailOpcional, validarNomeCompleto, validarTelefone } from '@/lib/validadores';
 import type { Paciente } from '@/types/dominio';
 
 export default function MeusDadosPage() {
@@ -61,10 +48,7 @@ export default function MeusDadosPage() {
       })
       .catch((erro) => {
         notifications.show({
-          message:
-            erro instanceof ApiError
-              ? erro.message
-              : 'Não foi possível carregar seus dados',
+          message: erro instanceof ApiError ? erro.message : 'Não foi possível carregar seus dados',
           color: 'red',
         });
       })
@@ -96,8 +80,7 @@ export default function MeusDadosPage() {
     } catch (erro) {
       notifications.show({
         title: 'Não foi possível salvar',
-        message:
-          erro instanceof ApiError ? erro.message : 'Falha inesperada',
+        message: erro instanceof ApiError ? erro.message : 'Falha inesperada',
         color: 'red',
       });
     } finally {
@@ -121,23 +104,11 @@ export default function MeusDadosPage() {
               description="CPF não pode ser alterado"
             />
 
-            <TextInput
-              label="Nome completo"
-              withAsterisk
-              {...form.getInputProps('nome')}
-            />
+            <TextInput label="Nome completo" withAsterisk {...form.getInputProps('nome')} />
 
-            <TextInput
-              label="Telefone"
-              withAsterisk
-              {...form.getInputProps('telefone')}
-            />
+            <TextInput label="Telefone" withAsterisk {...form.getInputProps('telefone')} />
 
-            <TextInput
-              label="E-mail"
-              description="Opcional"
-              {...form.getInputProps('email')}
-            />
+            <TextInput label="E-mail" description="Opcional" {...form.getInputProps('email')} />
 
             <DateInput
               label="Data de nascimento"
