@@ -3,12 +3,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, userEvent } from '@test-utils';
 
 import { PrimeiroAcesso } from '@/components/primeiro-acesso/PrimeiroAcesso';
-import { api } from '@/lib/api';
+import { api, guardarTipoUsuario, guardarToken } from '@/lib/api';
 
 // `ApiError` precisa continuar sendo a classe real: o componente usa `instanceof`.
 vi.mock('@/lib/api', async (importarOriginal) => {
   const original = await importarOriginal<typeof import('@/lib/api')>();
-  return { ...original, api: vi.fn(), guardarToken: vi.fn() };
+  return {
+    ...original,
+    api: vi.fn(),
+    guardarToken: vi.fn(),
+    guardarTipoUsuario: vi.fn(),
+  };
 });
 
 const substituirRota = vi.fn();
@@ -115,6 +120,31 @@ describe('PrimeiroAcesso (US-00)', () => {
         senha: 'senha123',
       },
     });
+  });
+
+  it('CA5 - guarda o perfil junto com o token, senao o guard devolve para /login', async () => {
+    // Regressao: o fluxo gravava so o token. Sem `clinica.tipoUsuario` (e sem o
+    // cookie que o proxy.ts le), o AuthGuard nao reconhecia a sessao recem-criada
+    // e mandava o paciente de volta para a tela de login logo apos o cadastro.
+    apiMock
+      .mockResolvedValueOnce({ cadastro_existe: false, login_ativo: false, nome: null })
+      .mockResolvedValueOnce({
+        access_token: 'token-de-teste',
+        token_type: 'bearer',
+        tipo_usuario: 'PACIENTE',
+      });
+    render(<PrimeiroAcesso />);
+    await verificarCpf();
+
+    await userEvent.type(await screen.findByLabelText(/nome completo/i), 'Maria das Dores');
+    await userEvent.type(screen.getByLabelText(/telefone/i), '(82) 99999-0000');
+    await userEvent.type(screen.getByLabelText(/criar senha/i), 'senha123');
+    await userEvent.type(screen.getByLabelText(/confirmar senha/i), 'senha123');
+    await userEvent.click(screen.getByRole('button', { name: /criar minha conta/i }));
+
+    expect(vi.mocked(guardarToken)).toHaveBeenCalledWith('token-de-teste');
+    expect(vi.mocked(guardarTipoUsuario)).toHaveBeenCalledWith('PACIENTE');
+    expect(substituirRota).toHaveBeenCalledWith('/consultas');
   });
 
   it('CA6 - CPF com login ativo nao mostra formulario, e sim o caminho do login', async () => {

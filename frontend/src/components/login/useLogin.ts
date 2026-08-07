@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
+import { HOME_POR_PERFIL } from '@/components/auth/AuthGuard';
 import { ApiError } from '@/lib/api';
 import { apenasDigitos, cpfEhValido, formatarCpf, pareceEmail } from '@/lib/cpf';
 import { realizarLogin } from './auth.service';
@@ -58,11 +59,10 @@ export function useLogin() {
         senha: values.senha,
       });
 
-      if (resposta.tipo_usuario === 'PACIENTE') {
-        router.push('/consultas');
-      } else if (resposta.tipo_usuario === 'ATENDENTE') {
-        router.push('/agenda');
-      }
+      // Uma unica fonte de verdade para a home de cada perfil (a mesma que o
+      // AuthGuard e o proxy.ts usam), senao o login manda para uma rota e o
+      // guard redireciona para outra logo em seguida.
+      router.push(HOME_POR_PERFIL[resposta.tipo_usuario] ?? '/login');
     } catch (erro) {
       const mensagem =
         erro instanceof ApiError && erro.status === 401

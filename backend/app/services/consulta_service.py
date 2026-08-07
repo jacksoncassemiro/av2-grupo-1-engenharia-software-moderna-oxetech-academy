@@ -32,15 +32,38 @@ class ConsultaService:
         )
         return self.consultas.salvar(consulta)
 
+    def listar_do_paciente(self, paciente_id: int) -> list[Consulta]:
+        """US-10 - o paciente so enxerga o proprio historico."""
+        return self.consultas.listar_por_paciente(paciente_id)
+
+    def detalhar_do_paciente(self, consulta_id: int, paciente_id: int) -> Consulta:
+        """US-10 / RN12 - consulta de outro paciente responde 404, nunca vaza dado."""
+        return self._buscar_do_paciente_ou_falhar(consulta_id, paciente_id)
+
+    def listar_para_atendente(self, status: StatusConsulta | None = None) -> list[Consulta]:
+        """US-13 / CA5 - o atendente ve tudo, com filtro opcional por status."""
+        if status is None:
+            return self.consultas.listar()
+        return self.consultas.listar_por_status(status)
+
     def cancelar(
         self,
         consulta_id: int,
         perfil: TipoUsuario,
         motivo: str | None = None,
         agora: datetime | None = None,
+        paciente_id: int | None = None,
     ) -> Consulta:
-        """US-11 / US-12. A regra de prazo vem da Strategy, nao de um if."""
-        consulta = self._buscar_ou_falhar(consulta_id)
+        """US-11 / US-12. A regra de prazo vem da Strategy, nao de um if.
+
+        `paciente_id` restringe o cancelamento ao dono da consulta (RN12); o
+        atendente cancela qualquer uma e por isso passa None.
+        """
+        consulta = (
+            self._buscar_ou_falhar(consulta_id)
+            if paciente_id is None
+            else self._buscar_do_paciente_ou_falhar(consulta_id, paciente_id)
+        )
         self._garantir_transicao(consulta.status, StatusConsulta.CANCELADA)
 
         strategy = obter_strategy(perfil, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
@@ -89,5 +112,12 @@ class ConsultaService:
     def _buscar_ou_falhar(self, consulta_id: int) -> Consulta:
         consulta = self.consultas.buscar_por_id(consulta_id)
         if consulta is None:
+            raise RecursoNaoEncontrado("Consulta nao encontrada")
+        return consulta
+
+    def _buscar_do_paciente_ou_falhar(self, consulta_id: int, paciente_id: int) -> Consulta:
+        """RN12 - consulta de outro paciente e tratada como inexistente."""
+        consulta = self._buscar_ou_falhar(consulta_id)
+        if consulta.paciente_id != paciente_id:
             raise RecursoNaoEncontrado("Consulta nao encontrada")
         return consulta

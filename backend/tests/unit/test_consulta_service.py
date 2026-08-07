@@ -9,10 +9,13 @@ from app.core.config import settings
 from app.exceptions.dominio import (
     CancelamentoNaoPermitido,
     HorarioIndisponivel,
+    RecursoNaoEncontrado,
     TransicaoDeStatusInvalida,
 )
 from app.models.enums import StatusConsulta, TipoUsuario
 from app.repositories import consulta_repository  # noqa: F401 - garante import da camada
+from app.schemas.consulta_schema import _pode_cancelar  # noqa: PLC2701
+from app.services.cancelamento_strategy import CancelamentoPorPaciente
 from app.services.consulta_service import ConsultaService
 from tests.conftest import FakeConsultaRepository, FakeHorarioRepository, montar_consulta
 
@@ -137,6 +140,68 @@ def test_us08_agendamento_paciente_sucesso(slot_livre):
     assert consulta.paciente_id == 1
     assert consulta.status is StatusConsulta.SOLICITADA
     assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
+def test_rn12_paciente_nao_cancela_consulta_de_outro_paciente(slot_livre):
+    """RN12 - consulta de terceiro e tratada como inexistente (404), nunca vaza dado."""
+    consulta = montar_consulta(slot_livre)  # paciente_id = 1
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    with pytest.raises(RecursoNaoEncontrado) as erro:
+        service.cancelar(consulta.id, TipoUsuario.PACIENTE, paciente_id=999)
+
+    assert erro.value.status_code == 404
+    assert consulta.status is StatusConsulta.CONFIRMADA
+
+
+@pytest.mark.unit
+def test_rn12_paciente_nao_detalha_consulta_de_outro_paciente(slot_livre):
+    """RN12 - US-10 so mostra o proprio historico."""
+    consulta = montar_consulta(slot_livre)  # paciente_id = 1
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    assert service.detalhar_do_paciente(consulta.id, consulta.paciente_id) is consulta
+
+    with pytest.raises(RecursoNaoEncontrado):
+        service.detalhar_do_paciente(consulta.id, paciente_id=999)
+
+
+@pytest.mark.unit
+def test_rn04_prazo_de_cancelamento_vem_de_uma_unica_configuracao(slot_livre):
+    """RN04 - o mesmo settings.CANCELAMENTO_ANTECEDENCIA_HORAS aplica a regra e alimenta
+    o `pode_cancelar` da resposta. Se houvesse duas variaveis, a API responderia
+    `pode_cancelar=True` para uma consulta que o service recusa cancelar.
+    """
+    consulta = montar_consulta(slot_livre)  # 2026-08-12 14:00
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+    agora = datetime(2026, 8, 12, 2, 0, tzinfo=FUSO)  # faltam 12h, menos que as 24h padrao
+
+    pode_cancelar = _pode_cancelar(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
+
+    with pytest.raises(CancelamentoNaoPermitido):
+        service.cancelar(consulta.id, TipoUsuario.PACIENTE, agora=agora)
+
+    assert pode_cancelar is False  # a resposta concorda com a regra aplicada
+
+
+@pytest.mark.unit
+def test_rn04_mensagem_de_recusa_reflete_a_configuracao_e_nao_um_24_fixo(slot_livre):
+    """RN04 - o prazo nunca e hardcoded; a mensagem acompanha a configuracao."""
+    consulta = montar_consulta(slot_livre)
+    strategy = CancelamentoPorPaciente(48)
+    agora = datetime(2026, 8, 11, 14, 0, tzinfo=FUSO)  # faltam 24h, menos que as 48h exigidas
+
+    with pytest.raises(CancelamentoNaoPermitido) as erro:
+        strategy.validar(consulta, agora)
+
+    assert "48 horas" in str(erro.value)
 
 
 @pytest.mark.unit

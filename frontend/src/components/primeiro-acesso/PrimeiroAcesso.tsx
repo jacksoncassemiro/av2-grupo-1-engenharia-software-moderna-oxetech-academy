@@ -9,7 +9,8 @@ import { useState } from 'react';
 import { FormularioAtivarLogin } from '@/components/primeiro-acesso/FormularioAtivarLogin';
 import { FormularioAutoCadastro } from '@/components/primeiro-acesso/FormularioAutoCadastro';
 import { FormularioCpf } from '@/components/primeiro-acesso/FormularioCpf';
-import { api, ApiError, guardarToken } from '@/lib/api';
+import { HOME_POR_PERFIL } from '@/components/auth/AuthGuard';
+import { api, ApiError, guardarTipoUsuario, guardarToken } from '@/lib/api';
 import { apenasDigitos } from '@/lib/cpf';
 import { decidirEtapa, type EtapaPrimeiroAcesso } from '@/lib/primeiro-acesso';
 import type {
@@ -56,11 +57,14 @@ export function PrimeiroAcesso() {
         body: dados,
       });
       guardarToken(token.access_token);
+      // CA5 - sem o perfil na sessao o AuthGuard e o proxy.ts nao reconhecem o
+      // usuario e devolvem para /login logo apos o cadastro dar certo.
+      guardarTipoUsuario(token.tipo_usuario);
       notifications.show({
         message: 'Acesso ativado. Bem-vindo!',
         color: 'green',
       });
-      router.replace(ROTA_INICIAL_DO_PACIENTE);
+      router.replace(HOME_POR_PERFIL[token.tipo_usuario] ?? ROTA_INICIAL_DO_PACIENTE);
     } catch (erro) {
       notificarFalha(erro);
     } finally {

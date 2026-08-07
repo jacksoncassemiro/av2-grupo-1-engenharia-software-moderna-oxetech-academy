@@ -10,7 +10,6 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.deps import UsuarioAutenticado, exigir_paciente
-from app.exceptions.dominio import RecursoNaoEncontrado
 from app.models.enums import TipoUsuario
 from app.repositories.consulta_repository import ConsultaRepository
 from app.repositories.horario_repository import HorarioRepository
@@ -36,36 +35,30 @@ def solicitar(
     )
     db.commit()
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
-    return ConsultaResposta.de_consulta(
-        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
-    )
+    return ConsultaResposta.de_consulta(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
 
 
 @router.get("", response_model=list[ConsultaResposta], summary="US-10")
 def minhas_consultas(
-    db: Annotated[Session, Depends(get_db)],
+    service: Annotated[ConsultaService, Depends(obter_service)],
     usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
 ) -> list[ConsultaResposta]:
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
     return [
-        ConsultaResposta.de_consulta(c, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS)
-        for c in ConsultaRepository(db).listar_por_paciente(usuario.paciente_id)
+        ConsultaResposta.de_consulta(c, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
+        for c in service.listar_do_paciente(usuario.paciente_id)
     ]
 
 
 @router.get("/{consulta_id}", response_model=ConsultaResposta, summary="US-10")
 def detalhar_consulta(
     consulta_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    service: Annotated[ConsultaService, Depends(obter_service)],
     usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
 ) -> ConsultaResposta:
-    consulta = ConsultaRepository(db).buscar_por_id(consulta_id)
-    if consulta is None or consulta.paciente_id != usuario.paciente_id:
-        raise RecursoNaoEncontrado("Consulta nao encontrada")
+    consulta = service.detalhar_do_paciente(consulta_id, usuario.paciente_id)
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
-    return ConsultaResposta.de_consulta(
-        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
-    )
+    return ConsultaResposta.de_consulta(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
 
 
 @router.patch("/{consulta_id}/cancelar", response_model=ConsultaResposta, summary="US-11 / RN04")
@@ -76,12 +69,12 @@ def cancelar(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
 ) -> ConsultaResposta:
-    existente = ConsultaRepository(db).buscar_por_id(consulta_id)
-    if existente is None or existente.paciente_id != usuario.paciente_id:
-        raise RecursoNaoEncontrado("Consulta nao encontrada")
-    consulta = service.cancelar(consulta_id, TipoUsuario.PACIENTE, dados.motivo)
+    consulta = service.cancelar(
+        consulta_id,
+        TipoUsuario.PACIENTE,
+        dados.motivo,
+        paciente_id=usuario.paciente_id,  # RN12 - so cancela a propria consulta
+    )
     db.commit()
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
-    return ConsultaResposta.de_consulta(
-        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
-    )
+    return ConsultaResposta.de_consulta(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)

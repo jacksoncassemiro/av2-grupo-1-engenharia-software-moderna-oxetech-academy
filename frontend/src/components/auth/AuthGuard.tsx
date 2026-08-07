@@ -5,13 +5,10 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
 import { lerTipoUsuario, lerToken } from '@/lib/api';
+import { HOME_POR_PERFIL } from '@/lib/rotas';
 import type { TipoUsuario } from '@/types/dominio';
 
-/** Home de cada perfil — fonte única de verdade usada por proxy.ts e AuthGuard. */
-export const HOME_POR_PERFIL: Record<TipoUsuario, string> = {
-  PACIENTE: '/consultas',
-  ATENDENTE: '/gerenciar-consultas',
-};
+export { HOME_POR_PERFIL };
 
 type AuthGuardProps = {
   /** Perfil que este layout serve. Usuários de outro perfil são redirecionados. */
