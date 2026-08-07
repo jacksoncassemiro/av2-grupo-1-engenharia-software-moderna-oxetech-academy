@@ -26,8 +26,10 @@ src/app/
     └── consultas/page.tsx        # US-09, US-12, US-13
 ```
 
-As features do login ficam fora de `src/app/login/`: a rota chama a UI em `src/components/login/`,
-e a guarda de perfil compartilha `src/components/auth/AuthGuard.tsx`.
+A tela de login vive em `src/app/login/page.tsx` (formulário + chamada à API na própria rota,
+com o visual compartilhado em `src/components/AuthShell.tsx`). A guarda de perfil fica em
+`src/components/auth/AuthGuard.tsx`, e a home de cada perfil em `src/lib/rotas.ts` — a mesma
+constante que o `proxy.ts` lê, para login e guarda nunca discordarem.
 
 ---
 
