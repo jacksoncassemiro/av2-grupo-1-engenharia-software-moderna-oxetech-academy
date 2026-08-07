@@ -44,7 +44,8 @@ Ele registra apenas os dados cadastrais. O paciente define a própria senha depo
 
 **O crédito da solução é do PO (Uanderson)** — o fluxo de duas etapas veio do backlog escrito
 por ele, como US-00. A contribuição deste ADR foi identificar que ele resolve o conflito entre
-as duas fontes do enunciado e registrar por quê.
+as duas fontes do enunciado e registrar por quê. (Uanderson era o PO à época deste registro;
+hoje o papel é do Jackson — ver [`13-papeis-e-responsabilidades.md`](../13-papeis-e-responsabilidades.md).)
 
 ## Consequências
 
