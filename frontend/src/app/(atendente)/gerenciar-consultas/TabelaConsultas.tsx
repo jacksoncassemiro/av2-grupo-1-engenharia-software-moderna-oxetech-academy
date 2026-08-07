@@ -46,7 +46,8 @@ export function TabelaConsultas({ versao }: TabelaConsultasProps) {
       .then(setConsultas)
       .catch((erro) => {
         notifications.show({
-          message: erro instanceof ApiError ? erro.message : 'Não foi possível carregar as consultas',
+          message:
+            erro instanceof ApiError ? erro.message : 'Não foi possível carregar as consultas',
           color: 'red',
         });
       })
@@ -71,7 +72,10 @@ export function TabelaConsultas({ versao }: TabelaConsultasProps) {
         method: 'PATCH',
         body: { status: novoStatus },
       });
-      notifications.show({ message: `Consulta ${RETULO_STATUS[novoStatus].toLowerCase()}`, color: 'teal' });
+      notifications.show({
+        message: `Consulta ${RETULO_STATUS[novoStatus].toLowerCase()}`,
+        color: 'teal',
+      });
       carregar(filtroStatus);
     } catch (erro) {
       notifications.show({
@@ -89,9 +93,10 @@ export function TabelaConsultas({ versao }: TabelaConsultasProps) {
       title: 'Cancelar consulta',
       children: (
         <Text size="sm">
-          Cancelar a consulta de {consulta.paciente_nome ?? 'Paciente'} com {consulta.medico_nome ?? 'Médico'}{' '}
-          {consulta.data ? `em ${consulta.data.split('-').reverse().join('/')}` : ''}? O atendente pode cancelar mesmo com
-          menos de 24h (US-12).
+          Cancelar a consulta de {consulta.paciente_nome ?? 'Paciente'} com{' '}
+          {consulta.medico_nome ?? 'Médico'}{' '}
+          {consulta.data ? `em ${consulta.data.split('-').reverse().join('/')}` : ''}? O atendente
+          pode cancelar mesmo com menos de 24h (US-12).
         </Text>
       ),
       labels: { confirm: 'Cancelar consulta', cancel: 'Voltar' },
