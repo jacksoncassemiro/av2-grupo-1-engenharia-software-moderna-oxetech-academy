@@ -33,8 +33,15 @@ export default function MedicosPage() {
       .then((dados) => {
         if (!ignorar) setEspecialidades(dados);
       })
-      .catch(() => {
-        // Falha tratada silenciosamente para especialidades
+      .catch((erro) => {
+        // Sem as especialidades o filtro fica vazio e cada medico aparece sem
+        // o badge da especialidade: falhar em silencio esconde isso do paciente.
+        if (ignorar) return;
+        notifications.show({
+          message:
+            erro instanceof ApiError ? erro.message : 'Não foi possível carregar as especialidades',
+          color: 'red',
+        });
       });
     return () => {
       ignorar = true;

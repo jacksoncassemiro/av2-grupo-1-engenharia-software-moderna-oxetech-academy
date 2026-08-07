@@ -30,17 +30,15 @@ def obter_service(db: Annotated[Session, Depends(get_db)]) -> ConsultaService:
 
 @router.get("/consultas", response_model=list[ConsultaResposta], summary="US-13")
 def listar_consultas(
-    db: Annotated[Session, Depends(get_db)],
+    service: Annotated[ConsultaService, Depends(obter_service)],
     _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
     status: Annotated[StatusConsulta | None, Query()] = None,
 ) -> list[ConsultaResposta]:
     """CA5 - a lista permite filtrar por status para achar as pendentes de confirmacao."""
-    repositorio = ConsultaRepository(db)
-    consultas = repositorio.listar_por_status(status) if status else repositorio.listar()
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
     return [
-        ConsultaResposta.de_consulta(c, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS)
-        for c in consultas
+        ConsultaResposta.de_consulta(c, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
+        for c in service.listar_para_atendente(status)
     ]
 
 
@@ -56,9 +54,7 @@ def agendar_para_paciente(
     )
     db.commit()
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
-    return ConsultaResposta.de_consulta(
-        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
-    )
+    return ConsultaResposta.de_consulta(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
 
 
 @router.patch("/consultas/{consulta_id}/cancelar", response_model=ConsultaResposta, summary="US-12")
@@ -72,9 +68,7 @@ def cancelar(
     consulta = service.cancelar(consulta_id, TipoUsuario.ATENDENTE, dados.motivo)
     db.commit()
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
-    return ConsultaResposta.de_consulta(
-        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
-    )
+    return ConsultaResposta.de_consulta(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
 
 
 @router.patch("/consultas/{consulta_id}/status", response_model=ConsultaResposta, summary="US-13")
@@ -88,6 +82,4 @@ def mudar_status(
     consulta = service.mudar_status(consulta_id, dados.status)
     db.commit()
     agora = datetime.now(ZoneInfo(settings.TIMEZONE))
-    return ConsultaResposta.de_consulta(
-        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
-    )
+    return ConsultaResposta.de_consulta(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)

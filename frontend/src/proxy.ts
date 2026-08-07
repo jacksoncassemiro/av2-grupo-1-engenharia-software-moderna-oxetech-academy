@@ -19,6 +19,9 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { HOME_POR_PERFIL } from '@/lib/rotas';
+import type { TipoUsuario } from '@/types/dominio';
+
 // ---------------------------------------------------------------------------
 // Mapa de rotas por perfil — manter sincronizado com src/app/
 // ---------------------------------------------------------------------------
@@ -35,11 +38,6 @@ const ROTAS_PACIENTE = new Set(['/consultas', '/meus-dados', '/buscar-medicos', 
 
 /** Rotas acessíveis sem autenticação. "/" não está aqui: ela redireciona todos (ver bloco de rota desconhecida). */
 const ROTAS_PUBLICAS = new Set(['/login', '/primeiro-acesso']);
-
-const HOME_POR_PERFIL: Record<string, string> = {
-  ATENDENTE: '/gerenciar-consultas',
-  PACIENTE: '/consultas',
-};
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -74,7 +72,7 @@ export function proxy(request: NextRequest) {
 
   // 1. Rota pública + autenticado → home do perfil
   if (ROTAS_PUBLICAS.has(raiz) && autenticado) {
-    const home = HOME_POR_PERFIL[perfil] ?? '/login';
+    const home = HOME_POR_PERFIL[perfil as TipoUsuario] ?? '/login';
     return NextResponse.redirect(new URL(home, request.url));
   }
 
@@ -95,13 +93,13 @@ export function proxy(request: NextRequest) {
 
   // 5. Rota protegida do perfil errado → home do próprio perfil
   if (eRotaProtegida(raiz) && autenticado && !eRotaDoGrupo(raiz, perfil)) {
-    const home = HOME_POR_PERFIL[perfil] ?? '/login';
+    const home = HOME_POR_PERFIL[perfil as TipoUsuario] ?? '/login';
     return NextResponse.redirect(new URL(home, request.url));
   }
 
   // 6. Rota desconhecida + autenticado → home do perfil
   if (autenticado) {
-    const home = HOME_POR_PERFIL[perfil] ?? '/login';
+    const home = HOME_POR_PERFIL[perfil as TipoUsuario] ?? '/login';
     return NextResponse.redirect(new URL(home, request.url));
   }
 

@@ -25,7 +25,7 @@ def cadastrar(
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
 ) -> EspecialidadeResposta:
-    especialidade = service.cadastrar(dados.nome)
+    especialidade = service.cadastrar(dados.nome, dados.descricao)
     db.commit()
     return EspecialidadeResposta.model_validate(especialidade)
 

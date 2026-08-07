@@ -46,6 +46,25 @@ def test_cadastrar_especialidade_com_sucesso():
 
 
 @pytest.mark.unit
+def test_us01_descricao_enviada_e_persistida_e_nao_descartada():
+    """US-01 - a API aceita `descricao` no corpo; ela nao pode ser perdida no caminho."""
+    service = EspecialidadeService(FakeEspecialidadeRepository())
+
+    criada = service.cadastrar("Dermatologia", "Cuida da pele, cabelos e unhas")
+
+    assert criada.descricao == "Cuida da pele, cabelos e unhas"
+
+
+@pytest.mark.unit
+def test_us01_descricao_em_branco_vira_nula():
+    """Evita gravar string vazia onde a coluna e opcional."""
+    service = EspecialidadeService(FakeEspecialidadeRepository())
+
+    assert service.cadastrar("Cardiologia", "   ").descricao is None
+    assert service.cadastrar("Pediatria").descricao is None
+
+
+@pytest.mark.unit
 def test_bloquear_cadastro_especialidade_duplicada_case_insensitive():
     """US-01 CA2 - Nome duplicado (case-insensitive) deve dar erro 409 (EspecialidadeDuplicada)."""
     existente = Especialidade(id=1, nome="Cardiologia", ativo=True)

@@ -41,7 +41,12 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
   useEffect(() => {
     api<Medico[]>('/medicos')
       .then(setMedicos)
-      .catch(() => undefined);
+      .catch((erro) =>
+        notifications.show({
+          message: erro instanceof ApiError ? erro.message : 'Não foi possível carregar os médicos',
+          color: 'red',
+        })
+      );
   }, []);
 
   async function buscarPaciente() {
@@ -77,7 +82,16 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
 
     api<HorarioDisponivel[]>(`/medicos/${medicoId}/horarios-livres?data=${dataFormatada}`)
       .then(setHorariosLivres)
-      .catch(() => undefined);
+      .catch((erro) => {
+        // Sem limpar a lista, os horarios do medico/data anteriores continuariam
+        // na tela e o atendente agendaria em um slot que nao e o exibido.
+        setHorariosLivres([]);
+        notifications.show({
+          message:
+            erro instanceof ApiError ? erro.message : 'Não foi possível carregar os horários',
+          color: 'red',
+        });
+      });
   }, [medicoId, data]);
 
   async function agendarParaPaciente() {
