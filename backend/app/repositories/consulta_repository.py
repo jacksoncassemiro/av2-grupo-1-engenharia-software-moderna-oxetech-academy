@@ -18,7 +18,6 @@ class ConsultaRepository(RepositorioBase[Consulta]):
         )
 
     def existe_ativa_no_slot(self, horario_disponivel_id: int) -> bool:
-        """RN03 - ha consulta SOLICITADA/CONFIRMADA ocupando este slot?"""
         return (
             self.db.scalars(
                 select(Consulta.id)

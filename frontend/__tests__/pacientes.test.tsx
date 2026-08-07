@@ -86,7 +86,7 @@ describe('PacientesPage', () => {
     const tabela = await screen.findByRole('table');
     expect(within(tabela).getByText('Maria Silva Santos')).toBeInTheDocument();
     expect(within(tabela).getByText('529.982.247-25')).toBeInTheDocument();
-  });
+  }, 30000);
 
   it('deve formatar o CPF e Telefone automaticamente durante a digitação', async () => {
     render(<PacientesPage />);

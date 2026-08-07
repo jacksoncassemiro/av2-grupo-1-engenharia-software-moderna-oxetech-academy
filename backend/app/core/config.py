@@ -23,6 +23,7 @@ class Settings(BaseSettings):
 
     # --- Regras de negocio parametrizaveis ---
     CANCELAMENTO_ANTECEDENCIA_HORAS: int = 24  # RN04
+    ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS: int = 24  # RN04 (alias/atributo compativel com routers)
     TIMEZONE: str = "America/Maceio"  # RN15 - fuso de referencia das regras temporais
 
     # --- Bootstrap do primeiro atendente (RN14 / ADR-004) ---

@@ -1,10 +1,13 @@
 """Controller de consultas do paciente (US-08, US-10, US-11)."""
 
+from datetime import datetime
 from typing import Annotated
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.deps import UsuarioAutenticado, exigir_paciente
 from app.exceptions.dominio import RecursoNaoEncontrado
@@ -32,7 +35,10 @@ def solicitar(
         usuario.paciente_id, dados.horario_disponivel_id, TipoUsuario.PACIENTE
     )
     db.commit()
-    return ConsultaResposta.model_validate(consulta)
+    agora = datetime.now(ZoneInfo(settings.TIMEZONE))
+    return ConsultaResposta.de_consulta(
+        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
+    )
 
 
 @router.get("", response_model=list[ConsultaResposta], summary="US-10")
@@ -40,8 +46,9 @@ def minhas_consultas(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[UsuarioAutenticado, Depends(exigir_paciente)],
 ) -> list[ConsultaResposta]:
+    agora = datetime.now(ZoneInfo(settings.TIMEZONE))
     return [
-        ConsultaResposta.model_validate(c)
+        ConsultaResposta.de_consulta(c, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS)
         for c in ConsultaRepository(db).listar_por_paciente(usuario.paciente_id)
     ]
 
@@ -55,7 +62,10 @@ def detalhar_consulta(
     consulta = ConsultaRepository(db).buscar_por_id(consulta_id)
     if consulta is None or consulta.paciente_id != usuario.paciente_id:
         raise RecursoNaoEncontrado("Consulta nao encontrada")
-    return ConsultaResposta.model_validate(consulta)
+    agora = datetime.now(ZoneInfo(settings.TIMEZONE))
+    return ConsultaResposta.de_consulta(
+        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
+    )
 
 
 @router.patch("/{consulta_id}/cancelar", response_model=ConsultaResposta, summary="US-11 / RN04")
@@ -71,4 +81,7 @@ def cancelar(
         raise RecursoNaoEncontrado("Consulta nao encontrada")
     consulta = service.cancelar(consulta_id, TipoUsuario.PACIENTE, dados.motivo)
     db.commit()
-    return ConsultaResposta.model_validate(consulta)
+    agora = datetime.now(ZoneInfo(settings.TIMEZONE))
+    return ConsultaResposta.de_consulta(
+        consulta, agora, settings.ANTECEDENCIA_MINIMA_CANCELAMENTO_HORAS
+    )
