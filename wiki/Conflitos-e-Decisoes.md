@@ -253,7 +253,7 @@ pessoas**: 1 PO + 3 Engenharia + 2 QA.
 
 A leitura "2 para cada" é atendida pela coluna **Apoio** de
 [`13-papeis-e-responsabilidades.md`](Papeis-e-Responsabilidades): **Antonio atua como PO
-de apoio** nos itens de processo (cerimônias e slides), enquanto Uanderson mantém a propriedade
+de apoio** nos itens de processo (cerimônias e slides), enquanto Jackson mantém a propriedade
 do backlog. Assim há dois nomes em cada papel sem inflar o escopo de ninguém.
 
 Os entregáveis que eram de Jonatha (arquitetura MVC, Clean Code e Design Patterns) foram para

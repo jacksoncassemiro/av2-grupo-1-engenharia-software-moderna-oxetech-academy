@@ -38,9 +38,9 @@ os casos de teste no dia 2–3, antes do código, e executa ao longo da sprint.
 
 | Papel Scrum | Quem | Observação |
 |---|---|---|
-| Product Owner | Uanderson (dono do backlog) · Antonio (PO de apoio, conduz cerimônias) | Divisão registrada em [13](Papeis-e-Responsabilidades) |
+| Product Owner | Jackson (dono do backlog) · Antonio (PO de apoio, conduz cerimônias) | Divisão registrada em [13](Papeis-e-Responsabilidades) |
 | Scrum Master | Antonio | Acumula, dado o tamanho da equipe (6 pessoas) |
-| Developers | Ronaldo (backend) · João Vitor e Antonio (frontend) · Jackson e Felipe (QA) | No Scrum, "Developers" inclui QA |
+| Developers | Ronaldo (backend) · João Vitor e Antonio (frontend) · Uanderson e Felipe (QA) | No Scrum, "Developers" inclui QA |
 
 Detalhes em [13-papeis-e-responsabilidades.md](Papeis-e-Responsabilidades).
 

@@ -76,11 +76,11 @@ usa.
 
 | Papel | Pessoa | Foco |
 |---|---|---|
-| 👑 **Product Owner** | Uanderson Henrique Batista da Silva | Backlog, User Stories, critérios de aceite, ciclo de desenvolvimento |
+| 👑 **Product Owner** | Jackson Douglas da Silva Cassemiro | Backlog, User Stories, critérios de aceite, ciclo de desenvolvimento, aprovação de PRs |
 | 💻 **Engenharia** | Ronaldo de Melo Sabino Filho | Backend inteiro: arquitetura MVC, Clean Code, Design Patterns, auth, Git Flow |
 | 💻 **Engenharia** | João Vitor Mandu de Lira | Frontend do paciente, testes Vitest, Clean Code do frontend |
 | 💻 **Engenharia** | Antonio Andrade Gomes Júnior | Frontend do atendente, cerimônias Scrum, apresentação |
-| 🧪 **QA** | Jackson Douglas da Silva Cassemiro | Plano e casos de teste, execução, evidências |
+| 🧪 **QA** | Uanderson Henrique Batista da Silva | Plano e casos de teste, execução, evidências |
 | 🧪 **QA** | Felipe da Silva Araújo | CI/CD, testes exploratórios, relatório final |
 
 Alocação detalhada de cada entregável avaliado em

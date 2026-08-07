@@ -22,10 +22,10 @@ Sistema de Gestão de Clínica Médica (MVP) — AV2 Engenharia de Software Mode
 
 | Doc | Conteúdo | Responsável |
 |---|---|---|
-| [00 — Visão do produto](00-visao-do-produto.md) | Problema, escopo dentro/fora, proposta de valor, métricas, riscos | Uanderson |
-| [01 — Requisitos](01-requisitos.md) | RF01–RF22, RNF01–RNF15, RN01–RN15, matriz de rastreabilidade | Uanderson |
-| [02 — Backlog](02-backlog.md) | US-00 a US-13 com critérios de aceite em Gherkin | Uanderson |
-| [15 — Melhorias futuras](15-melhorias-futuras.md) | O que ficou fora do MVP, com motivo e versão-alvo | Uanderson |
+| [00 — Visão do produto](00-visao-do-produto.md) | Problema, escopo dentro/fora, proposta de valor, métricas, riscos | Jackson |
+| [01 — Requisitos](01-requisitos.md) | RF01–RF22, RNF01–RNF15, RN01–RN15, matriz de rastreabilidade | Jackson |
+| [02 — Backlog](02-backlog.md) | US-00 a US-13 com critérios de aceite em Gherkin | Jackson |
+| [15 — Melhorias futuras](15-melhorias-futuras.md) | O que ficou fora do MVP, com motivo e versão-alvo | Jackson |
 
 ### Engenharia
 
@@ -42,16 +42,16 @@ Sistema de Gestão de Clínica Médica (MVP) — AV2 Engenharia de Software Mode
 
 | Doc | Conteúdo | Responsável |
 |---|---|---|
-| [07 — Plano de testes](07-plano-de-testes.md) | Pirâmide, escopo, exploratório, defeitos, critérios de saída | Jackson |
-| [08 — Casos de teste](08-casos-de-teste.md) | CT01–CT14 + mapa dos unitários por stack + relatório de execução | Jackson |
+| [07 — Plano de testes](07-plano-de-testes.md) | Pirâmide, escopo, exploratório, defeitos, critérios de saída | Uanderson |
+| [08 — Casos de teste](08-casos-de-teste.md) | CT01–CT14 + mapa dos unitários por stack + relatório de execução | Uanderson |
 | [09 — CI/CD](09-ci-cd.md) | Quatro jobs, quality gate, troubleshooting | Felipe |
 
 ### Processo
 
 | Doc | Conteúdo | Responsável |
 |---|---|---|
-| [11 — Ciclo de desenvolvimento](11-ciclo-desenvolvimento.md) | Scrum + Kanban, cerimônias, DoR/DoD, métricas, atas | Uanderson |
-| [12 — Cronograma](12-cronograma.md) | Calendário 31/07 a 10/08, 2 sprints por encontro, marcos, priorização | Uanderson |
+| [11 — Ciclo de desenvolvimento](11-ciclo-desenvolvimento.md) | Scrum + Kanban, cerimônias, DoR/DoD, métricas, atas | Jackson |
+| [12 — Cronograma](12-cronograma.md) | Calendário 31/07 a 10/08, 2 sprints por encontro, marcos, priorização | Jackson |
 | [13 — Papéis](13-papeis-e-responsabilidades.md) | Equipe de 6, entregáveis por pessoa, matriz de avaliação | Antonio |
 
 ### Análise
