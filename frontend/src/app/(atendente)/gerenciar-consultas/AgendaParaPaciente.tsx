@@ -3,7 +3,17 @@
 
 import { useEffect, useState } from 'react';
 
-import { Button, Card, Chip, Group, Select, SimpleGrid, Stack, Text, TextInput } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Chip,
+  Group,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 import { Search } from 'lucide-react';
@@ -29,7 +39,9 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
   const [agendando, setAgendando] = useState(false);
 
   useEffect(() => {
-    api<Medico[]>('/medicos').then(setMedicos).catch(() => undefined);
+    api<Medico[]>('/medicos')
+      .then(setMedicos)
+      .catch(() => undefined);
   }, []);
 
   async function buscarPaciente() {
@@ -76,7 +88,10 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
         method: 'POST',
         body: { paciente_id: pacienteEncontrado.id, horario_disponivel_id: horarioEscolhido },
       });
-      notifications.show({ message: `Consulta agendada para ${pacienteEncontrado.nome}`, color: 'teal' });
+      notifications.show({
+        message: `Consulta agendada para ${pacienteEncontrado.nome}`,
+        color: 'teal',
+      });
       setCpfBusca('');
       setPacienteEncontrado(null);
       setMedicoId(null);
@@ -112,7 +127,12 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
             onChange={(evento) => setCpfBusca(formatarCpf(evento.currentTarget.value))}
             w={{ base: '100%', xs: 220 }}
           />
-          <Button variant="light" leftSection={<Search size={16} />} loading={buscandoPaciente} onClick={buscarPaciente}>
+          <Button
+            variant="light"
+            leftSection={<Search size={16} />}
+            loading={buscandoPaciente}
+            onClick={buscarPaciente}
+          >
             Buscar
           </Button>
         </Group>
@@ -178,7 +198,11 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
             )}
 
             <Group justify="flex-end">
-              <Button onClick={agendarParaPaciente} disabled={!horarioEscolhido} loading={agendando}>
+              <Button
+                onClick={agendarParaPaciente}
+                disabled={!horarioEscolhido}
+                loading={agendando}
+              >
                 Agendar consulta
               </Button>
             </Group>
