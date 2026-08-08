@@ -122,7 +122,15 @@ export default function MeusDadosPage() {
             <DateInput
               label="Data de nascimento"
               description="Opcional"
+              placeholder="Selecione a data"
               valueFormat="DD/MM/YYYY"
+              // Mesmo parser do cadastro em (atendente)/pacientes: aceita `10/03/1990` e
+              // `10031990` digitados, e recusa o resto. Sem ele as duas telas se comportavam
+              // de um jeito diferente para o mesmo campo.
+              dateParser={(valor) => {
+                const parsed = dayjs(valor, ['DD/MM/YYYY', 'DDMMYYYY'], true);
+                return parsed.isValid() ? parsed.toDate() : new Date(NaN);
+              }}
               maxDate={new Date()}
               clearable
               maw={{ base: '100%', xs: 300 }}
