@@ -3,10 +3,11 @@
 
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, Card, Group, Select, Table, Text } from '@mantine/core';
+import { Badge, Button, Card, Group, Table, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 
+import { FiltroTabela } from '@/components/FiltroTabela';
 import { api, ApiError } from '@/lib/api';
 import type { Consulta, StatusConsulta } from '@/types/dominio';
 
@@ -129,13 +130,13 @@ export function TabelaConsultas({ versao }: TabelaConsultasProps) {
     <Card withBorder radius="md" p={{ base: 'md', sm: 'lg' }}>
       <Group justify="space-between" mb="md" wrap="wrap">
         <Text fw={600}>Todas as consultas</Text>
-        <Select
+        <FiltroTabela
+          aria-label="Filtrar por status"
           placeholder="Filtrar por status"
           data={OPCOES_STATUS}
           value={filtroStatus}
           onChange={aoFiltrar}
           clearable
-          w={{ base: '100%', xs: 220 }}
         />
       </Group>
       <Table.ScrollContainer minWidth={720}>
