@@ -147,6 +147,33 @@ describe('PrimeiroAcesso (US-00)', () => {
     expect(substituirRota).toHaveBeenCalledWith('/consultas');
   });
 
+  it('CA5 - formata o telefone durante a digitacao no auto-cadastro', async () => {
+    apiMock.mockResolvedValueOnce({ cadastro_existe: false, login_ativo: false, nome: null });
+    render(<PrimeiroAcesso />);
+    await verificarCpf();
+
+    const campo = await screen.findByLabelText(/telefone/i);
+    await userEvent.type(campo, '82999998888');
+
+    expect(campo).toHaveValue('(82) 99999-8888');
+  });
+
+  it('CA5 - telefone com menos de 10 digitos nao chega a chamar a API', async () => {
+    apiMock.mockResolvedValueOnce({ cadastro_existe: false, login_ativo: false, nome: null });
+    render(<PrimeiroAcesso />);
+    await verificarCpf();
+
+    await userEvent.type(await screen.findByLabelText(/nome completo/i), 'Maria das Dores');
+    await userEvent.type(screen.getByLabelText(/telefone/i), '829999');
+    await userEvent.type(screen.getByLabelText(/criar senha/i), 'senha123');
+    await userEvent.type(screen.getByLabelText(/confirmar senha/i), 'senha123');
+    await userEvent.click(screen.getByRole('button', { name: /criar minha conta/i }));
+
+    expect(await screen.findByText(/Informe DDD e número/i)).toBeInTheDocument();
+    // A primeira chamada (verificar-cpf) aconteceu; a de cadastro nao.
+    expect(apiMock).toHaveBeenCalledTimes(1);
+  });
+
   it('CA6 - CPF com login ativo nao mostra formulario, e sim o caminho do login', async () => {
     apiMock.mockResolvedValueOnce({
       cadastro_existe: true,

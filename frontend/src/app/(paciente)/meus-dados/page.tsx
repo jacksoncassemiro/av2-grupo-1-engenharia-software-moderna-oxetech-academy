@@ -10,6 +10,7 @@ import { notifications } from '@mantine/notifications';
 import { api, ApiError } from '@/lib/api';
 import dayjs from '@/lib/dayjs';
 import { formatarCpf } from '@/lib/cpf';
+import { formatarTelefone } from '@/lib/telefone';
 import { validarEmailOpcional, validarNomeCompleto, validarTelefone } from '@/lib/validadores';
 import type { Paciente } from '@/types/dominio';
 
@@ -106,14 +107,30 @@ export default function MeusDadosPage() {
 
             <TextInput label="Nome completo" withAsterisk {...form.getInputProps('nome')} />
 
-            <TextInput label="Telefone" withAsterisk {...form.getInputProps('telefone')} />
+            <TextInput
+              label="Telefone"
+              placeholder="(82) 99999-0000"
+              withAsterisk
+              {...form.getInputProps('telefone')}
+              onChange={(evento) =>
+                form.setFieldValue('telefone', formatarTelefone(evento.currentTarget.value))
+              }
+            />
 
             <TextInput label="E-mail" description="Opcional" {...form.getInputProps('email')} />
 
             <DateInput
               label="Data de nascimento"
               description="Opcional"
+              placeholder="Selecione a data"
               valueFormat="DD/MM/YYYY"
+              // Mesmo parser do cadastro em (atendente)/pacientes: aceita `10/03/1990` e
+              // `10031990` digitados, e recusa o resto. Sem ele as duas telas se comportavam
+              // de um jeito diferente para o mesmo campo.
+              dateParser={(valor) => {
+                const parsed = dayjs(valor, ['DD/MM/YYYY', 'DDMMYYYY'], true);
+                return parsed.isValid() ? parsed.toDate() : new Date(NaN);
+              }}
               maxDate={new Date()}
               clearable
               maw={{ base: '100%', xs: 300 }}

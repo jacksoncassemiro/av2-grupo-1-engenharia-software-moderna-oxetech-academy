@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import { Button, Card, Group, Select, Stack, Text } from '@mantine/core';
@@ -28,6 +28,7 @@ function mensagemDoErro(erro: unknown, padrao: string): string {
  */
 export function FormularioAgendamento() {
   const parametros = useSearchParams();
+  const router = useRouter();
   // `?medico=` chega de "Buscar Médicos" (US-06); a data comeca em hoje para que a
   // grade ja apareca sem mais um clique.
   const medicoDaUrl = parametros.get('medico');
@@ -43,7 +44,8 @@ export function FormularioAgendamento() {
   const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
-    api<Medico[]>('/medicos?apenas_ativos=true')
+    // RN16 + RN17 - só médico ativo de especialidade ativa recebe consulta nova.
+    api<Medico[]>('/medicos?apenas_agendaveis=true')
       .then(setMedicos)
       .catch((erro) =>
         notifications.show({
@@ -136,6 +138,10 @@ export function FormularioAgendamento() {
           'aguarde a confirmação do atendente em Minhas Consultas.',
         color: 'teal',
       });
+      // US-08 → US-10: a notificação manda o paciente para "Minhas Consultas", então
+      // o fluxo termina lá. Ficar na grade deixava ele sem saber para onde ir e sem
+      // ver a consulta que acabou de solicitar.
+      router.push('/consultas');
     } catch (erro) {
       // CA2/CA3 (RN03) — 409 "Horario indisponivel" quando outro paciente reservou antes.
       notifications.show({
@@ -143,9 +149,12 @@ export function FormularioAgendamento() {
         message: mensagemDoErro(erro, 'Falha inesperada'),
         color: 'red',
       });
+      // Só no erro: a CA2/CA3 exige grade fresca para o paciente escolher outro
+      // horário. No sucesso a tela já está saindo, e recarregar dispararia um
+      // setState depois da navegação.
+      recarregarGrade();
     } finally {
       setEnviando(false);
-      recarregarGrade();
     }
   }
 

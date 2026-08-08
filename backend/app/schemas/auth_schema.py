@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.schemas.paciente_schema import apenas_digitos, cpf_e_valido
+from app.schemas.paciente_schema import apenas_digitos, cpf_e_valido, telefone_e_valido
 
 
 class LoginRequisicao(BaseModel):
@@ -45,3 +45,10 @@ class PrimeiroAcesso(BaseModel):
         if not cpf_e_valido(cpf):
             raise ValueError("CPF invalido")
         return cpf
+
+    @field_validator("telefone")
+    @classmethod
+    def _validar_telefone(cls, valor: str | None) -> str | None:
+        if valor is not None and not telefone_e_valido(valor):
+            raise ValueError("Telefone deve ter DDD e 10 ou 11 digitos")
+        return valor

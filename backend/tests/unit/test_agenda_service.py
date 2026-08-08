@@ -77,6 +77,34 @@ def test_us07_listar_horarios_livres_retorna_apenas_slots_disponiveis(medico):
 
 
 @pytest.mark.unit
+def test_rn16_medico_inativado_nao_oferece_horario(medico):
+    """RN16 - nao adianta esconder o medico da lista e continuar oferecendo a agenda dele."""
+    from app.models.horario_disponivel import HorarioDisponivel
+
+    medico.ativo = False
+    slot = HorarioDisponivel(
+        id=1, medico_id=medico.id, data=date(2026, 8, 12), horario=time(9, 0), disponivel=True
+    )
+    service = AgendaService(FakeHorarioRepository([slot]), FakeMedicoRepository([medico]))
+
+    assert service.listar_livres(medico.id, date(2026, 8, 12)) == []
+
+
+@pytest.mark.unit
+def test_rn17_medico_de_especialidade_inativada_nao_oferece_horario(medico):
+    """RN17 - mesma logica da RN16 pelo lado da especialidade."""
+    from app.models.horario_disponivel import HorarioDisponivel
+
+    medico.especialidade.ativo = False
+    slot = HorarioDisponivel(
+        id=1, medico_id=medico.id, data=date(2026, 8, 12), horario=time(9, 0), disponivel=True
+    )
+    service = AgendaService(FakeHorarioRepository([slot]), FakeMedicoRepository([medico]))
+
+    assert service.listar_livres(medico.id, date(2026, 8, 12)) == []
+
+
+@pytest.mark.unit
 def test_us07_listar_horarios_livres_falha_se_medico_nao_existe():
     """US-07 - Listar horarios livres de medico inexistente lanca RecursoNaoEncontrado (404)."""
     service = AgendaService(FakeHorarioRepository(), FakeMedicoRepository([]))

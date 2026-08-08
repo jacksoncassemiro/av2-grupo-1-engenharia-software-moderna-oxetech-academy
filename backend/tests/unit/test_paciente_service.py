@@ -1,10 +1,11 @@
 """CTU01 e CTU02 - RN01 (CPF unico) e RN02 (e-mail unico)."""
 
 import pytest
+from pydantic import ValidationError
 
 from app.exceptions.dominio import CpfDuplicado, EmailDuplicado
 from app.models.paciente import Paciente
-from app.schemas.paciente_schema import PacienteCriar
+from app.schemas.paciente_schema import PacienteAtualizar, PacienteCriar
 from app.services.paciente_service import PacienteService
 from tests.conftest import FakePacienteRepository
 
@@ -118,3 +119,24 @@ def test_atualizar_dados_paciente_email_duplicado_bloqueado():
 
     with pytest.raises(EmailDuplicado):
         service.atualizar(1, PacienteAtualizar(email="maria@email.com"))
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("telefone", ["(82) 9999-", "82 9999", "829999888", "abcdefghij"])
+def test_us04_recusa_telefone_com_menos_de_10_digitos(telefone):
+    """US-04 - o minimo e de digitos, nao de caracteres: '(82) 9999-' tem 10 caracteres
+    e apenas 6 digitos, e era aceito e persistido."""
+    with pytest.raises(ValidationError):
+        PacienteAtualizar(telefone=telefone)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("telefone", ["8299990000", "(82) 9999-0000", "(82) 99999-0000"])
+def test_us04_aceita_telefone_de_10_ou_11_digitos_com_ou_sem_mascara(telefone):
+    assert PacienteAtualizar(telefone=telefone).telefone == telefone
+
+
+@pytest.mark.unit
+def test_ca05_paciente_atualizar_nao_expoe_campo_cpf():
+    """US-04 CA5 - o CPF nao e editavel pelo paciente: o schema de entrada nem o carrega."""
+    assert "cpf" not in PacienteAtualizar.model_fields

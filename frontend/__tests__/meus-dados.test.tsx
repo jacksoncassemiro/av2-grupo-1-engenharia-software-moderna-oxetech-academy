@@ -222,4 +222,44 @@ describe('MeusDadosPage', () => {
       });
     });
   });
+
+  // --- MASCARA E VALIDACAO DE TELEFONE (US-04) ---
+
+  it('US-04 - formata o telefone durante a digitacao (celular, 11 digitos)', async () => {
+    render(<MeusDadosPage />);
+
+    const campo = await screen.findByLabelText(/telefone/i);
+    await userEvent.clear(campo);
+    await userEvent.type(campo, '82999998888');
+
+    expect(campo).toHaveValue('(82) 99999-8888');
+  });
+
+  it('US-04 - formata o telefone fixo (10 digitos)', async () => {
+    render(<MeusDadosPage />);
+
+    const campo = await screen.findByLabelText(/telefone/i);
+    await userEvent.clear(campo);
+    await userEvent.type(campo, '8233330000');
+
+    expect(campo).toHaveValue('(82) 3333-0000');
+  });
+
+  it('US-04 - recusa telefone com menos de 10 digitos e nao chama a API', async () => {
+    // Regressao: `validarTelefone` contava caracteres, entao "(82) 9999-" (10
+    // caracteres, 6 digitos) passava e era gravado.
+    render(<MeusDadosPage />);
+
+    const campo = await screen.findByLabelText(/telefone/i);
+    await userEvent.clear(campo);
+    await userEvent.type(campo, '829999');
+
+    await userEvent.click(screen.getByRole('button', { name: /salvar alterações/i }));
+
+    expect(await screen.findByText(/Informe DDD e número/i)).toBeInTheDocument();
+    expect(vi.mocked(api)).not.toHaveBeenCalledWith(
+      '/pacientes/me',
+      expect.objectContaining({ method: 'PUT' })
+    );
+  });
 });

@@ -1,8 +1,8 @@
 # CT01 — Cadastrar paciente com dados válidos
 
 - **US:** US-03 · **RN:** RN07, RN08
-- **Ambiente:** Docker local (`docker compose down -v && up -d --build`), seed aplicado, commit `5ce3f75`
-- **Executor:** Claude (QA assistido) · **Data:** 01/08/2026
+- **Ambiente:** Docker local (`docker compose down -v && up -d --build`), seed aplicado, commit `6838a0c`
+- **Executor:** Uanderson  · **Data:** 01/08/2026
 - **Resultado:** ✅ passou
 
 ## Passos e evidências

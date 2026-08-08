@@ -97,14 +97,61 @@ describe('ConsultasPage', () => {
     expect(within(tabela).getByText('Imprevisto pessoal')).toBeInTheDocument();
   });
 
-  it('não deve exibir o botão de cancelar quando pode_cancelar for falso', async () => {
+  it('US-11 - consulta encerrada nao mostra botao e explica o motivo', async () => {
+    // Antes a celula trazia so um travessao: o paciente nao ficava sabendo por que
+    // nao podia cancelar.
     mockApiPadrao([consultaFinalizada]);
 
     render(<ConsultasPage />);
 
     const tabela = await screen.findByRole('table');
     expect(within(tabela).queryByRole('button', { name: /cancelar/i })).not.toBeInTheDocument();
-    expect(within(tabela).getByText('—')).toBeInTheDocument();
+    expect(within(tabela).getByText('Consulta encerrada')).toBeInTheDocument();
+  });
+
+  it('US-11 / RN04 - consulta ainda aberta e fora do prazo explica o prazo', async () => {
+    const foraDoPrazo = { ...consultaSolicitada, id: 9, pode_cancelar: false };
+    mockApiPadrao([foraDoPrazo]);
+
+    render(<ConsultasPage />);
+
+    const tabela = await screen.findByRole('table');
+    expect(within(tabela).queryByRole('button', { name: /cancelar/i })).not.toBeInTheDocument();
+    expect(within(tabela).getByText('Fora do prazo de cancelamento')).toBeInTheDocument();
+  });
+
+  it('RN04 - a tela obedece ao pode_cancelar da API, sem recalcular as 24h', async () => {
+    // Consulta daqui a poucas horas, mas com pode_cancelar=true vindo do backend:
+    // o botao tem de aparecer. Se a tela refizesse a conta em JS, esconderia.
+    const logoMais = new Date(Date.now() + 2 * 60 * 60 * 1000);
+    const daquiAPouco = {
+      ...consultaSolicitada,
+      id: 10,
+      data: logoMais.toISOString().slice(0, 10),
+      horario: '23:59:00',
+      pode_cancelar: true,
+    };
+    mockApiPadrao([daquiAPouco]);
+
+    render(<ConsultasPage />);
+
+    const tabela = await screen.findByRole('table');
+    expect(within(tabela).getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
+  });
+
+  it('US-10 - preserva a ordem que a API devolveu (futuras primeiro)', async () => {
+    // A ordenacao e do backend (RN15, fuso da clinica). A tela nao pode reordenar.
+    mockApiPadrao([consultaSolicitada, consultaCancelada, consultaFinalizada]);
+
+    render(<ConsultasPage />);
+
+    const tabela = await screen.findByRole('table');
+    const linhas = within(tabela).getAllByRole('row').slice(1); // pula o cabecalho
+    expect(linhas.map((linha) => within(linha).getByText(/Dr/).textContent)).toEqual([
+      'Dr. Teste',
+      'Dra. Ana Souza',
+      'Dr. Carlos Lima',
+    ]);
   });
 
   it('deve exibir notificação de erro quando a API falhar ao carregar as consultas', async () => {

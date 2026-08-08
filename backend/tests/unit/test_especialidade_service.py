@@ -4,6 +4,7 @@ import pytest
 
 from app.exceptions.dominio import EspecialidadeDuplicada, RegraDeNegocioViolada
 from app.models.especialidade import Especialidade
+from app.models.medico import Medico
 from app.services.especialidade_service import EspecialidadeService
 
 
@@ -125,3 +126,30 @@ def test_alternar_status_especialidade():
 
     reativado = service.alternar_status(1)
     assert reativado.ativo is True
+
+
+@pytest.mark.unit
+def test_rn17_inativar_especialidade_nao_cascateia_nos_medicos():
+    """RN17 - decisao deliberada do PO (ADR-009): inativar preserva o passado.
+
+    Inativar a especialidade so vira a flag dela. Os medicos vinculados continuam
+    `ativo = True` e nenhuma consulta ja marcada muda de status — quem desmarca, caso
+    a caso, e o atendente pela US-12. O que a RN17 barra e o agendamento novo, em
+    `ConsultaService._reservar_slot` e `AgendaService.listar_livres`.
+    """
+    especialidade = Especialidade(id=1, nome="Cardiologia", ativo=True)
+    medico = Medico(
+        id=1,
+        nome="Dr. Silva",
+        email="silva@clinica.com",
+        crm="CRM1",
+        especialidade_id=1,
+        ativo=True,
+    )
+    especialidade.medicos = [medico]
+    service = EspecialidadeService(FakeEspecialidadeRepository([especialidade]))
+
+    inativada = service.alternar_status(1)
+
+    assert inativada.ativo is False
+    assert medico.ativo is True
