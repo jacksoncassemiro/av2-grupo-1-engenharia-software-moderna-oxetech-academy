@@ -28,12 +28,28 @@ const COR_STATUS: Record<StatusConsulta, string> = {
   CANCELADA: 'red',
 };
 
-const RECUSA_STATUS: Record<StatusConsulta, string> = {
+const ROTULO_STATUS: Record<StatusConsulta, string> = {
   SOLICITADA: 'Solicitada',
   CONFIRMADA: 'Confirmada',
   FINALIZADA: 'Finalizada',
   CANCELADA: 'Cancelada',
 };
+
+/** Status que ainda ocupam o slot e, portanto, ainda poderiam ser cancelados (RN06/RN10). */
+const STATUS_AINDA_ABERTOS: StatusConsulta[] = ['SOLICITADA', 'CONFIRMADA'];
+
+/**
+ * Por que o cancelamento nao esta disponivel.
+ *
+ * Quem decide `pode_cancelar` e o backend (RN04, no fuso da RN15) — aqui so
+ * traduzimos o "nao" em texto. De proposito nao citamos "24 horas": o prazo vem
+ * de `settings.CANCELAMENTO_ANTECEDENCIA_HORAS` e nao pode ser duplicado na tela.
+ */
+function motivoDeNaoPoderCancelar(status: StatusConsulta): string {
+  return STATUS_AINDA_ABERTOS.includes(status)
+    ? 'Fora do prazo de cancelamento'
+    : 'Consulta encerrada';
+}
 
 export default function ConsultasPage() {
   const [consultas, setConsultas] = useState<Consulta[]>([]);
@@ -139,7 +155,7 @@ export default function ConsultasPage() {
                     <Table.Td visibleFrom="sm">{consulta.horario.slice(0, 5)}</Table.Td>
                     <Table.Td>
                       <Badge color={COR_STATUS[consulta.status]} variant="light">
-                        {RECUSA_STATUS[consulta.status]}
+                        {ROTULO_STATUS[consulta.status]}
                       </Badge>
                       {consulta.status === 'CANCELADA' && consulta.motivo_cancelamento && (
                         <Text size="xs" c="dimmed" mt={2}>
@@ -159,7 +175,7 @@ export default function ConsultasPage() {
                         </Button>
                       ) : (
                         <Text size="xs" c="dimmed">
-                          —
+                          {motivoDeNaoPoderCancelar(consulta.status)}
                         </Text>
                       )}
                     </Table.Td>

@@ -20,6 +20,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { Ban, CheckCircle2, Stethoscope } from 'lucide-react';
 
+import { FiltroTabela } from '@/components/FiltroTabela';
 import { api, ApiError } from '@/lib/api';
 import {
   validarEmailObrigatorio,
@@ -56,13 +57,23 @@ export default function MedicosPage() {
   );
 
   const opcoesEspecialidadeFiltro = useMemo(
-    () => especialidades.map((e) => ({ value: String(e.id), label: e.nome })),
+    () =>
+      especialidades.map((e) => ({
+        value: String(e.id),
+        label: e.ativo === false ? `${e.nome} (inativa)` : e.nome,
+      })),
     [especialidades]
   );
 
+  // RN17 - o médico de especialidade inativa continua nesta tela, então o nome dela
+  // precisa vir junto; com a lista só de ativas a coluna mostrava `#3`.
   const nomeDaEspecialidade = useMemo(() => {
-    const mapa = new Map(especialidades.map((e) => [e.id, e.nome]));
-    return (id: number) => mapa.get(id) ?? `#${id}`;
+    const mapa = new Map(especialidades.map((e) => [e.id, e]));
+    return (id: number) => {
+      const especialidade = mapa.get(id);
+      if (!especialidade) return `#${id}`;
+      return especialidade.ativo === false ? `${especialidade.nome} (inativa)` : especialidade.nome;
+    };
   }, [especialidades]);
 
   // Carrega as especialidades uma vez ao montar o componente
@@ -71,7 +82,8 @@ export default function MedicosPage() {
 
     async function buscarEspecialidades() {
       try {
-        const dados = await api<Especialidade[]>('/especialidades?apenas_ativas=true');
+        // Todas, não só as ativas: ver `nomeDaEspecialidade` e `opcoesEspecialidadeFiltro`.
+        const dados = await api<Especialidade[]>('/especialidades');
         if (!cancel) setEspecialidades(dados);
       } catch (erro) {
         if (!cancel) {
@@ -257,7 +269,7 @@ export default function MedicosPage() {
         <Group justify="space-between" align="center" mb="md" wrap="wrap">
           <Text fw={600}>Médicos cadastrados</Text>
           <Group gap="xs" wrap="wrap">
-            <Select
+            <FiltroTabela
               aria-label="Filtrar por especialidade"
               placeholder="Especialidade"
               data={opcoesEspecialidadeFiltro}
@@ -267,12 +279,9 @@ export default function MedicosPage() {
                 setCarregando(true);
               }}
               clearable
-              w={{ base: '100%', xs: 200 }}
             />
-            <Select
+            <FiltroTabela
               aria-label="Filtrar por status"
-              size="xs"
-              w={{ base: '100%', xs: 130 }}
               value={statusFiltro}
               onChange={(val) => {
                 setStatusFiltro(val || 'true');

@@ -34,6 +34,13 @@ class FakeMedicoRepository:
             resultado = [m for m in resultado if m.especialidade_id == especialidade_id]
         return resultado
 
+    def listar_agendaveis(self, especialidade_id: int | None = None) -> list[Medico]:
+        """RN16 + RN17 - espelha o JOIN com `especialidade` do repositorio real."""
+        resultado = [m for m in self._itens if m.ativo and m.especialidade.ativo]
+        if especialidade_id is not None:
+            resultado = [m for m in resultado if m.especialidade_id == especialidade_id]
+        return resultado
+
     def salvar(self, entidade: Medico) -> Medico:
         if entidade.ativo is None:
             entidade.ativo = True
@@ -245,6 +252,57 @@ def test_alternar_status_medico():
 
     reativado = service.alternar_status(1)
     assert reativado.ativo is True
+
+
+def _medico_com_especialidade(
+    id_: int, nome: str, especialidade: Especialidade, ativo: bool = True
+) -> Medico:
+    medico = Medico(
+        id=id_,
+        nome=nome,
+        email=f"{id_}@clinica.com",
+        crm=f"CRM{id_}",
+        especialidade_id=especialidade.id,
+        ativo=ativo,
+    )
+    medico.especialidade = especialidade
+    return medico
+
+
+@pytest.mark.unit
+def test_rn17_medico_de_especialidade_inativada_sai_da_lista_agendavel():
+    """RN17 - inativar a especialidade tira o medico de quem pode receber consulta nova.
+
+    Furo encontrado na auditoria: `PATCH /especialidades/{id}/status` escondia a
+    especialidade, mas os medicos dela continuavam em `GET /medicos?apenas_ativos=true`,
+    que e a lista que o paciente ve em `/buscar-medicos` e em `/agendar`.
+    """
+    cardio_inativa = Especialidade(id=1, nome="Cardiologia", ativo=False)
+    pediatria_ativa = Especialidade(id=2, nome="Pediatria", ativo=True)
+    da_inativa = _medico_com_especialidade(1, "Dr. Silva", cardio_inativa)
+    da_ativa = _medico_com_especialidade(2, "Dra. Souza", pediatria_ativa)
+    service = MedicoService(
+        FakeMedicoRepository([da_inativa, da_ativa]), FakeEspecialidadeRepository()
+    )
+
+    agendaveis = service.listar_ativos(apenas_agendaveis=True)
+
+    assert [m.nome for m in agendaveis] == ["Dra. Souza"]
+
+
+@pytest.mark.unit
+def test_rn17_atendente_continua_enxergando_medico_de_especialidade_inativada():
+    """RN17 - a regra barra o agendamento, nao some com o medico da gestao (US-02 / CA4).
+
+    Se `apenas_ativos=true` tambem escondesse esse medico, ele nao apareceria nem em
+    `Ativos` nem em `Inativos` e o atendente perderia como reativa-lo.
+    """
+    cardio_inativa = Especialidade(id=1, nome="Cardiologia", ativo=False)
+    medico = _medico_com_especialidade(1, "Dr. Silva", cardio_inativa)
+    service = MedicoService(FakeMedicoRepository([medico]), FakeEspecialidadeRepository())
+
+    assert [m.nome for m in service.listar_ativos(apenas_ativos=True)] == ["Dr. Silva"]
+    assert medico.ativo is True  # a inativacao da especialidade nao cascateia no medico
 
 
 @pytest.mark.unit

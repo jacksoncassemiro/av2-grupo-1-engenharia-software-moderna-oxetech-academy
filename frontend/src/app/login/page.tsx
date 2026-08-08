@@ -21,6 +21,7 @@ import { Sparkles } from 'lucide-react';
 import { AuthShell } from '@/components/AuthShell';
 import { api, ApiError, guardarTipoUsuario, guardarToken } from '@/lib/api';
 import { formatarCpf } from '@/lib/cpf';
+import { HOME_POR_PERFIL } from '@/lib/rotas';
 import type { TokenResposta } from '@/types/dominio';
 
 export default function LoginPage() {
@@ -53,7 +54,7 @@ export default function LoginPage() {
       guardarToken(resposta.access_token);
       guardarTipoUsuario(resposta.tipo_usuario);
 
-      router.push(resposta.tipo_usuario === 'ATENDENTE' ? '/gerenciar-consultas' : '/consultas');
+      router.push(HOME_POR_PERFIL[resposta.tipo_usuario] ?? '/login');
     } catch (erro) {
       // CA7: credencial invalida chega aqui como 401 com mensagem pronta do backend.
       notifications.show({

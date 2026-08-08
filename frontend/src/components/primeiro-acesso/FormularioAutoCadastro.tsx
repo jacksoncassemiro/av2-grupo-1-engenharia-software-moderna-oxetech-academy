@@ -4,6 +4,7 @@ import { Alert, Button, Divider, PasswordInput, Stack, TextInput } from '@mantin
 import { useForm } from '@mantine/form';
 
 import { formatarCpf } from '@/lib/cpf';
+import { formatarTelefone } from '@/lib/telefone';
 import {
   validarConfirmacaoDeSenha,
   validarEmailOpcional,
@@ -70,6 +71,9 @@ export function FormularioAutoCadastro({ cpf, onEnviar, carregando }: Props) {
             placeholder="(82) 99999-0000"
             withAsterisk
             {...form.getInputProps('telefone')}
+            onChange={(evento) =>
+              form.setFieldValue('telefone', formatarTelefone(evento.currentTarget.value))
+            }
           />
           <TextInput
             label="E-mail"

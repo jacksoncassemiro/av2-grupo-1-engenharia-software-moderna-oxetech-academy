@@ -8,7 +8,9 @@ import pytest
 from app.core.config import settings
 from app.exceptions.dominio import (
     CancelamentoNaoPermitido,
+    EspecialidadeInativa,
     HorarioIndisponivel,
+    MedicoInativo,
     RecursoNaoEncontrado,
     TransicaoDeStatusInvalida,
 )
@@ -140,6 +142,82 @@ def test_us08_agendamento_paciente_sucesso(slot_livre):
     assert consulta.paciente_id == 1
     assert consulta.status is StatusConsulta.SOLICITADA
     assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
+def test_rn16_nao_agenda_com_medico_inativado(slot_livre):
+    """RN16 - medico inativado nao recebe consulta nova.
+
+    Reproduzido na API antes da correcao: apos PATCH /medicos/{id}/status o medico
+    sumia da listagem, mas POST /consultas no slot dele respondia 201.
+    """
+    slot_livre.medico.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo) as erro:
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+        )
+
+    assert erro.value.status_code == 409
+    assert slot_livre.disponivel is True  # o slot nao pode ter sido consumido
+
+
+@pytest.mark.unit
+def test_rn16_atendente_tambem_nao_agenda_com_medico_inativado(slot_livre):
+    """RN16 vale para os dois perfis: a regra e do dominio, nao da tela."""
+    slot_livre.medico.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo):
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.ATENDENTE
+        )
+
+
+@pytest.mark.unit
+def test_ctu13_rn17_nao_agenda_com_medico_de_especialidade_inativada(slot_livre):
+    """RN17 - o medico continua ativo, mas a especialidade dele nao esta mais em uso.
+
+    Gap que a RN16 nao cobria: inativar `Cardiologia` deixava todos os cardiologistas
+    ativos, e `POST /consultas` num slot deles respondia 201.
+    """
+    slot_livre.medico.especialidade.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(EspecialidadeInativa) as erro:
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+        )
+
+    assert erro.value.status_code == 409
+    assert slot_livre.medico.ativo is True  # a RN17 barra sem inativar o medico
+    assert slot_livre.disponivel is True  # o slot nao pode ter sido consumido
+
+
+@pytest.mark.unit
+def test_rn17_atendente_tambem_nao_agenda_com_especialidade_inativada(slot_livre):
+    """RN17 vale para os dois perfis, como a RN16: a regra e do dominio, nao da tela."""
+    slot_livre.medico.especialidade.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(EspecialidadeInativa):
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.ATENDENTE
+        )
+
+
+@pytest.mark.unit
+def test_rn16_tem_precedencia_sobre_rn17_quando_os_dois_estao_inativos(slot_livre):
+    """A mensagem tem de apontar o motivo mais proximo: o medico, nao a especialidade."""
+    slot_livre.medico.ativo = False
+    slot_livre.medico.especialidade.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo):
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+        )
 
 
 @pytest.mark.unit

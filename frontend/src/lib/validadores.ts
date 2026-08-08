@@ -17,8 +17,15 @@ export function validarNomeCompleto(
   return validarTextoMinimo(valor, 3, mensagem);
 }
 
+/**
+ * Telefone brasileiro com DDD: 10 digitos (fixo) ou 11 (celular).
+ *
+ * Conta digitos, nao caracteres: com a mascara, "(82) 9999-" tem 10 caracteres
+ * mas so 6 digitos, e passava como valido.
+ */
 export function validarTelefone(valor: string): string | null {
-  return validarTextoMinimo(valor, 10, 'Informe um telefone válido');
+  const digitos = valor.replace(/\D/g, '').length;
+  return digitos === 10 || digitos === 11 ? null : 'Informe DDD e número, ex.: (82) 99999-0000';
 }
 
 export function validarEmailObrigatorio(valor: string): string | null {

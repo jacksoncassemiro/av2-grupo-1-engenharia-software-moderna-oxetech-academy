@@ -48,11 +48,20 @@ def listar(
         bool | None,
         Query(description="Filtrar status: True=ativos, False=inativos, None=todos"),
     ] = None,
+    apenas_agendaveis: Annotated[
+        bool,
+        Query(
+            description=(
+                "True = so quem pode receber consulta nova: medico ativo (RN16) "
+                "de especialidade ativa (RN17). Ignora apenas_ativos."
+            )
+        ),
+    ] = False,
 ) -> list[MedicoResposta]:
-    return [
-        MedicoResposta.model_validate(m)
-        for m in service.listar_ativos(especialidade_id, apenas_ativos=apenas_ativos)
-    ]
+    medicos = service.listar_ativos(
+        especialidade_id, apenas_ativos=apenas_ativos, apenas_agendaveis=apenas_agendaveis
+    )
+    return [MedicoResposta.model_validate(m) for m in medicos]
 
 
 @router.patch("/{medico_id}/status", response_model=MedicoResposta)

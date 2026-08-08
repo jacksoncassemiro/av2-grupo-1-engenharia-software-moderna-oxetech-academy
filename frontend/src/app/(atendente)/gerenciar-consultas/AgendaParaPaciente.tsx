@@ -39,7 +39,9 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
   const [agendando, setAgendando] = useState(false);
 
   useEffect(() => {
-    api<Medico[]>('/medicos')
+    // RN16 + RN17 - a lista vinha sem filtro nenhum e oferecia medico inativo ao
+    // atendente; o POST respondia 409 so depois de escolher paciente, medico e slot.
+    api<Medico[]>('/medicos?apenas_agendaveis=true')
       .then(setMedicos)
       .catch((erro) =>
         notifications.show({

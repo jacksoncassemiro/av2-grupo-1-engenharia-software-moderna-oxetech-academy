@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   Group,
-  Select,
   Stack,
   Table,
   Text,
@@ -21,6 +20,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { Ban, CheckCircle2, Tag } from 'lucide-react';
 
+import { FiltroTabela } from '@/components/FiltroTabela';
 import { api, ApiError } from '@/lib/api';
 import { validarNomeCompleto } from '@/lib/validadores';
 import type { Especialidade } from '@/types/dominio';
@@ -166,12 +166,10 @@ export default function EspecialidadesPage() {
       </Card>
 
       <Card withBorder radius="md" p={{ base: 'md', sm: 'lg' }}>
-        <Group justify="space-between" align="center" mb="md">
+        <Group justify="space-between" align="center" mb="md" wrap="wrap">
           <Text fw={600}>Especialidades cadastradas</Text>
-          <Select
+          <FiltroTabela
             aria-label="Filtrar por status"
-            size="xs"
-            w={160}
             value={statusFiltro}
             onChange={(val) => {
               setStatusFiltro(val || 'true');

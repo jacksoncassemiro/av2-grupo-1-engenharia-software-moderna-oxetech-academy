@@ -55,7 +55,9 @@ export default function MedicosPage() {
     async function carregarMedicos() {
       try {
         const queryParams = new URLSearchParams();
-        queryParams.append('apenas_ativos', 'true');
+        // RN16 + RN17 - quem o paciente vê é só quem pode receber consulta nova:
+        // médico ativo de especialidade ativa. Quem decide é o backend.
+        queryParams.append('apenas_agendaveis', 'true');
         if (filtroEspecialidade) queryParams.append('especialidade_id', filtroEspecialidade);
         const listaMedicos = await api<Medico[]>(`/medicos?${queryParams.toString()}`);
         if (!ignorar) setMedicos(listaMedicos);

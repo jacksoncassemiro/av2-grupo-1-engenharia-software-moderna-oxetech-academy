@@ -96,6 +96,8 @@ Nenhuma RN pode ficar sem linha aqui. Antes de fechar a sprint, o QA revalida es
 | RN13 expiração do token | — | CT12 | ⚠️ verificação manual |
 | RN14 atendente cria atendente | — | CT14 | ✅ |
 | RN15 fuso horário | CTU04 | CT06 | ✅ `agora` injetado |
+| RN16 médico inativo | CTU12 | — | ✅ paciente e atendente; agenda vazia + 409 |
+| RN17 especialidade inativa | CTU13 | — | ✅ barra o novo sem cascatear no existente |
 
 ---
 
