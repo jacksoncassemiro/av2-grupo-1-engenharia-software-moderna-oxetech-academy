@@ -66,6 +66,13 @@ class MedicoInativo(RegraDeNegocioViolada):
     mensagem = "Medico indisponivel para novos agendamentos"
 
 
+class EspecialidadeInativa(RegraDeNegocioViolada):
+    """RN17 - medico de especialidade inativada nao recebe consulta nova."""
+
+    status_code = 409
+    mensagem = "Especialidade indisponivel para novos agendamentos"
+
+
 class MedicoJaAlocado(RegraDeNegocioViolada):
     """RN05."""
 

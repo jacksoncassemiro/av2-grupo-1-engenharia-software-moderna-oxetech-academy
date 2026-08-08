@@ -39,13 +39,20 @@ class MedicoService:
         return self.medicos.salvar(medico)
 
     def listar_ativos(
-        self, especialidade_id: int | None = None, apenas_ativos: bool | None = None
+        self,
+        especialidade_id: int | None = None,
+        apenas_ativos: bool | None = None,
+        apenas_agendaveis: bool = False,
     ) -> list[Medico]:
         """Listagem de médicos (US-06 / CA4 da US-02).
 
-        Se apenas_ativos for None, retorna todos os médicos.
-        Se True, apenas os ativos. Se False, apenas os inativos.
+        `apenas_agendaveis` é a visão de quem vai marcar consulta (US-06, US-07,
+        US-08, US-09): só médico ativo (RN16) de especialidade ativa (RN17).
+        Fora dela, `apenas_ativos` filtra apenas o status do próprio médico —
+        None traz todos, True só ativos, False só inativos.
         """
+        if apenas_agendaveis:
+            return self.medicos.listar_agendaveis(especialidade_id)
         return self.medicos.listar_ativos(especialidade_id, apenas_ativos=apenas_ativos)
 
     def alternar_status(self, medico_id: int) -> Medico:

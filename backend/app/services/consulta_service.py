@@ -6,7 +6,6 @@ from zoneinfo import ZoneInfo
 from app.core.config import settings
 from app.exceptions.dominio import (
     HorarioIndisponivel,
-    MedicoInativo,
     RecursoNaoEncontrado,
     TransicaoDeStatusInvalida,
 )
@@ -15,6 +14,7 @@ from app.models.enums import TRANSICOES_PERMITIDAS, StatusConsulta, TipoUsuario
 from app.repositories.consulta_repository import ConsultaRepository
 from app.repositories.horario_repository import HorarioRepository
 from app.services.cancelamento_strategy import obter_strategy
+from app.services.disponibilidade_medico import garantir_que_recebe_consulta
 
 
 class ConsultaService:
@@ -88,8 +88,7 @@ class ConsultaService:
         slot = self.horarios.buscar_para_reserva(horario_id)  # SELECT FOR UPDATE
         if slot is None:
             raise RecursoNaoEncontrado("Horario nao encontrado")
-        if not slot.medico.ativo:
-            raise MedicoInativo  # RN16
+        garantir_que_recebe_consulta(slot.medico)  # RN16 / RN17
         if not slot.disponivel or self.consultas.existe_ativa_no_slot(slot.id):
             raise HorarioIndisponivel  # RN03
         slot.disponivel = False

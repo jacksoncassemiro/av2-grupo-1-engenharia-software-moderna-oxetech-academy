@@ -7,6 +7,7 @@ from app.models.horario_disponivel import HorarioDisponivel
 from app.models.medico import Medico
 from app.repositories.horario_repository import HorarioRepository
 from app.repositories.medico_repository import MedicoRepository
+from app.services.disponibilidade_medico import pode_receber_consulta
 
 
 class AgendaService:
@@ -22,9 +23,9 @@ class AgendaService:
         return [self._criar_slot(medico_id, data, horario) for horario in horarios]
 
     def listar_livres(self, medico_id: int, data: date) -> list[HorarioDisponivel]:
-        """US-07 / RN03. Medico inativo nao oferece horario (RN16)."""
+        """US-07 / RN03. Medico indisponivel nao oferece horario (RN16 / RN17)."""
         medico = self._garantir_medico_existe(medico_id)
-        if not medico.ativo:
+        if not pode_receber_consulta(medico):
             return []
         return self.horarios.listar_livres(medico_id, data)
 
