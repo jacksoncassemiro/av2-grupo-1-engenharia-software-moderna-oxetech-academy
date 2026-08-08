@@ -4,9 +4,9 @@
 
 | Papel | Pessoas |
 |---|---|
-| 👑 **Product Owner** | Jackson Douglas da Silva Cassemiro |
-| 💻 **Engenharia de Software** | Antonio Andrade Gomes Júnior · João Vitor Mandu de Lira · Ronaldo de Melo Sabino Filho |
-| 🧪 **Quality Assurance** | Uanderson Henrique Batista da Silva · Felipe da Silva Araújo |
+| 👑 **Product Owner** | Jackson Cassemiro |
+| 💻 **Engenharia de Software** | Antonio Júnior · João Vitor Lira · Ronaldo Filho |
+| 🧪 **Quality Assurance** | Uanderson Silva · Felipe Araújo |
 
 > **Nota sobre o enunciado.** O enunciado sugere *"2 para cada"* papel. A equipe tem
 > **1 PO, 3 Engenharia e 2 QA**. Isso não é problema desde que **todo entregável tenha um
