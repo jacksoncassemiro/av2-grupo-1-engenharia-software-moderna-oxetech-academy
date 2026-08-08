@@ -49,7 +49,7 @@ describe('MedicosPage (US-06)', () => {
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
       if (endpoint === '/especialidades?apenas_ativas=true')
         return Promise.resolve(mockEspecialidades);
-      if (endpoint === '/medicos?apenas_ativos=true') return Promise.resolve(mockMedicos);
+      if (endpoint === '/medicos?apenas_agendaveis=true') return Promise.resolve(mockMedicos);
       return Promise.resolve([]);
     });
 
@@ -64,13 +64,26 @@ describe('MedicosPage (US-06)', () => {
     expect(linkAgendar).toHaveAttribute('href', '/agendar?medico=10');
   });
 
+  test('RN16/RN17 — pede ao backend só quem pode receber consulta nova', async () => {
+    // A tela não decide quem é agendável: ela pergunta. `apenas_ativos=true` filtrava
+    // só o médico e deixava passar o médico ativo de especialidade inativada.
+    (api as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+    renderComProvedor();
+
+    await waitFor(() => {
+      expect(api).toHaveBeenCalledWith('/medicos?apenas_agendaveis=true');
+    });
+    expect(api).not.toHaveBeenCalledWith(expect.stringContaining('apenas_ativos'));
+  });
+
   test('refaz a busca na API ao selecionar uma especialidade no filtro', async () => {
     const user = userEvent.setup();
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
       if (endpoint === '/especialidades?apenas_ativas=true')
         return Promise.resolve(mockEspecialidades);
-      if (endpoint === '/medicos?apenas_ativos=true') return Promise.resolve(mockMedicos);
-      if (endpoint === '/medicos?apenas_ativos=true&especialidade_id=1')
+      if (endpoint === '/medicos?apenas_agendaveis=true') return Promise.resolve(mockMedicos);
+      if (endpoint === '/medicos?apenas_agendaveis=true&especialidade_id=1')
         return Promise.resolve(mockMedicos);
       return Promise.resolve([]);
     });
@@ -85,7 +98,7 @@ describe('MedicosPage (US-06)', () => {
     await user.click(opcaoCardiologia);
 
     await waitFor(() => {
-      expect(api).toHaveBeenCalledWith('/medicos?apenas_ativos=true&especialidade_id=1');
+      expect(api).toHaveBeenCalledWith('/medicos?apenas_agendaveis=true&especialidade_id=1');
     });
   });
 
@@ -93,7 +106,7 @@ describe('MedicosPage (US-06)', () => {
     (api as ReturnType<typeof vi.fn>).mockImplementation((endpoint: string) => {
       if (endpoint === '/especialidades?apenas_ativas=true')
         return Promise.resolve(mockEspecialidades);
-      if (endpoint === '/medicos?apenas_ativos=true') return Promise.resolve([]);
+      if (endpoint === '/medicos?apenas_agendaveis=true') return Promise.resolve([]);
       return Promise.resolve([]);
     });
 
@@ -149,7 +162,7 @@ describe('MedicosPage (US-06)', () => {
     await user.click(botaoLimpar);
 
     await waitFor(() => {
-      expect(api).toHaveBeenLastCalledWith('/medicos?apenas_ativos=true');
+      expect(api).toHaveBeenLastCalledWith('/medicos?apenas_agendaveis=true');
     });
   });
 });
