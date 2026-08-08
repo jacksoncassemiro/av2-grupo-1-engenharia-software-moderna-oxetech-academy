@@ -59,6 +59,13 @@ class CancelamentoNaoPermitido(RegraDeNegocioViolada):
     mensagem = "Cancelamento indisponivel: fora do prazo minimo de antecedencia"
 
 
+class MedicoInativo(RegraDeNegocioViolada):
+    """RN16 - medico inativado nao recebe consulta nova."""
+
+    status_code = 409
+    mensagem = "Medico indisponivel para novos agendamentos"
+
+
 class MedicoJaAlocado(RegraDeNegocioViolada):
     """RN05."""
 

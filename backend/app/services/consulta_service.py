@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 from app.core.config import settings
 from app.exceptions.dominio import (
     HorarioIndisponivel,
+    MedicoInativo,
     RecursoNaoEncontrado,
     TransicaoDeStatusInvalida,
 )
@@ -32,9 +33,9 @@ class ConsultaService:
         )
         return self.consultas.salvar(consulta)
 
-    def listar_do_paciente(self, paciente_id: int) -> list[Consulta]:
-        """US-10 - o paciente so enxerga o proprio historico."""
-        return self.consultas.listar_por_paciente(paciente_id)
+    def listar_do_paciente(self, paciente_id: int, agora: datetime | None = None) -> list[Consulta]:
+        """US-10 - o paciente so enxerga o proprio historico, futuras primeiro."""
+        return self.consultas.listar_por_paciente(paciente_id, agora or self._agora())
 
     def detalhar_do_paciente(self, consulta_id: int, paciente_id: int) -> Consulta:
         """US-10 / RN12 - consulta de outro paciente responde 404, nunca vaza dado."""
@@ -87,6 +88,8 @@ class ConsultaService:
         slot = self.horarios.buscar_para_reserva(horario_id)  # SELECT FOR UPDATE
         if slot is None:
             raise RecursoNaoEncontrado("Horario nao encontrado")
+        if not slot.medico.ativo:
+            raise MedicoInativo  # RN16
         if not slot.disponivel or self.consultas.existe_ativa_no_slot(slot.id):
             raise HorarioIndisponivel  # RN03
         slot.disponivel = False

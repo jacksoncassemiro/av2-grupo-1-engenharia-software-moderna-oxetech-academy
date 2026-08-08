@@ -93,7 +93,7 @@ class FakeConsultaRepository:
             for c in self._itens
         )
 
-    def listar_por_paciente(self, paciente_id):
+    def listar_por_paciente(self, paciente_id, agora=None):  # noqa: ARG002
         return [c for c in self._itens if c.paciente_id == paciente_id]
 
     def salvar(self, entidade):
@@ -111,6 +111,9 @@ def medico() -> Medico:
         email="silva@clinica.com",
         crm="CRM123",
         especialidade_id=1,
+        # Explicito: o default da coluna so e aplicado no flush, e fora do banco
+        # `ativo` ficaria None — que a RN16 leria como medico inativo.
+        ativo=True,
     )
 
 
@@ -118,6 +121,15 @@ def medico() -> Medico:
 def slot_livre() -> HorarioDisponivel:
     slot = HorarioDisponivel(
         id=1, medico_id=1, data=date(2026, 8, 12), horario=time(14, 0), disponivel=True
+    )
+    # RN16 - o service consulta `slot.medico.ativo` antes de reservar.
+    slot.medico = Medico(
+        id=1,
+        nome="Dr. Silva",
+        email="silva@clinica.com",
+        crm="CRM123",
+        especialidade_id=1,
+        ativo=True,
     )
     return slot
 

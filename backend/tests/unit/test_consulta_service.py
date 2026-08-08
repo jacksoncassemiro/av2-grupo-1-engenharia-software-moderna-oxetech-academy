@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.exceptions.dominio import (
     CancelamentoNaoPermitido,
     HorarioIndisponivel,
+    MedicoInativo,
     RecursoNaoEncontrado,
     TransicaoDeStatusInvalida,
 )
@@ -140,6 +141,37 @@ def test_us08_agendamento_paciente_sucesso(slot_livre):
     assert consulta.paciente_id == 1
     assert consulta.status is StatusConsulta.SOLICITADA
     assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
+def test_rn16_nao_agenda_com_medico_inativado(slot_livre):
+    """RN16 - medico inativado nao recebe consulta nova.
+
+    Reproduzido na API antes da correcao: apos PATCH /medicos/{id}/status o medico
+    sumia da listagem, mas POST /consultas no slot dele respondia 201.
+    """
+    slot_livre.medico.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo) as erro:
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+        )
+
+    assert erro.value.status_code == 409
+    assert slot_livre.disponivel is True  # o slot nao pode ter sido consumido
+
+
+@pytest.mark.unit
+def test_rn16_atendente_tambem_nao_agenda_com_medico_inativado(slot_livre):
+    """RN16 vale para os dois perfis: a regra e do dominio, nao da tela."""
+    slot_livre.medico.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo):
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.ATENDENTE
+        )
 
 
 @pytest.mark.unit

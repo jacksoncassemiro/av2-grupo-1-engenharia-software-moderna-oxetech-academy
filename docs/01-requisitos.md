@@ -37,6 +37,8 @@ Divergências entre as fontes do enunciado estão analisadas em
 | RF20 | Liberar o horário na agenda quando a consulta é cancelada | Sistema | US-11/12 | Alta |
 | RF21 | Permitir que o atendente confirme e finalize consultas | Atendente | US-13 | Alta |
 | RF22 | Rejeitar requisição sem token (401) ou com perfil inadequado (403) | Sistema | US-00 | Alta |
+| RF23 | Inativar e reativar uma especialidade | Atendente | US-01 | Média |
+| RF24 | Inativar e reativar um médico | Atendente | US-02 | Média |
 
 ### 1.1 Requisitos analisados e adiados
 
@@ -47,12 +49,17 @@ Não fazem parte do MVP. Detalhamento e versão-alvo em
 |---|---|---|
 | RF22 (antigo) | Exibir a agenda geral consolidada da clínica | MF01 |
 | RF23 (antigo) | Permitir que um atendente cadastre outro atendente pela interface | MF02 |
-| — | Editar e excluir especialidade | MF03 |
-| — | Editar e inativar médico | MF04 |
+| — | **Editar** e excluir especialidade | MF03 |
+| — | **Editar** médico | MF04 |
 | — | Editar dados do paciente pelo atendente | MF05 |
 | — | Excluir horário livre da grade | MF06 |
+| — | Cancelar em cascata as consultas de um médico inativado, avisando o paciente | MF16 |
 
-> O **RF24 antigo virou RF22**. Não há RF23 nem RF24 no MVP.
+> O **RF24 antigo virou RF22**.
+>
+> **RF23 e RF24 são novos** ([ADR-009](adr/ADR-009-inativacao-especialidade-medico.md)): a
+> *inativação* de especialidade e de médico entrou no MVP porque já estava implementada e
+> mergeada. Só a inativação — **editar** e **excluir** continuam fora, em MF03 e MF04.
 
 ---
 
@@ -104,6 +111,7 @@ Não fazem parte do MVP. Detalhamento e versão-alvo em
 | **RN13** | Token JWT expira (24h no MVP, configurável) | Segurança | `JWT_EXPIRE_MINUTES` |
 | **RN14** | Não existe rota pública de criação de atendente; o primeiro vem do seed | Evita escalonamento de privilégio | `exigir_atendente` + `seeds/seed.py` |
 | **RN15** | Regras temporais avaliadas em `America/Maceio` | Evita erro de 3h em UTC | `settings.TIMEZONE` |
+| **RN16** | Médico inativo não recebe consulta nova nem oferece agenda; consultas já existentes não mudam de status | Sem isso, inativar o médico só o escondia da lista e ainda era possível agendar com ele ([ADR-009](adr/ADR-009-inativacao-especialidade-medico.md)) | `ConsultaService._reservar_slot` + `AgendaService.listar_livres` |
 
 ### 3.3 Detalhamento das regras sensíveis
 
@@ -166,3 +174,4 @@ Transição fora deste grafo levanta `TransicaoDeStatusInvalida` (HTTP 422).
 | RN13 | RF01 | US-00 | — | — | CT12 |
 | RN14 | RF05 | US-00 (seed) | — | — | CT14 |
 | RN15 | RF18 | US-11 | `TIMESTAMPTZ` | CTU04 | CT06 |
+| RN16 | RF23, RF24 | US-01, US-02, US-08 | `medico.ativo` | CTU12 | — |

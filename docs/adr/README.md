@@ -37,4 +37,5 @@ Regras:
 | [ADR-005](ADR-005-cadastro-paciente.md) | Auto-cadastro e cadastro por atendente no mesmo fluxo | Aceito |
 | [ADR-006](ADR-006-design-patterns.md) | Strategy e Repository; índice parcial para a RN03 | Aceito |
 | [ADR-007](ADR-007-vitest.md) | Vitest no Next.js em vez de Jest | Aceito |
-| [ADR-008](ADR-008-rebaseline-escopo.md) | Rebaseline de escopo e separação backend × frontend na documentação | Aceito |
+| [ADR-008](ADR-008-rebaseline-escopo.md) | Rebaseline de escopo e separação backend × frontend na documentação | Aceito · §1 parcialmente substituído por [ADR-009](ADR-009-inativacao-especialidade-medico.md) |
+| [ADR-009](ADR-009-inativacao-especialidade-medico.md) | Inativação de especialidade e médico entra no MVP (RN16) | Aceito · substitui [ADR-008](ADR-008-rebaseline-escopo.md) §1 no corte de MF03/MF04 |
