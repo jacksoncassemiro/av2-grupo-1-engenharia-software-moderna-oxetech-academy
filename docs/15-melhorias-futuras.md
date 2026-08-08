@@ -57,12 +57,18 @@ Estes itens **existiam** no planejamento anterior e foram removidos.
 > e o botão ativar/inativar já estavam implementados e mergeados. Virou o **RF23**, coberto pelo
 > CA4 da US-01.
 >
+> A pergunta que estava em aberto aqui — o que acontece com os **médicos vinculados** a uma
+> especialidade inativada — foi respondida pela **RN17**, na mesma forma da RN16: eles
+> continuam `ativo = true` e as consultas deles não mudam de status, mas nenhum agendamento
+> novo é aceito e a agenda deles não é oferecida.
+>
 > **Continua fora:** editar o nome e excluir o registro.
 
 - **Era:** parte da US-01
 - **Por que o resto continua fora:** a exclusão física quebraria o histórico de consultas, que
   referencia a especialidade pelo médico. A inativação lógica já resolve o caso real.
-- **Precisaria antes:** definir o que fazer com médicos vinculados a uma especialidade excluída.
+- **Precisaria antes:** definir o que fazer com médicos vinculados a uma especialidade
+  **excluída** — a RN17 responde só o caso da inativação.
 - **Esforço:** P
 - **Versão-alvo:** v1.1
 
@@ -197,7 +203,7 @@ Estes itens **existiam** no planejamento anterior e foram removidos.
 
 | Versão | Itens | Tema |
 |---|---|---|
-| **v1.0 (MVP — 10/08)** | US-00 a US-13 + RF23/RF24 (inativação, [ADR-009](adr/ADR-009-inativacao-especialidade-medico.md)) | Agendamento funcionando ponta a ponta com os dois perfis |
+| **v1.0 (MVP — 10/08)** | US-00 a US-13 + RF23/RF24 (inativação, com RN16 e RN17 — [ADR-009](adr/ADR-009-inativacao-especialidade-medico.md)) | Agendamento funcionando ponta a ponta com os dois perfis |
 | **v1.1** | MF01, MF02, MF03, MF04, MF06, MF12 | Completar o CRUD e a visão consolidada |
 | **v1.2** | MF05, MF08, MF11, MF13, MF14 | Conveniência de uso e automação de testes |
 | **v2.0** | MF07, MF09, MF10, MF15 | Notificações, terceiro perfil, prontuário, deploy |

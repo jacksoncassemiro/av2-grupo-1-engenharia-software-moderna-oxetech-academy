@@ -112,6 +112,7 @@ Não fazem parte do MVP. Detalhamento e versão-alvo em
 | **RN14** | Não existe rota pública de criação de atendente; o primeiro vem do seed | Evita escalonamento de privilégio | `exigir_atendente` + `seeds/seed.py` |
 | **RN15** | Regras temporais avaliadas em `America/Maceio` | Evita erro de 3h em UTC | `settings.TIMEZONE` |
 | **RN16** | Médico inativo não recebe consulta nova nem oferece agenda; consultas já existentes não mudam de status | Sem isso, inativar o médico só o escondia da lista e ainda era possível agendar com ele ([ADR-009](adr/ADR-009-inativacao-especialidade-medico.md)) | `ConsultaService._reservar_slot` + `AgendaService.listar_livres` |
+| **RN17** | Médico de **especialidade inativa** também não recebe consulta nova nem oferece agenda; inativar a especialidade não inativa os médicos dela nem cancela consultas | A RN16 fechava só o lado do médico: inativar `Cardiologia` deixava todos os cardiologistas agendáveis ([ADR-009](adr/ADR-009-inativacao-especialidade-medico.md) §3) | `services/disponibilidade_medico.py`, usado por `ConsultaService._reservar_slot` e `AgendaService.listar_livres` |
 
 ### 3.3 Detalhamento das regras sensíveis
 
@@ -175,3 +176,4 @@ Transição fora deste grafo levanta `TransicaoDeStatusInvalida` (HTTP 422).
 | RN14 | RF05 | US-00 (seed) | — | — | CT14 |
 | RN15 | RF18 | US-11 | `TIMESTAMPTZ` | CTU04 | CT06 |
 | RN16 | RF23, RF24 | US-01, US-02, US-08 | `medico.ativo` | CTU12 | — |
+| RN17 | RF23 | US-01, US-06, US-07, US-08 | `especialidade.ativo` | CTU13 | — |

@@ -69,13 +69,52 @@ aplicado em `ConsultaService._reservar_slot` e `AgendaService.listar_livres`.
 
 Cancelamento em cascata com aviso ao paciente continua fora do MVP — vira **MF16**.
 
+### 3. O mesmo furo existia pelo lado da especialidade (RN17)
+
+A revisão seguinte encontrou que a RN16 fechou só metade do buraco. Ela pergunta
+`medico.ativo` — e nada mais. Inativar a **especialidade** deixava intacto o caminho todo:
+
+| Passo | Antes da RN17 |
+|---|---|
+| `PATCH /api/especialidades/2/status` → `Cardiologia` inativa | os médicos dela continuam `ativo = true` |
+| `GET /api/medicos?apenas_ativos=true` | ainda devolve os cardiologistas — é a lista de `/buscar-medicos` e de `/agendar` |
+| `GET /api/medicos/{id}/horarios-livres` | ainda devolve a grade |
+| `POST /api/consultas` | **201** |
+
+Ou seja: dava para marcar consulta numa especialidade que a clínica acabou de desativar. Havia
+ainda um efeito colateral de tela — como `/buscar-medicos` carrega só as especialidades ativas
+para montar o rótulo, o card do médico aparecia com o `Badge` de especialidade **em branco**.
+
+Fica decidido, no mesmo espírito da RN16 — **preservar o passado, barrar o futuro**:
+
+- **Nada cascateia.** Inativar a especialidade não inativa os médicos dela e não muda o status
+  de consulta alguma. O médico continua `ativo = true` e continua visível para o atendente em
+  `Ativos` (com a especialidade rotulada `(inativa)`), senão ele sumiria da gestão — não
+  estaria nem em `Ativos` nem em `Inativos` — e ninguém saberia como reativá-lo.
+- **Nenhuma consulta nova**, venha de paciente (US-08) ou de atendente (US-09).
+- **A agenda não é oferecida**: `horarios-livres` devolve lista vazia, inclusive para quem
+  chega por `/agendar?medico=<id>` com a URL na mão.
+
+Isso é a **RN17**. As duas regras têm o mesmo formato e por isso vivem juntas, em
+`backend/app/services/disponibilidade_medico.py` — escrever a condição de novo dentro de cada
+service é o que produziu a divergência em primeiro lugar. `pode_receber_consulta()` responde a
+pergunta; `garantir_que_recebe_consulta()` levanta `MedicoInativo` (RN16) ou
+`EspecialidadeInativa` (RN17), para que o 409 diga qual dos dois lados barrou.
+
+A listagem ganhou `GET /api/medicos?apenas_agendaveis=true` — quem vai marcar consulta pergunta
+por essa, não por `apenas_ativos`. Os dois filtros coexistem de propósito: `apenas_ativos` é a
+visão de gestão do atendente, `apenas_agendaveis` é a visão de quem agenda.
+
 ## Consequências
 
 **Positivas**
 
 - Documentação volta a descrever o que o código faz. A rastreabilidade US → RN → código →
   teste fecha de novo.
-- Fecha um furo real: era possível agendar com médico desativado.
+- Fecha dois furos reais: era possível agendar com médico desativado (RN16) e com médico de
+  especialidade desativada (RN17).
+- A condição de "pode receber consulta" passa a existir em **um** lugar. Foi a duplicata dela
+  entre `ConsultaService` e `AgendaService` que deixou a RN16 passar pela metade.
 - Os critérios de aceite de US-01 e US-02 passam a cobrir o botão que já existe nas telas, o
   que dá ao QA o que testar.
 

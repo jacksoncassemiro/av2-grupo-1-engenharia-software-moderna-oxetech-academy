@@ -121,11 +121,19 @@ especialidade deve ser criada e aparecer como opção nos formulários
 **então** ela deve parar de aparecer para o paciente e nos formulários de cadastro de médico,
 **e** o botão deve permitir reativá-la depois
 
+**CA5 (RF23 / RN17)** — **Dado** que `Cardiologia` tem médicos **ativos** vinculados, **quando**
+eu a inativar, **então** esses médicos devem sair de `/buscar-medicos` e de `/agendar`, a agenda
+deles não deve mais ser oferecida **e** nenhuma consulta nova pode ser criada para eles — mas
+eles **continuam `ativo = true`**, visíveis para mim em `Ativos` com a especialidade rotulada
+`(inativa)`, **e** as consultas **já marcadas permanecem com o status original**. Reativar a
+especialidade devolve tudo ao normal, sem nenhuma outra ação
+
 ### Tarefas
 
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/especialidades`
 - `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/especialidades` (ativas)
 - `[BACKEND]` `[OBRIGATÓRIO]` `PATCH /api/especialidades/{id}/status` (RF23)
+- `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/medicos?apenas_agendaveis=true` (RN17)
 - `[FRONTEND]` `[OBRIGATÓRIO]` Tela de cadastro e listagem
 - `[FRONTEND]` `[OBRIGATÓRIO]` Botão ativar/inativar na listagem
 
@@ -363,6 +371,16 @@ deve receber `Horario indisponivel`
 **409**
 
 **CA4** — Após o agendamento, o horário deixa de aparecer como livre
+
+**CA5** — **Quando** a solicitação der certo, **então** devo ser levado para
+**Minhas Consultas** (US-10), onde a consulta recém-solicitada já aparece — a notificação de
+sucesso manda "aguarde a confirmação do atendente em Minhas Consultas", então o fluxo tem de
+terminar lá. **Quando** der erro (CA2/CA3), **então** devo **permanecer** na grade, que é
+recarregada do backend para eu escolher outro horário
+
+**CA6 (RN17)** — **Dado** que a especialidade do médico foi inativada, **quando** eu abrir
+`/agendar` — inclusive digitando `/agendar?medico=<id>` direto na URL — **então** nenhum
+horário deve ser oferecido **e** `POST /api/consultas` deve recusar com **409**
 
 ### Tarefas
 
