@@ -1,8 +1,8 @@
 # CT03 — Bloquear e-mail duplicado e permitir e-mail nulo (RN02)
 
 - **US:** US-03 · **RN:** RN02, RN08
-- **Ambiente:** Docker local (`docker compose down -v && up -d --build`), seed aplicado, commit `[COLE_O_SEU_COMMIT_AQUI]`
-- **Executor:** Claude (QA assistido) · **Data:** 07/08/2026
+- **Ambiente:** Docker local (`docker compose down -v && up -d --build`), seed aplicado, commit `e2053c2`
+- **Executor:** Uanderson · **Data:** 07/08/2026
 - **Resultado:** ✅ passou
 
 ## Passos e evidências

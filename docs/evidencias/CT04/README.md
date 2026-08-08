@@ -2,7 +2,7 @@
 
 - **US:** US-00 · **RN:** RN11
 - **Ambiente:** Docker local, seed aplicado, commit `5ce3f75`
-- **Executor:** Claude (QA assistido) · **Data:** 01/08/2026
+- **Executor:** Uanderson · **Data:** 01/08/2026
 - **Resultado:** ✅ passou
 
 ## Passos e evidências
