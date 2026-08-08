@@ -1,8 +1,8 @@
 # CT02 — Bloquear cadastro com CPF duplicado (RN01)
 
 - **US:** US-03 · **RN:** RN01
-- **Ambiente:** Docker local, seed aplicado, commit `5ce3f75`
-- **Executor:** Claude (QA assistido) · **Data:** 07/08/2026
+- **Ambiente:** Docker local, seed aplicado, commit `37fbecb`
+- **Executor:** Uanderson  · **Data:** 07/08/2026
 - **Resultado:** ✅ passou
 
 ## Passos e evidências
