@@ -8,7 +8,7 @@ Contexto para qualquer agente de IA (Claude Code, Cowork, Antigravity, Copilot) 
 ## 1. O que é este projeto
 
 MVP de um **Sistema de Gestão de Clínica Médica**, entrega da **AV2** da disciplina
-*Engenharia de Software Moderna* (Oxetech Academy) — **Equipe 01** (6 pessoas).
+*Engenharia de Software Moderna* (Oxetech Academy) — **Equipe 01** (7 pessoas).
 **Entrega: 10/08/2026.** Duas sprints curtas: 31/07–05/08 e 05/08–10/08.
 
 **Escopo congelado** pelo [ADR-008](docs/adr/ADR-008-rebaseline-escopo.md): 14 User Stories

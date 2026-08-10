@@ -1,18 +1,19 @@
 # Papéis e responsabilidades
 
-## Composição da equipe — 6 pessoas
+## Composição da equipe — 7 pessoas
 
 | Papel | Pessoas |
 |---|---|
 | 👑 **Product Owner** | Jackson Cassemiro |
 | 💻 **Engenharia de Software** | Antonio Júnior · João Vitor Lira · Ronaldo Filho |
-| 🧪 **Quality Assurance** | Uanderson Silva · Felipe Araújo |
+| 🧪 **Quality Assurance** | Uanderson Silva · Felipe Araújo · Alyssandro Gouveia |
 
 > **Nota sobre o enunciado.** O enunciado sugere *"2 para cada"* papel. A equipe tem
-> **1 PO, 3 Engenharia e 2 QA**. Isso não é problema desde que **todo entregável tenha um
-> responsável nomeado** — é o que esta página faz. Se o avaliador cobrar a divisão 2/2/2, a
-> resposta é a coluna "Apoio": **Antonio atua como PO de apoio** nos itens de processo
-> (cerimônias e slides), o que dá dois nomes em cada papel sem inflar o escopo de ninguém.
+> **1 PO, 3 Engenharia e 3 QA** (Alyssandro Gouveia entrou depois, como reforço de QA). Isso
+> não é problema desde que **todo entregável tenha um responsável nomeado** — é o que esta
+> página faz. Se o avaliador cobrar a divisão 2/2/2 do PO, a resposta é a coluna "Apoio":
+> **Antonio atua como PO de apoio** nos itens de processo (cerimônias e slides), o que dá dois
+> nomes no papel de PO sem inflar o escopo de ninguém.
 
 Combinado com o grupo: os papéis definem **responsabilidade pela entrega**, não fronteira
 rígida. Quem terminar antes ajuda quem estiver com mais carga — desde que o responsável nomeado
@@ -98,13 +99,13 @@ Regras para todos:
 
 ---
 
-## 🧪 QA — Uanderson e Felipe
+## 🧪 QA — Uanderson, Felipe e Alyssandro
 
 | # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
-| 1 | Plano de testes | **Uanderson** | Felipe | `docs/07-plano-de-testes.md` |
-| 2 | 10 casos de teste (14 entregues) | **Uanderson** | Felipe | `docs/08-casos-de-teste.md` |
-| 3 | Testes exploratórios com evidências | **Felipe** | Uanderson | `docs/07` §6 + `docs/evidencias/` |
+| 1 | Plano de testes | **Uanderson** | Felipe, Alyssandro | `docs/07-plano-de-testes.md` |
+| 2 | 10 casos de teste (14 entregues) | **Uanderson** | Felipe, Alyssandro | `docs/08-casos-de-teste.md` |
+| 3 | Testes exploratórios com evidências | **Felipe** | Uanderson, Alyssandro | `docs/07` §6 + `docs/evidencias/` |
 | 4 | CI no GitHub Actions | **Felipe** | Ronaldo | `.github/workflows/ci.yml` |
 
 **Uanderson — plano e casos de teste**
@@ -125,6 +126,12 @@ Regras para todos:
 - Três sessões exploratórias (EXP-01 a EXP-03) com charter e registro.
 - Organizar `docs/evidencias/` conforme a §7 do plano de testes.
 - Relatório final de testes para a apresentação.
+
+**Alyssandro — reforço de QA**
+
+Entrou depois do resto da equipe, como apoio geral de Uanderson e Felipe nos dois entregáveis
+de QA (não tem entregável próprio nomeado ainda — ver nota acima). Ajuda a executar CTs
+pendentes e a registrar evidência, priorizando o que estiver mais atrasado no board.
 
 ---
 
