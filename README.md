@@ -82,6 +82,7 @@ usa.
 | 💻 **Engenharia** | Antonio Júnior | Frontend do atendente, cerimônias Scrum, apresentação |
 | 🧪 **QA** | Uanderson Silva | Plano e casos de teste, execução, evidências |
 | 🧪 **QA** | Felipe Araújo | CI/CD, testes exploratórios, relatório final |
+| 🧪 **QA** | Alyssandro Gouveia | Reforço de QA, apoio geral em execução e evidências |
 
 Alocação detalhada de cada entregável avaliado em
 [`docs/13-papeis-e-responsabilidades.md`](docs/13-papeis-e-responsabilidades.md).
