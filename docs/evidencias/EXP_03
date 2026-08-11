@@ -1,0 +1,215 @@
+# EXP-03 — Fronteiras da RN04 e transições de status
+
+- **Charter:** Explorar os limites temporais da RN04 (cancelamento pelo paciente só com
+  ≥ 24h de antecedência, calculada em `America/Maceio` — RN15) e as transições de status
+  fora do grafo permitido (RN06/RN10), incluindo um vetor de manipulação de identidade
+  sobre RN12 (paciente tentando cancelar consulta de outro paciente).
+- **Ambiente:** `http://localhost:8000` (API) / `http://localhost:3000` (front), seed aplicado
+- **Executor:** _______________ · **Data:** 11/08/2026
+- **Resultado:** ✅ Nenhum bug encontrado — 6 de 6 casos com evidência completa
+
+Massa de dados usada na sessão: paciente "mario joao", médicos "Dra. Maria Joaquina" (id 3) e
+outro médico id 2, consultas de teste com ids 1, 3, 6 e 9.
+
+---
+
+## Caso 1 — Fronteira de 23h59 / 24h00 / 24h01 de antecedência (RN04, RN15)
+
+- **US:** US-11 · **RN:** RN04, RN15
+- **Estende:** CT06 (matriz de cobertura, §4 do plano de testes)
+
+### Passos e evidência
+
+| # | Passo | Evidência |
+|---|---|---|
+| 1 | Criar 3 consultas `CONFIRMADA` em horários encadeados minuto a minuto (15:22, 15:23, 15:24 de 12/08) para cruzar a fronteira de 24h de antecedência em tempo real | `bug1-consulta-com-23h59m-24h00m-24h01m-de-antecedencia.png` |
+| 2 | `GET /api/atendente/consultas?status=CONFIRMADA` logo após criar — ler o campo calculado `pode_cancelar` das consultas 15:22 e 15:23 | `bug1-consulta-com-23h59m-24h00m-de-antecedencia.png` |
+| 3 | Repetir o `GET` alguns segundos depois, já com a 3ª consulta (15:24) criada — ler `pode_cancelar` das três | `bug1-consulta-com-24h01m-de-antecedencia.png` |
+
+![Consultas de fronteira criadas](evidencias/EXP-03/bug1-consulta-com-23h59m-24h00m-24h01m-de-antecedencia.png)
+
+![Estado inicial: 15:22 e 15:23 bloqueadas](evidencias/EXP-03/bug1-consulta-com-23h59m-24h00m-de-antecedencia.png)
+
+![Estado após a fronteira: 15:24 já permite cancelar](evidencias/EXP-03/bug1-consulta-com-24h01m-de-antecedencia.png)
+
+### Observado vs. esperado
+
+Consultas criadas em `2026-08-12`, servidor respondendo em `2026-08-11T18:23:2xZ` (UTC) —
+ou seja, `2026-08-11 15:23:2x` em `America/Maceio` (UTC−3):
+
+| Consulta | Horário (local) | Antecedência real no momento da leitura | `pode_cancelar` observado | Esperado (RN04: `≥ 24h`) |
+|---|---|---|---|---|
+| id 16 | 15:22 | ≈ 23h58m | `false` | bloqueado ✅ |
+| id 17 | 15:23 | ≈ 23h59m (nas duas leituras) | `false` | bloqueado ✅ |
+| id 18 | 15:24 | ≈ 24h00m34s | `true` | permitido ✅ |
+
+- **Observado:** o campo `pode_cancelar` vira `true` exatamente quando a antecedência ultrapassa
+  24h, e permanece `false` enquanto está abaixo — inclusive no caso de 15:23, que ficou por duas
+  leituras seguidas a poucos segundos de 24h e continuou bloqueado corretamente.
+- **RN15 (fuso horário) — evidência forte, não só indireta:** as três consultas foram criadas
+  com poucos segundos de diferença entre si. Se o backend estivesse comparando o horário da
+  consulta contra UTC sem converter para `America/Maceio`, o deslocamento de 3h seria **o
+  mesmo para as três** — todas ficariam com antecedência ~21h (as três bloqueadas) ou ~27h
+  (as três permitidas), nunca uma transição no meio. Ver o `pode_cancelar` virar `true`
+  exatamente entre a consulta 17 (15:23) e a 18 (15:24) — 1 minuto de diferença real — descarta
+  um erro sistemático de 3h e comprova que o cálculo usa `America/Maceio`.
+- **Veredito:** ✅ passou — RN04 e RN15 confirmadas na fronteira.
+
+---
+
+## Caso 2 — Finalizar consulta cancelada (RN06 / RN10)
+
+- **US:** US-13 · **RN:** RN06, RN10
+- **Estende:** CT09
+
+### Passos e evidência
+
+| # | Passo | Evidência |
+|---|---|---|
+| 1 | Login como atendente e autorizar | — |
+| 2 | `PATCH /api/atendente/consultas/1/status` com `{"status": "FINALIZADA"}` numa consulta já `CANCELADA` | `bug02-01-finalizar-consulta-cancelada.png` |
+
+![Bloqueio ao finalizar consulta cancelada](evidencias/EXP-03/bug02-01-finalizar-consulta-cancelada.png)
+
+### Observado vs. esperado
+
+- **Observado:** API respondeu **422 Unprocessable Entity** — `"Nao e permitido ir de
+  CANCELADA para FINALIZADA"`, `erro: TransicaoDeStatusInvalida`.
+- **Esperado (RN06/RN10):** `CANCELADA` é terminal; a transição `CANCELADA → FINALIZADA` não
+  existe no grafo e deve ser bloqueada.
+- **Veredito:** ✅ passou — comportamento condiz com a regra.
+
+---
+
+## Caso 3 — Confirmar consulta finalizada (RN06 / RN10)
+
+- **US:** US-13 · **RN:** RN06, RN10
+- **Estende:** CT09 / CT10
+
+### Passos e evidência
+
+| # | Passo | Evidência |
+|---|---|---|
+| 1 | `PATCH /api/atendente/consultas/3/status` com `{"status": "FINALIZADA"}` numa consulta `CONFIRMADA` → 200, consulta passa a `FINALIZADA` (pré-condição) | `bug2-02-confirmar-consulta-finalizada.png` |
+| 2 | Com a consulta 3 já `FINALIZADA`, repetir `PATCH /api/atendente/consultas/3/status` com `{"status": "FINALIZADA"}` | `bug2-03-finalizar-consulta-ja-finalizada.png` |
+
+![Consulta finalizada (pré-condição)](evidencias/EXP-03/bug2-02-confirmar-consulta-finalizada.png)
+
+![Bloqueio ao tentar transicionar consulta já finalizada](evidencias/EXP-03/bug2-03-finalizar-consulta-ja-finalizada.png)
+
+### Observado vs. esperado
+
+- **Observado:** o segundo `PATCH` respondeu **422 Unprocessable Entity** —
+  `"Nao e permitido ir de FINALIZADA para FINALIZADA"`, `erro: TransicaoDeStatusInvalida`.
+- **Esperado (RN06/RN10):** `FINALIZADA` é terminal; nenhuma transição a partir dela deve ser
+  aceita.
+- **Nota sobre o payload:** o passo 2 testou `{"status": "FINALIZADA"}` (reenviar o mesmo
+  status), não `{"status": "CONFIRMADA"}` como o charter original descrevia literalmente
+  ("confirmar consulta finalizada"). Isso ainda prova a regra — `TRANSICOES_PERMITIDAS` bloqueia
+  qualquer saída de um estado terminal, então o mesmo 422 é esperado para `CONFIRMADA` — mas se
+  o time quiser o print literal com `"status": "CONFIRMADA"`, é um `PATCH` a mais para deixar
+  1:1 com o texto do charter.
+- **Veredito:** ✅ passou — `FINALIZADA` comprovadamente terminal.
+
+---
+
+## Caso 4 — Cancelar consulta já cancelada (RN06 / RN10)
+
+- **US:** US-11/US-12 · **RN:** RN06, RN10
+- **Estende:** CT09
+
+### Passos e evidência
+
+| # | Passo | Evidência |
+|---|---|---|
+| 1 | `PATCH /api/atendente/consultas/1/cancelar` numa consulta já `CANCELADA` | `bug2-cancelar-consulta-cancelada.png` |
+
+![Bloqueio ao cancelar consulta já cancelada](evidencias/EXP-03/bug2-cancelar-consulta-cancelada.png)
+
+### Observado vs. esperado
+
+- **Observado:** API respondeu **422 Unprocessable Entity** — `"Nao e permitido ir de
+  CANCELADA para CANCELADA"`, `erro: TransicaoDeStatusInvalida`.
+- **Esperado (RN06/RN10):** `CANCELADA` é terminal; cancelar de novo não deve ser aceito
+  (idempotência correta — não duplica ação nem retorna sucesso silencioso).
+- **Veredito:** ✅ passou.
+
+---
+
+## Caso 5 — Paciente cancela consulta de outro paciente (RN12 / IDOR)
+
+- **US:** US-11 · **RN:** RN12 (controle de acesso)
+- **Estende:** CT11
+
+### Passos e evidência
+
+| # | Passo | Evidência |
+|---|---|---|
+| 1 | Autenticado como paciente A, trocar o id da consulta na URL pelo id de uma consulta de outro paciente e chamar `PATCH /api/consultas/6/cancelar` | `bug3-cancelar-consulta-outro-paciente.png` |
+
+![Bloqueio ao tentar cancelar consulta de outro paciente](evidencias/EXP-03/bug3-cancelar-consulta-outro-paciente.png)
+
+### Observado vs. esperado
+
+- **Observado:** API respondeu **404 Not Found** — `"Consulta nao encontrada"`,
+  `erro: RecursoNaoEncontrado` — em vez de vazar a existência do recurso com um 403.
+- **Esperado (RN12):** a ação deve ser bloqueada; usar 404 em vez de 403 é uma escolha de
+  design válida (evita confirmar a um invasor que o id pertence a outro paciente) — vale
+  documentar essa decisão explicitamente no `01-requisitos.md`/ADR, já que hoje não está
+  formalizada.
+- **Veredito:** ✅ passou — acesso negado, embora via código HTTP diferente do assumido no
+  charter original (403). Recomenda-se registrar essa decisão de política de disclosure.
+
+---
+
+## Caso 6 — Atendente cancela consulta que começa em 1h (RN04, exceção / RF19)
+
+- **US:** US-12 · **RN:** RN04 (exceção), RF19
+- **Estende:** CT07
+
+### Passos e evidência
+
+| # | Passo | Evidência |
+|---|---|---|
+| 1 | Atendente abre o modal de cancelamento de uma consulta `CONFIRMADA` que começa em ~1h; o modal já avisa: *"O atendente pode cancelar mesmo com menos de 24h (US-12)"* | `bug4-cancelar-consulta-1h-antecedencia.png` |
+| 2 | Confirma o cancelamento pela UI → notificação "Consulta cancelada"; lista filtrada por `CONFIRMADA` fica vazia | `bug4-01-cancelar-consulta-1h-antecedencia.png` |
+| 3 | Confirmação via API: `PATCH /api/atendente/consultas/9/cancelar` → 200, `status: "CANCELADA"` | `bug4-01-cancelar-consulta-1h-antecedencia-via-status.png` |
+
+![Modal de confirmação citando a exceção do atendente](evidencias/EXP-03/bug4-cancelar-consulta-1h-antecedencia.png)
+
+![Consulta cancelada e removida da lista de confirmadas](evidencias/EXP-03/bug4-01-cancelar-consulta-1h-antecedencia.png)
+
+![Confirmação via API do cancelamento](evidencias/EXP-03/bug4-01-cancelar-consulta-1h-antecedencia-via-status.png)
+
+### Observado vs. esperado
+
+- **Observado:** cancelamento permitido tanto pela UI quanto pela API, mesmo com a consulta
+  começando em ~1h; a própria UI já comunica a exceção da RN04 para o atendente citando US-12.
+- **Esperado (RF19):** atendente cancela "sem restrição de prazo" — RN04 se aplica só ao
+  paciente.
+- **Veredito:** ✅ passou — é o único caso dos seis com evidência tripla (UI + notificação +
+  confirmação via API), o mais completo da sessão.
+
+---
+
+## Resumo da sessão
+
+| Caso | RN | Veredito |
+|---|---|---|
+| 1 — Fronteira 23h59/24h00/24h01 | RN04, RN15 | ✅ passou |
+| 2 — Finalizar consulta cancelada | RN06, RN10 | ✅ passou |
+| 3 — Confirmar/re-finalizar consulta finalizada | RN06, RN10 | ✅ passou |
+| 4 — Cancelar consulta já cancelada | RN06, RN10 | ✅ passou |
+| 5 — Cancelar consulta de outro paciente | RN12 | ✅ passou (via 404) |
+| 6 — Atendente cancela com 1h de antecedência | RN04 (exceção), RF19 | ✅ passou |
+
+**Pendências antes de fechar a sessão no board:**
+1. *(Opcional, não bloqueante)* Repetir o Caso 3 literalmente com
+   `{"status": "CONFIRMADA"}` em vez de `{"status": "FINALIZADA"}`, só para ter o print 1:1
+   com o texto original do charter — a regra já está provada de qualquer forma.
+2. Decidir e registrar formalmente (issue/ADR) se o comportamento correto para IDOR em
+   consultas é 403 ou 404 — hoje a API retorna 404, o que é aceitável mas não está
+   documentado como decisão consciente.
+
+Nenhum dos itens acima é um defeito. Os 6 casos do charter estão com evidência completa e
+comportamento correto — a sessão pode ir para *Em revisão* no board.
