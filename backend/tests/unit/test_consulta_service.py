@@ -301,3 +301,69 @@ def test_us13_mudar_status_consulta_valido_e_invalido(slot_livre):
     # FINALIZADA -> CONFIRMADA (rejeitado)
     with pytest.raises(TransicaoDeStatusInvalida):
         service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+
+
+@pytest.mark.unit
+def test_rn03_cancelar_pelo_endpoint_de_status_tambem_libera_o_slot(slot_livre):
+    """RN03 + RN06/RN10 - EXP-02 bug 1.
+
+    `TRANSICOES_PERMITIDAS` aceita CONFIRMADA -> CANCELADA tambem pelo endpoint
+    generico de status; antes da correcao so o `/cancelar` devolvia o horario para a
+    agenda, e cancelar por essa rota bloqueava o slot permanentemente.
+    """
+    slot_livre.disponivel = False
+    consulta = montar_consulta(slot_livre, StatusConsulta.CONFIRMADA)
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    service.mudar_status(consulta.id, StatusConsulta.CANCELADA)
+
+    assert consulta.status is StatusConsulta.CANCELADA
+    assert slot_livre.disponivel is True
+
+
+@pytest.mark.unit
+def test_rn03_confirmar_e_finalizar_nao_liberam_o_slot(slot_livre):
+    """RN03 - so o cancelamento devolve o horario; consulta ativa segue ocupando o slot."""
+    slot_livre.disponivel = False
+    consulta = montar_consulta(slot_livre, StatusConsulta.SOLICITADA)
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+    assert slot_livre.disponivel is False
+
+    service.mudar_status(consulta.id, StatusConsulta.FINALIZADA)
+    assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
+def test_rn06_rn10_mudancas_de_status_leem_a_consulta_travada(slot_livre):
+    """RN06/RN10 - EXP-02 bug 2: cancelar e mudar status leem com SELECT ... FOR UPDATE.
+
+    A trava e o que serializa duas escritas concorrentes na mesma consulta e impede o
+    lost update que deixava CONFIRMADA com o slot marcado como livre. Aqui se verifica
+    o contrato com o repositorio (DIP); o bloqueio em si e do PostgreSQL.
+    """
+    consulta = montar_consulta(slot_livre, StatusConsulta.SOLICITADA)
+    consultas = FakeConsultaRepository([consulta])
+    service = ConsultaService(consultas, FakeHorarioRepository([slot_livre]))
+
+    service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+    service.cancelar(consulta.id, TipoUsuario.ATENDENTE)
+
+    assert consultas.ids_travados == [consulta.id, consulta.id]
+
+
+@pytest.mark.unit
+def test_leitura_do_paciente_nao_trava_a_consulta(slot_livre):
+    """US-10 - listar/detalhar sao so leitura: nao devem travar linha a toa."""
+    consulta = montar_consulta(slot_livre)
+    consultas = FakeConsultaRepository([consulta])
+    service = ConsultaService(consultas, FakeHorarioRepository([slot_livre]))
+
+    service.detalhar_do_paciente(consulta.id, consulta.paciente_id)
+
+    assert consultas.ids_travados == []

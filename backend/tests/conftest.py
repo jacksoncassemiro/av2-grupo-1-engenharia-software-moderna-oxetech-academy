@@ -121,9 +121,19 @@ class FakeMedicoRepository:
 class FakeConsultaRepository:
     def __init__(self, consultas: list[Consulta] | None = None):
         self._itens = list(consultas or [])
+        self.ids_travados: list[int] = []
 
     def buscar_por_id(self, id_):
         return next((c for c in self._itens if c.id == id_), None)
+
+    def buscar_para_atualizar(self, id_):
+        """Espelha o SELECT ... FOR UPDATE do repositorio real.
+
+        O fake nao tem banco para travar, entao registra o id em `ids_travados`:
+        e assim que o teste verifica que o caminho de escrita pediu a leitura travada.
+        """
+        self.ids_travados.append(id_)
+        return self.buscar_por_id(id_)
 
     def existe_ativa_no_slot(self, horario_disponivel_id):
         return any(
