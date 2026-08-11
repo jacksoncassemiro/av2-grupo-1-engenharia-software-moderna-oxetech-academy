@@ -48,3 +48,15 @@ class ConsultaRepository(RepositorioBase[Consulta]):
 
     def listar_por_status(self, status: StatusConsulta) -> list[Consulta]:
         return list(self.db.scalars(select(Consulta).where(Consulta.status == status)).all())
+
+    def buscar_para_atualizar(self, consulta_id: int) -> Consulta | None:
+        """SELECT ... FOR UPDATE - serializa mudancas de status concorrentes (RN06 / RN10).
+
+        Mesmo padrao de `HorarioRepository.buscar_para_reserva`: sem a trava, cancelar
+        e confirmar a mesma consulta ao mesmo tempo geram lost update - a escrita que
+        leu o estado antigo sobrescreve a outra e deixa `consulta.status` e
+        `horario.disponivel` inconsistentes entre si (RN03).
+        """
+        return self.db.scalars(
+            select(Consulta).where(Consulta.id == consulta_id).with_for_update()
+        ).first()

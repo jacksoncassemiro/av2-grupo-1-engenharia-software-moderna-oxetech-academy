@@ -36,6 +36,7 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
   const [data, setData] = useState<Date | null>(null);
   const [horariosLivres, setHorariosLivres] = useState<HorarioDisponivel[]>([]);
   const [horarioEscolhido, setHorarioEscolhido] = useState<number | null>(null);
+  const [versaoDaGrade, setVersaoDaGrade] = useState(0);
   const [agendando, setAgendando] = useState(false);
 
   useEffect(() => {
@@ -94,7 +95,13 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
           color: 'red',
         });
       });
-  }, [medicoId, data]);
+    // `versaoDaGrade` refaz a busca depois de um agendamento que falhou (RN03).
+  }, [medicoId, data, versaoDaGrade]);
+
+  function recarregarGrade() {
+    setHorarioEscolhido(null);
+    setVersaoDaGrade((versao) => versao + 1);
+  }
 
   async function agendarParaPaciente() {
     if (!pacienteEncontrado || !horarioEscolhido) return;
@@ -122,6 +129,9 @@ export function AgendarParaPaciente({ onAgendado }: AgendarParaPacienteProps) {
         message: erro instanceof ApiError ? erro.message : 'Falha inesperada',
         color: 'red',
       });
+      // Mesmo tratamento do fluxo do paciente: sem recarregar, o chip do horario que
+      // outra sessao acabou de ocupar continuava marcado e clicavel (RN03).
+      recarregarGrade();
     } finally {
       setAgendando(false);
     }
