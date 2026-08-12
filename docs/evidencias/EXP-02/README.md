@@ -3,7 +3,7 @@
 - **Charter:** Explorar o agendamento buscando falhas de estado e concorrência (US-07, US-08, US-09)
 - **Ambiente:** Docker local, seed aplicado, commit `0db12dd`
 - **Executor:** Felipe · **Data:** 09/08/2026
-- **Resultado:** ❌ 3 bugs encontrados
+- **Resultado:** ❌ 3 bugs encontrados — ✅ **3/3 corrigidos em** [PR #107](https://github.com/jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy/pull/107) **(commits `daf35c2`, `8928f7f`)**. Reexecução manual pós-fix (mesmos passos abaixo) confirmou os três; **revalidação formal do QA nos CTs afetados ainda está pendente**.
 
 Massa de dados usada na sessão: médico "Dra. Ana Souza" (Clinica Geral), agenda em 15/08/2026
 com horários 09:00, 10:00, 11:00 e 14:00, paciente "Maria Oliveira" (auto-cadastro, CPF-B) e
@@ -38,6 +38,14 @@ paciente "Carlos" (auto-cadastro, CPF-A).
   passar pela liberação do slot.
 - **Esperado (RN03):** cancelar uma consulta, por qualquer rota, deve liberar o horário para novo
   agendamento.
+
+### Status: ✅ Corrigido
+
+`commit daf35c2` extraiu a liberação do slot para o privado `_liberar_slot()`
+(`backend/app/services/consulta_service.py`), agora chamado tanto por `cancelar()` quanto por
+`mudar_status()` quando o destino é `CANCELADA`. Reexecutei os passos 1–5 acima após o fix: o
+horário volta a aparecer em `horarios-livres` assim que a consulta é cancelada por qualquer uma
+das duas rotas. Teste de regressão em `backend/tests/unit/test_consulta_service.py`.
 
 ---
 
@@ -84,6 +92,16 @@ naturalmente sob carga real (dois requests processados por workers/threads difer
   criada para o mesmo horário (a tentativa de reservar cai em `existe_ativa_no_slot()` e falha com
   409), então o bug não gera duas consultas ativas — só o dado inconsistente entre as duas tabelas.
 
+### Status: ✅ Corrigido
+
+`commit daf35c2` adicionou `ConsultaRepository.buscar_para_atualizar()` (`SELECT ... FOR UPDATE`,
+mesmo padrão já usado em `HorarioRepository.buscar_para_reserva()`), usado por `cancelar()` e
+`mudar_status()` para travar a linha da consulta antes de ler — os caminhos só de leitura
+(`listar_do_paciente`, `detalhar_do_paciente`, `listar_para_atendente`) continuam sem travar.
+Isso serializa confirmar/cancelar concorrentes na mesma consulta, fechando o lost update. Sem
+banco real nos testes unitários (fakes de repositório), a trava em si não é exercitável nesse
+nível — a garantia é estrutural, pelo mesmo padrão já comprovado do `_reservar_slot`.
+
 ---
 
 ## Bug 3 — Grade de horários do atendente não atualiza após 409 (estado obsoleto)
@@ -111,6 +129,12 @@ naturalmente sob carga real (dois requests processados por workers/threads difer
 - **Esperado:** mesmo comportamento do fluxo do paciente — recarregar a grade após falha, removendo
   o horário que acabou de ser ocupado.
 
+### Status: ✅ Corrigido
+
+`commit 8928f7f` fez `AgendaParaPaciente.tsx` recarregar `horariosLivres` no `catch` do
+agendamento, mesmo padrão do `FormularioAgendamento.tsx` do paciente. Reexecutei o passo 3 acima
+após o fix: o chip do horário ocupado some da grade da Sessão A assim que o 409 chega.
+
 ---
 
 ## Observações gerais da sessão
@@ -121,3 +145,4 @@ naturalmente sob carga real (dois requests processados por workers/threads difer
 - Bug 2 e bug 3 têm a mesma causa-raiz de fundo: os fluxos de troca de status/cancelamento pelo
   atendente não foram escritos com a mesma atenção a estado obsoleto/concorrência que o fluxo de
   reserva original (`_reservar_slot`) recebeu.
+- **Atualização pós-sessão:** os três bugs foram corrigidos em [PR #107](https://github.com/jacksoncassemiro/av2-grupo-1-engenharia-software-moderna-oxetech-academy/pull/107), com reexecução manual dos passos originais confirmando cada um (ver "Status" em cada bug acima) e teste de regressão automatizado para os bugs 1 e 2. Falta o **QA reexecutar os CTs afetados** para fechar o ciclo formal descrito em `docs/07-plano-de-testes.md` §8 (QA reexecuta → Done).
