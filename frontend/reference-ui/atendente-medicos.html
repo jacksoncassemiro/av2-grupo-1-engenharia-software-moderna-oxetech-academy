@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Médicos — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-02: Cadastro de médicos -->
+  <!-- Layout em 2 colunas (Especialidade+CRM, depois Nome+E-mail) — corrigido do
+       mockup em coluna única original (achado em CT13, PR #11). -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="building-2" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-consultas.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="clipboard-list" style="width:18px;height:18px;"></i></span> Consultas
+        </a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-especialidades.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="tag" style="width:18px;height:18px;"></i></span> Especialidades
+        </a>
+        <a href="atendente-medicos.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="atendente-pacientes.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="users" style="width:18px;height:18px;"></i></span> Pacientes
+        </a>
+        <a href="atendente-agenda.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Agenda
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="stethoscope" style="width:22px;height:22px;"></i> Médicos
+          </h1>
+        </div>
+
+        <div class="card mb-lg">
+          <p class="text-bold mb-md">Cadastrar novo médico</p>
+          <form onsubmit="return false">
+            <div class="stack gap-md">
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required">Especialidade</label>
+                  <select class="select">
+                    <option>Selecione</option>
+                    <option>Cardiologia</option>
+                    <option>Pediatria</option>
+                  </select>
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label input-required">CRM</label>
+                  <input class="input" placeholder="CRM12345">
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required">Nome</label>
+                  <input class="input" placeholder="Dra. Ana Souza">
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label input-required">E-mail</label>
+                  <input class="input" placeholder="medico@clinica.com">
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button class="btn btn-primary" type="submit">Cadastrar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center mb-md flex-wrap gap-md">
+            <p class="text-bold">Médicos cadastrados</p>
+            <div class="flex gap-md items-center flex-wrap">
+              <div class="tabs" style="border-bottom:none;">
+                <button class="tab active" style="border:1px solid var(--gray-3);border-radius:var(--radius-sm) 0 0 var(--radius-sm);">Ativos</button>
+                <button class="tab" style="border:1px solid var(--gray-3);border-left:none;">Todos</button>
+                <button class="tab" style="border:1px solid var(--gray-3);border-left:none;border-radius:0 var(--radius-sm) var(--radius-sm) 0;">Inativos</button>
+              </div>
+              <select class="select" style="max-width:220px;">
+                <option>Filtrar por especialidade</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>CRM</th>
+                  <th>Especialidade</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>CRM11111</td>
+                  <td>Cardiologia</td>
+                  <td><span class="badge badge-primary">Ativo</span></td>
+                  <td>
+                    <span title="Inativar" style="color:var(--color-error);cursor:pointer;">
+                      <i data-lucide="ban" style="width:16px;height:16px;"></i>
+                    </span>
+                  </td>
+                </tr>
+                <!-- Estado inativo (aparece com o filtro Todos/Inativos) -->
+                <tr>
+                  <td>Dra. Mariana Souza</td>
+                  <td>CRM22222</td>
+                  <td>Pediatria</td>
+                  <td><span class="badge badge-gray">Inativo</span></td>
+                  <td>
+                    <span title="Reativar" style="color:var(--color-confirmada);cursor:pointer;">
+                      <i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

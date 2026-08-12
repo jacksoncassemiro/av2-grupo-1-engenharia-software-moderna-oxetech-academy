@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacientes — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-03: Cadastro de pacientes -->
+  <!-- A listagem persiste entre navegações via GET /pacientes — corrigido do
+       mockup anterior, que so guardava "cadastrados nesta sessão" em memória
+       porque o endpoint de listagem ainda não existia. -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="building-2" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-consultas.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="clipboard-list" style="width:18px;height:18px;"></i></span> Consultas
+        </a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-especialidades.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="tag" style="width:18px;height:18px;"></i></span> Especialidades
+        </a>
+        <a href="atendente-medicos.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="atendente-pacientes.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="users" style="width:18px;height:18px;"></i></span> Pacientes
+        </a>
+        <a href="atendente-agenda.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Agenda
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="users" style="width:22px;height:22px;"></i> Pacientes
+          </h1>
+        </div>
+
+        <div class="card mb-lg">
+          <p class="text-bold mb-md">Cadastrar novo paciente</p>
+          <form onsubmit="return false">
+            <div class="stack gap-md">
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required">Nome completo</label>
+                  <input class="input" placeholder="Nome do paciente">
+                  <span class="input-description">Como no documento</span>
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label input-required">CPF</label>
+                  <input class="input" placeholder="000.000.000-00">
+                  <span class="input-description">Validado por dígitos verificadores (RN07)</span>
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="input-wrapper">
+                  <label class="input-label input-required">Telefone</label>
+                  <input class="input" placeholder="(82) 99999-0000">
+                  <span class="input-description">Com DDD</span>
+                </div>
+                <div class="input-wrapper">
+                  <label class="input-label">E-mail</label>
+                  <input class="input" placeholder="paciente@email.com">
+                  <span class="input-description">Opcional</span>
+                </div>
+              </div>
+              <div class="input-wrapper" style="max-width:300px;">
+                <label class="input-label">Data de nascimento</label>
+                <input class="input" placeholder="Selecione a data">
+                <span class="input-description">Opcional</span>
+              </div>
+              <div class="alert alert-info">
+                <span class="alert-icon"><i data-lucide="info" style="width:16px;height:16px;"></i></span>
+                <div class="text-sm">
+                  Este cadastro não cria credencial de login. O paciente ativa o acesso usando
+                  "Primeiro acesso" (US-00).
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button class="btn btn-primary" type="submit">Cadastrar paciente</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <p class="text-bold mb-md">Pacientes cadastrados</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Telefone</th>
+                  <th>E-mail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Carlos Silva</td>
+                  <td>529.982.247-25</td>
+                  <td>82999990000</td>
+                  <td><span class="text-dimmed">carlos@email.com</span></td>
+                </tr>
+                <tr>
+                  <td>Ana Souza</td>
+                  <td>111.444.777-35</td>
+                  <td>82988887777</td>
+                  <td><span class="text-dimmed">—</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

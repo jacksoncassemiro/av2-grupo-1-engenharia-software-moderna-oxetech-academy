@@ -16,6 +16,18 @@ export interface VerificarCpfResposta {
   nome: string | null;
 }
 
+/**
+ * Espelha `PrimeiroAcesso` do backend (US-00). Um endpoint, dois caminhos (ADR-005):
+ * `nome`, `telefone` e `email` só vão junto quando o CPF ainda não tem cadastro.
+ */
+export interface PrimeiroAcessoRequisicao {
+  cpf: string;
+  senha: string;
+  nome?: string;
+  telefone?: string;
+  email?: string;
+}
+
 export interface Paciente {
   id: number;
   nome: string;
@@ -53,9 +65,15 @@ export interface HorarioDisponivel {
 export interface Consulta {
   id: number;
   paciente_id: number;
+  paciente_nome: string;
   medico_id: number;
+  medico_nome: string;
+  especialidade_nome: string;
   horario_disponivel_id: number;
+  data: string;
+  horario: string;
   status: StatusConsulta;
   data_agendamento: string;
   motivo_cancelamento: string | null;
+  pode_cancelar: boolean;
 }

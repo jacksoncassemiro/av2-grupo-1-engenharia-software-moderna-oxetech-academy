@@ -357,8 +357,8 @@ Duas suítes independentes, uma por aplicação. Ambas rodam no CI a cada push.
 
 | Stack | Pasta | Ferramenta | Comando | Mínimo exigido | Hoje |
 |---|---|---|---|---|---|
-| Backend | `backend/tests/unit/` | pytest + fakes de repositório | `make test-backend` | 5 | **17** |
-| Frontend | `frontend/__tests__/` | Vitest + Testing Library | `make test-frontend` | 5 | **11** |
+| Backend | `backend/tests/unit/` | pytest + fakes de repositório | `make test-backend` | 5 | **73** |
+| Frontend | `frontend/__tests__/` | Vitest + Testing Library | `make test-frontend` | 5 | **109** |
 
 Os testes de backend rodam **sem banco** — é o que o padrão Repository torna possível
 ([`06-design-patterns.md`](Design-Patterns)). Os de frontend usam o `render` de
@@ -380,6 +380,12 @@ Os testes de backend rodam **sem banco** — é o que o padrão Repository torna
 | CTU10b | `test_auth_service.py` | `test_atendente_loga_com_email_case_insensitive` | RN11 |
 | CTU10c | `test_auth_service.py` | `test_primeiro_acesso_ativa_login_de_paciente_cadastrado_pelo_atendente` | US-00 |
 | CTU10d | `test_auth_service.py` | `test_auto_cadastro_cria_paciente_e_credencial_no_mesmo_fluxo` | ADR-005 |
+| CTU12 | `test_consulta_service.py` | `test_rn16_nao_agenda_com_medico_inativado` | RN16 |
+| CTU12b | `test_agenda_service.py` | `test_rn16_medico_inativado_nao_oferece_horario` | RN16 |
+| CTU13 | `test_consulta_service.py` | `test_ctu13_rn17_nao_agenda_com_medico_de_especialidade_inativada` | RN17 |
+| CTU13b | `test_agenda_service.py` | `test_rn17_medico_de_especialidade_inativada_nao_oferece_horario` | RN17 |
+| CTU13c | `test_medico_service.py` | `test_rn17_medico_de_especialidade_inativada_sai_da_lista_agendavel` | RN17 |
+| CTU13d | `test_especialidade_service.py` | `test_rn17_inativar_especialidade_nao_cascateia_nos_medicos` | RN17 |
 | CTU07 | `__tests__/cpf.test.ts` | `aceita CPF valido` / `rejeita digito verificador errado` | RN07 |
 | CTU11 | `test_api_smoke.py` | `test_rota_protegida_rejeita_sem_token` | RN12 |
 

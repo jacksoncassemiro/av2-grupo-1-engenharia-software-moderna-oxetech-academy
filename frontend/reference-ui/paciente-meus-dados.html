@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus Dados — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-04: Paciente edita os próprios dados (CPF não pode ser alterado) -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="heart" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Menu</div>
+        <a href="paciente-consultas.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Minhas Consultas
+        </a>
+        <a href="paciente-agendar.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="heart" style="width:18px;height:18px;"></i></span> Agendar Consulta
+        </a>
+        <a href="paciente-medicos.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="paciente-meus-dados.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="user" style="width:18px;height:18px;"></i></span> Meus Dados
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="user" style="width:22px;height:22px;"></i> Meus Dados
+          </h1>
+        </div>
+
+        <div class="card" style="max-width:640px;">
+          <form onsubmit="return false">
+            <div class="stack gap-md">
+              <div class="input-wrapper">
+                <label class="input-label">CPF</label>
+                <input class="input" value="529.982.247-25" disabled style="background:var(--gray-0);">
+                <span class="input-description">CPF não pode ser alterado</span>
+              </div>
+              <div class="input-wrapper">
+                <label class="input-label input-required">Nome completo</label>
+                <input class="input" value="Carlos Silva">
+              </div>
+              <div class="input-wrapper">
+                <label class="input-label input-required">Telefone</label>
+                <input class="input" value="82999990000">
+              </div>
+              <div class="input-wrapper">
+                <label class="input-label">E-mail</label>
+                <input class="input" value="carlos@email.com">
+                <span class="input-description">Opcional</span>
+              </div>
+              <div class="input-wrapper" style="max-width:300px;">
+                <label class="input-label">Data de nascimento</label>
+                <input class="input" placeholder="Selecione a data">
+                <span class="input-description">Opcional</span>
+              </div>
+              <div class="flex justify-end">
+                <button class="btn btn-primary" type="submit">Salvar alterações</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <p class="text-xs text-dimmed mt-md">
+          Cancelamentos e histórico ficam em <strong>Minhas Consultas</strong>, no menu.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

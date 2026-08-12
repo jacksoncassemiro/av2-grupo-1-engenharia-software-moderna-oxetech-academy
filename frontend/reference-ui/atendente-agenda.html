@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-05: Lançar horários disponíveis por médico/data (RN09 — expediente 08:00-18:00) -->
+  <!-- Tela real e um formulario simples (Medico + Data + chips de horario),
+       sem grade de calendario visual. -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="building-2" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-consultas.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="clipboard-list" style="width:18px;height:18px;"></i></span> Consultas
+        </a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-especialidades.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="tag" style="width:18px;height:18px;"></i></span> Especialidades
+        </a>
+        <a href="atendente-medicos.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="atendente-pacientes.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="users" style="width:18px;height:18px;"></i></span> Pacientes
+        </a>
+        <a href="atendente-agenda.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Agenda
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="calendar-clock" style="width:22px;height:22px;"></i> Agenda de horários
+          </h1>
+        </div>
+
+        <div class="card">
+          <p class="text-bold mb-md">Lançar horários disponíveis</p>
+          <div class="grid-2 mb-md">
+            <div class="input-wrapper">
+              <label class="input-label input-required">Médico</label>
+              <select class="select">
+                <option>Dr. Ricardo Silva</option>
+              </select>
+            </div>
+            <div class="input-wrapper">
+              <label class="input-label input-required">Data</label>
+              <input class="input" placeholder="Selecione a data" value="15/08/2026">
+            </div>
+          </div>
+
+          <div class="input-wrapper mb-md">
+            <label class="input-label">Adicionar horário</label>
+            <span class="input-description">Expediente 08:00–18:00 (RN09)</span>
+            <div class="flex gap-sm mt-xs">
+              <input class="input" style="max-width:140px;" placeholder="--:--" value="14:00">
+              <button class="btn btn-light">
+                <i data-lucide="plus" style="width:14px;height:14px;"></i> Adicionar
+              </button>
+            </div>
+          </div>
+
+          <div class="chip-group mb-lg">
+            <span class="chip">14:00 <i data-lucide="x" style="width:11px;height:11px;"></i></span>
+            <span class="chip">15:00 <i data-lucide="x" style="width:11px;height:11px;"></i></span>
+          </div>
+
+          <div class="flex justify-end">
+            <button class="btn btn-primary">Gerar grade</button>
+          </div>
+        </div>
+
+        <!-- Referência: bloqueio de horário fora do expediente (RN09) -->
+        <div class="card mt-lg" style="border: 1px dashed var(--gray-3);">
+          <p class="text-xs text-dimmed mb-sm">📌 Referência: bloqueio fora do expediente (RN09)</p>
+          <div class="alert alert-error">
+            <span class="alert-icon"><i data-lucide="triangle-alert" style="width:18px;height:18px;"></i></span>
+            <div>
+              <strong>Horário fora do expediente</strong>
+              <div class="text-sm">A agenda funciona das 08:00 às 18:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Referência: horário já existente para o médico (RN05) -->
+        <div class="card mt-lg" style="border: 1px dashed var(--gray-3);">
+          <p class="text-xs text-dimmed mb-sm">📌 Referência: alocação dupla do mesmo médico (RN05)</p>
+          <div class="alert alert-error">
+            <span class="alert-icon"><i data-lucide="triangle-alert" style="width:18px;height:18px;"></i></span>
+            <div>
+              <strong>Não foi possível gerar a grade</strong>
+              <div class="text-sm">Medico ja possui consulta agendada para este horario</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

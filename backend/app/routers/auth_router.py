@@ -29,12 +29,9 @@ def login(
     service: Annotated[AuthService, Depends(obter_service)],
     db: Annotated[Session, Depends(get_db)],
 ) -> TokenResposta:
-    token = service.autenticar(dados.login, dados.senha)
+    autenticacao = service.autenticar(dados.login, dados.senha)
     db.commit()
-    usuario = UsuarioRepository(db).buscar_por_login(
-        AuthService._normalizar(dados.login)  # noqa: SLF001
-    )
-    return TokenResposta(access_token=token, tipo_usuario=usuario.tipo_usuario.value)
+    return TokenResposta(access_token=autenticacao.token, tipo_usuario=autenticacao.tipo_usuario)
 
 
 @router.get(
@@ -59,6 +56,6 @@ def vincular_ou_criar(
     service: Annotated[AuthService, Depends(obter_service)],
     db: Annotated[Session, Depends(get_db)],
 ) -> TokenResposta:
-    token = service.vincular_ou_criar(dados)
+    autenticacao = service.vincular_ou_criar(dados)
     db.commit()
-    return TokenResposta(access_token=token, tipo_usuario="PACIENTE")
+    return TokenResposta(access_token=autenticacao.token, tipo_usuario=autenticacao.tipo_usuario)

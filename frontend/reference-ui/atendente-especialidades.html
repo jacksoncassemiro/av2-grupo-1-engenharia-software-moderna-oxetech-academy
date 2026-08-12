@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Especialidades — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-01: Cadastro de especialidades -->
+  <!-- Inativar/ativar + filtro Ativos/Todos/Inativos: extensao pos-MVP sobre a
+       coluna `ativo`, que ja existia mas nao tinha acao nem filtro na tela. -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="building-2" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Geral</div>
+        <a href="atendente-consultas.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="clipboard-list" style="width:18px;height:18px;"></i></span> Consultas
+        </a>
+        <div class="nav-section-label">Cadastros</div>
+        <a href="atendente-especialidades.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="tag" style="width:18px;height:18px;"></i></span> Especialidades
+        </a>
+        <a href="atendente-medicos.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="atendente-pacientes.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="users" style="width:18px;height:18px;"></i></span> Pacientes
+        </a>
+        <a href="atendente-agenda.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Agenda
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="tag" style="width:22px;height:22px;"></i> Especialidades
+          </h1>
+        </div>
+
+        <div class="card mb-lg">
+          <p class="text-bold mb-md">Cadastrar nova especialidade</p>
+          <form onsubmit="return false">
+            <div class="stack gap-md">
+              <div class="input-wrapper">
+                <label class="input-label input-required">Nome</label>
+                <input class="input" placeholder="Ex.: Cardiologia">
+              </div>
+              <div class="input-wrapper">
+                <label class="input-label">Descrição</label>
+                <textarea class="input" placeholder="Breve descrição da especialidade"></textarea>
+                <span class="input-description">Opcional</span>
+              </div>
+              <div class="flex justify-end">
+                <button class="btn btn-primary" type="submit">Cadastrar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center mb-md flex-wrap gap-md">
+            <p class="text-bold">Especialidades cadastradas</p>
+            <div class="tabs" style="border-bottom:none;">
+              <button class="tab active" style="border:1px solid var(--gray-3);border-radius:var(--radius-sm) 0 0 var(--radius-sm);">Ativas</button>
+              <button class="tab" style="border:1px solid var(--gray-3);border-left:none;">Todas</button>
+              <button class="tab" style="border:1px solid var(--gray-3);border-left:none;border-radius:0 var(--radius-sm) var(--radius-sm) 0;">Inativas</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Clínica Geral</td>
+                  <td><span class="text-dimmed">Atendimento clínico de primeira linha</span></td>
+                  <td><span class="badge badge-primary">Ativa</span></td>
+                  <td>
+                    <span title="Inativar" style="color:var(--color-error);cursor:pointer;">
+                      <i data-lucide="ban" style="width:16px;height:16px;"></i>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Cardiologia</td>
+                  <td><span class="text-dimmed">Diagnóstico e tratamento do sistema cardiovascular</span></td>
+                  <td><span class="badge badge-primary">Ativa</span></td>
+                  <td>
+                    <span title="Inativar" style="color:var(--color-error);cursor:pointer;">
+                      <i data-lucide="ban" style="width:16px;height:16px;"></i>
+                    </span>
+                  </td>
+                </tr>
+                <!-- Estado inativo (aparece com o filtro Todas/Inativas) -->
+                <tr>
+                  <td>Geriatria</td>
+                  <td><span class="text-dimmed">—</span></td>
+                  <td><span class="badge badge-gray">Inativa</span></td>
+                  <td>
+                    <span title="Reativar" style="color:var(--color-confirmada);cursor:pointer;">
+                      <i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

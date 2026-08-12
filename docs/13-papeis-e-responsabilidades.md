@@ -1,18 +1,19 @@
 # Papéis e responsabilidades
 
-## Composição da equipe — 6 pessoas
+## Composição da equipe — 7 pessoas
 
 | Papel | Pessoas |
 |---|---|
-| 👑 **Product Owner** | Uanderson Henrique Batista da Silva |
-| 💻 **Engenharia de Software** | Antonio Andrade Gomes Júnior · João Vitor Mandu de Lira · Ronaldo de Melo Sabino Filho |
-| 🧪 **Quality Assurance** | Jackson Douglas da Silva Cassemiro · Felipe da Silva Araújo |
+| 👑 **Product Owner** | Jackson Cassemiro |
+| 💻 **Engenharia de Software** | Antonio Júnior · João Vitor Lira · Ronaldo Filho |
+| 🧪 **Quality Assurance** | Uanderson Silva · Felipe Araújo · Alyssandro Gouveia |
 
 > **Nota sobre o enunciado.** O enunciado sugere *"2 para cada"* papel. A equipe tem
-> **1 PO, 3 Engenharia e 2 QA**. Isso não é problema desde que **todo entregável tenha um
-> responsável nomeado** — é o que esta página faz. Se o avaliador cobrar a divisão 2/2/2, a
-> resposta é a coluna "Apoio": **Antonio atua como PO de apoio** nos itens de processo
-> (cerimônias e slides), o que dá dois nomes em cada papel sem inflar o escopo de ninguém.
+> **1 PO, 3 Engenharia e 3 QA** (Alyssandro Gouveia entrou depois, como reforço de QA). Isso
+> não é problema desde que **todo entregável tenha um responsável nomeado** — é o que esta
+> página faz. Se o avaliador cobrar a divisão 2/2/2 do PO, a resposta é a coluna "Apoio":
+> **Antonio atua como PO de apoio** nos itens de processo (cerimônias e slides), o que dá dois
+> nomes no papel de PO sem inflar o escopo de ninguém.
 
 Combinado com o grupo: os papéis definem **responsabilidade pela entrega**, não fronteira
 rígida. Quem terminar antes ajuda quem estiver com mais carga — desde que o responsável nomeado
@@ -20,16 +21,17 @@ continue sendo quem está na tabela, para não haver dúvida na avaliação.
 
 ---
 
-## 👑 PO — Uanderson
+## 👑 PO — Jackson
 
 | # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
-| 1 | Escrita e documentação | **Uanderson** | — | `docs/00`, `docs/01`, `docs/02`, Wiki |
-| 2 | Ciclo de desenvolvimento | **Uanderson** | Antonio | `docs/11-ciclo-desenvolvimento.md` |
-| 3 | Verificar critérios de aceite | **Uanderson** | — | Board (coluna UAT) + ata da Review |
-| 4 | Material de apresentação (slides) | **Antonio** | Uanderson | `docs/apresentacao/` |
+| 1 | Escrita e documentação | **Jackson** | — | `docs/00`, `docs/01`, `docs/02`, Wiki |
+| 2 | Ciclo de desenvolvimento | **Jackson** | Antonio | `docs/11-ciclo-desenvolvimento.md` |
+| 3 | Verificar critérios de aceite | **Jackson** | — | Board (coluna UAT) + ata da Review |
+| 4 | Avaliar e aprovar PRs de alteração do projeto | **Jackson** | — | Pull Requests no GitHub |
+| 5 | Material de apresentação (slides) | **Antonio** | Jackson | `docs/apresentacao/` |
 
-**Uanderson — backlog e validação**
+**Jackson — backlog e validação**
 
 - Documento de visão do produto ([`00`](00-visao-do-produto.md)): objetivo, público, escopo
   dentro/fora, proposta de valor, métricas.
@@ -41,6 +43,9 @@ continue sendo quem está na tabela, para não haver dúvida na avaliação.
   [`15-melhorias-futuras.md`](15-melhorias-futuras.md), não para a sprint.
 - **Validação na coluna UAT:** percorrer cada critério de aceite da US entregue e aprovar ou
   rejeitar. Rejeição volta ao board com o motivo escrito.
+- **Avaliação e aprovação de PRs:** como PO, revisa e aprova as Pull Requests de alteração do
+  projeto antes do merge em `develop` — além (não em substituição) do code review cruzado entre
+  Engenharia, que é responsabilidade compartilhada de todos.
 - Manter a Wiki sincronizada com `docs/` (`.\scripts\gerar-wiki.ps1`, ou `python3 scripts/gerar-wiki.py`).
 
 **Antonio — cerimônias e apresentação (PO de apoio)**
@@ -49,6 +54,7 @@ continue sendo quem está na tabela, para não haver dúvida na avaliação.
   [`11`](11-ciclo-desenvolvimento.md) §9.
 - Manter o board: fazer o WIP ser respeitado, cobrar item parado.
 - Montar os slides — roteiro na seção *Roteiro dos slides* abaixo.
+- Apoia o Jackson (PO) nos itens de processo listados acima.
 
 ---
 
@@ -93,16 +99,16 @@ Regras para todos:
 
 ---
 
-## 🧪 QA — Jackson e Felipe
+## 🧪 QA — Uanderson, Felipe e Alyssandro
 
 | # | Entregável avaliado | Responsável | Apoio | Onde |
 |---|---|---|---|---|
-| 1 | Plano de testes | **Jackson** | Felipe | `docs/07-plano-de-testes.md` |
-| 2 | 10 casos de teste (14 entregues) | **Jackson** | Felipe | `docs/08-casos-de-teste.md` |
-| 3 | Testes exploratórios com evidências | **Felipe** | Jackson | `docs/07` §6 + `docs/evidencias/` |
+| 1 | Plano de testes | **Uanderson** | Felipe, Alyssandro | `docs/07-plano-de-testes.md` |
+| 2 | 10 casos de teste (14 entregues) | **Uanderson** | Felipe, Alyssandro | `docs/08-casos-de-teste.md` |
+| 3 | Testes exploratórios com evidências | **Felipe** | Uanderson, Alyssandro | `docs/07` §6 + `docs/evidencias/` |
 | 4 | CI no GitHub Actions | **Felipe** | Ronaldo | `.github/workflows/ci.yml` |
 
-**Jackson — plano e casos de teste**
+**Uanderson — plano e casos de teste**
 
 - Plano de testes: escopo, pirâmide, ambientes, critérios de entrada e saída.
 - CT01–CT14 escritos **antes** do código da US existir, para não enviesar o teste pela
@@ -120,6 +126,12 @@ Regras para todos:
 - Três sessões exploratórias (EXP-01 a EXP-03) com charter e registro.
 - Organizar `docs/evidencias/` conforme a §7 do plano de testes.
 - Relatório final de testes para a apresentação.
+
+**Alyssandro — reforço de QA**
+
+Entrou depois do resto da equipe, como apoio geral de Uanderson e Felipe nos dois entregáveis
+de QA (não tem entregável próprio nomeado ainda — ver nota acima). Ajuda a executar CTs
+pendentes e a registrar evidência, priorizando o que estiver mais atrasado no board.
 
 ---
 
@@ -163,18 +175,19 @@ Regras para todos:
 
 | Exigência do enunciado | Responsável | Entregue em | Status |
 |---|---|---|---|
-| PO: escrita e documentação | Uanderson | `docs/00`, `01`, `02` + Wiki | ✅ estrutura pronta |
-| PO: ciclo de desenvolvimento | Uanderson | `docs/11` | ✅ |
-| PO: verificar critérios de aceite | Uanderson | Board (UAT) + ata da Review | ⬜ durante as sprints |
+| PO: escrita e documentação | Jackson | `docs/00`, `01`, `02` + Wiki | ✅ estrutura pronta |
+| PO: ciclo de desenvolvimento | Jackson | `docs/11` | ✅ |
+| PO: verificar critérios de aceite | Jackson | Board (UAT) + ata da Review | ⬜ durante as sprints |
+| PO: avaliar e aprovar PRs | Jackson | Pull Requests no GitHub | ⬜ durante as sprints |
 | PO: material de slide | Antonio | `docs/apresentacao/` | ⬜ 09/08 |
 | ENG: Git Flow e repositório | Ronaldo | `docs/10` + branch protection | ✅ documentado |
 | ENG: arquitetura MVC documentada | Ronaldo | `docs/03` §2 + `backend/app/` | ✅ |
 | ENG: 3 práticas de Clean Code | Ronaldo (back) · João Vitor (front) | `docs/05` | ✅ backend · ⬜ frontend |
 | ENG: 2 padrões de projeto | Ronaldo | `docs/06` + [ADR-006](adr/ADR-006-design-patterns.md) | ✅ |
 | ENG: 5 testes unitários por stack | Ronaldo · João Vitor | `backend/tests/unit/` · `frontend/__tests__/` | ✅ backend · ⬜ frontend |
-| QA: plano de testes | Jackson | `docs/07` | ✅ |
-| QA: 10 casos de teste | Jackson | `docs/08` | ✅ **14 escritos** |
+| QA: plano de testes | Uanderson | `docs/07` | ✅ |
+| QA: 10 casos de teste | Uanderson | `docs/08` | ✅ **14 escritos** |
 | QA: exploratório + evidências | Felipe | `docs/07` §6 + `docs/evidencias/` | ⬜ durante as sprints |
 | QA: CI no GitHub Actions | Felipe | `.github/workflows/ci.yml` | ✅ |
 | Quadro Kanban | Antonio | [GitHub Projects](https://github.com/users/jacksoncassemiro/projects/3) | ⬜ recriar com `scripts/popular-board` |
-| Cronograma | Uanderson | `docs/12-cronograma.md` | ✅ |
+| Cronograma | Jackson | `docs/12-cronograma.md` | ✅ |

@@ -192,8 +192,13 @@ Client Component separado (é também o que torna o teste com Vitest possível, 
 
 | Script | O que roda | Por quê |
 |---|---|---|
+| `yarn format` | `prettier --write .` | Formata; `format:check` é a versão que o CI usa |
 | `yarn lint` | `eslint .` | CLI do ESLint, com `eslint.config.mjs` em flat config |
 | `yarn typecheck` | `next typegen && tsc --noEmit` | `next typegen` gera `next-env.d.ts` e os tipos de rota; sem ele o `tsc` falha |
+
+Prettier e ESLint não brigam: o `eslint-config-next` não tem regra de estilo que conflite, por
+isso não usamos `eslint-config-prettier`. O `.prettierrc` reproduz o estilo que o código já
+tinha — aspas simples, 100 colunas (mesmo `line-length` do ruff no backend), `trailingComma: es5`.
 
 `eslint.config.mjs` importa `eslint-config-next/core-web-vitals` e `eslint-config-next/typescript`
 direto (sem `FlatCompat`). Se precisar desligar uma regra, adicione um objeto `{ rules: {...} }`

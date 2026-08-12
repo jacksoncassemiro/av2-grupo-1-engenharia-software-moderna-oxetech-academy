@@ -8,11 +8,16 @@ import pytest
 from app.core.config import settings
 from app.exceptions.dominio import (
     CancelamentoNaoPermitido,
+    EspecialidadeInativa,
     HorarioIndisponivel,
+    MedicoInativo,
+    RecursoNaoEncontrado,
     TransicaoDeStatusInvalida,
 )
 from app.models.enums import StatusConsulta, TipoUsuario
 from app.repositories import consulta_repository  # noqa: F401 - garante import da camada
+from app.schemas.consulta_schema import _pode_cancelar  # noqa: PLC2701
+from app.services.cancelamento_strategy import CancelamentoPorPaciente
 from app.services.consulta_service import ConsultaService
 from tests.conftest import FakeConsultaRepository, FakeHorarioRepository, montar_consulta
 
@@ -69,6 +74,21 @@ def test_paciente_pode_cancelar_com_mais_de_24h_e_slot_e_liberado(slot_livre):
 
 
 @pytest.mark.unit
+def test_us09_agendamento_atendente_gera_status_confirmada(slot_livre):
+    """US-09 - Atendente agenda diretamente para o paciente, gerando status CONFIRMADA."""
+    horarios = FakeHorarioRepository([slot_livre])
+    service = ConsultaService(FakeConsultaRepository(), horarios)
+
+    consulta = service.agendar(
+        paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.ATENDENTE
+    )
+
+    assert consulta.paciente_id == 1
+    assert consulta.status is StatusConsulta.CONFIRMADA
+    assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
 def test_atendente_cancela_ignorando_a_regra_de_24h(slot_livre):
     """US-12 - Strategy do atendente nao valida prazo."""
     consulta = montar_consulta(slot_livre)
@@ -107,3 +127,243 @@ def test_status_inicial_depende_de_quem_agenda(slot_livre):
     solicitada.status = StatusConsulta.CANCELADA  # libera o slot para o segundo agendamento
     confirmada = service.agendar(1, slot_livre.id, TipoUsuario.ATENDENTE)
     assert confirmada.status is StatusConsulta.CONFIRMADA
+
+
+@pytest.mark.unit
+def test_us08_agendamento_paciente_sucesso(slot_livre):
+    """US-08 - Paciente agenda consulta em slot livre, gerando status SOLICITADA e ocupando slot."""
+    horarios = FakeHorarioRepository([slot_livre])
+    service = ConsultaService(FakeConsultaRepository(), horarios)
+
+    consulta = service.agendar(
+        paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+    )
+
+    assert consulta.paciente_id == 1
+    assert consulta.status is StatusConsulta.SOLICITADA
+    assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
+def test_rn16_nao_agenda_com_medico_inativado(slot_livre):
+    """RN16 - medico inativado nao recebe consulta nova.
+
+    Reproduzido na API antes da correcao: apos PATCH /medicos/{id}/status o medico
+    sumia da listagem, mas POST /consultas no slot dele respondia 201.
+    """
+    slot_livre.medico.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo) as erro:
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+        )
+
+    assert erro.value.status_code == 409
+    assert slot_livre.disponivel is True  # o slot nao pode ter sido consumido
+
+
+@pytest.mark.unit
+def test_rn16_atendente_tambem_nao_agenda_com_medico_inativado(slot_livre):
+    """RN16 vale para os dois perfis: a regra e do dominio, nao da tela."""
+    slot_livre.medico.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo):
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.ATENDENTE
+        )
+
+
+@pytest.mark.unit
+def test_ctu13_rn17_nao_agenda_com_medico_de_especialidade_inativada(slot_livre):
+    """RN17 - o medico continua ativo, mas a especialidade dele nao esta mais em uso.
+
+    Gap que a RN16 nao cobria: inativar `Cardiologia` deixava todos os cardiologistas
+    ativos, e `POST /consultas` num slot deles respondia 201.
+    """
+    slot_livre.medico.especialidade.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(EspecialidadeInativa) as erro:
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+        )
+
+    assert erro.value.status_code == 409
+    assert slot_livre.medico.ativo is True  # a RN17 barra sem inativar o medico
+    assert slot_livre.disponivel is True  # o slot nao pode ter sido consumido
+
+
+@pytest.mark.unit
+def test_rn17_atendente_tambem_nao_agenda_com_especialidade_inativada(slot_livre):
+    """RN17 vale para os dois perfis, como a RN16: a regra e do dominio, nao da tela."""
+    slot_livre.medico.especialidade.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(EspecialidadeInativa):
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.ATENDENTE
+        )
+
+
+@pytest.mark.unit
+def test_rn16_tem_precedencia_sobre_rn17_quando_os_dois_estao_inativos(slot_livre):
+    """A mensagem tem de apontar o motivo mais proximo: o medico, nao a especialidade."""
+    slot_livre.medico.ativo = False
+    slot_livre.medico.especialidade.ativo = False
+    service = ConsultaService(FakeConsultaRepository(), FakeHorarioRepository([slot_livre]))
+
+    with pytest.raises(MedicoInativo):
+        service.agendar(
+            paciente_id=1, horario_id=slot_livre.id, solicitado_por=TipoUsuario.PACIENTE
+        )
+
+
+@pytest.mark.unit
+def test_rn12_paciente_nao_cancela_consulta_de_outro_paciente(slot_livre):
+    """RN12 - consulta de terceiro e tratada como inexistente (404), nunca vaza dado."""
+    consulta = montar_consulta(slot_livre)  # paciente_id = 1
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    with pytest.raises(RecursoNaoEncontrado) as erro:
+        service.cancelar(consulta.id, TipoUsuario.PACIENTE, paciente_id=999)
+
+    assert erro.value.status_code == 404
+    assert consulta.status is StatusConsulta.CONFIRMADA
+
+
+@pytest.mark.unit
+def test_rn12_paciente_nao_detalha_consulta_de_outro_paciente(slot_livre):
+    """RN12 - US-10 so mostra o proprio historico."""
+    consulta = montar_consulta(slot_livre)  # paciente_id = 1
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    assert service.detalhar_do_paciente(consulta.id, consulta.paciente_id) is consulta
+
+    with pytest.raises(RecursoNaoEncontrado):
+        service.detalhar_do_paciente(consulta.id, paciente_id=999)
+
+
+@pytest.mark.unit
+def test_rn04_prazo_de_cancelamento_vem_de_uma_unica_configuracao(slot_livre):
+    """RN04 - o mesmo settings.CANCELAMENTO_ANTECEDENCIA_HORAS aplica a regra e alimenta
+    o `pode_cancelar` da resposta. Se houvesse duas variaveis, a API responderia
+    `pode_cancelar=True` para uma consulta que o service recusa cancelar.
+    """
+    consulta = montar_consulta(slot_livre)  # 2026-08-12 14:00
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+    agora = datetime(2026, 8, 12, 2, 0, tzinfo=FUSO)  # faltam 12h, menos que as 24h padrao
+
+    pode_cancelar = _pode_cancelar(consulta, agora, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
+
+    with pytest.raises(CancelamentoNaoPermitido):
+        service.cancelar(consulta.id, TipoUsuario.PACIENTE, agora=agora)
+
+    assert pode_cancelar is False  # a resposta concorda com a regra aplicada
+
+
+@pytest.mark.unit
+def test_rn04_mensagem_de_recusa_reflete_a_configuracao_e_nao_um_24_fixo(slot_livre):
+    """RN04 - o prazo nunca e hardcoded; a mensagem acompanha a configuracao."""
+    consulta = montar_consulta(slot_livre)
+    strategy = CancelamentoPorPaciente(48)
+    agora = datetime(2026, 8, 11, 14, 0, tzinfo=FUSO)  # faltam 24h, menos que as 48h exigidas
+
+    with pytest.raises(CancelamentoNaoPermitido) as erro:
+        strategy.validar(consulta, agora)
+
+    assert "48 horas" in str(erro.value)
+
+
+@pytest.mark.unit
+def test_us13_mudar_status_consulta_valido_e_invalido(slot_livre):
+    """US-13 - Valida transições de status válidas e rejeita inválidas."""
+    consulta = montar_consulta(slot_livre, StatusConsulta.SOLICITADA)
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    # SOLICITADA -> CONFIRMADA
+    atualizada = service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+    assert atualizada.status is StatusConsulta.CONFIRMADA
+
+    # CONFIRMADA -> FINALIZADA
+    finalizada = service.mudar_status(consulta.id, StatusConsulta.FINALIZADA)
+    assert finalizada.status is StatusConsulta.FINALIZADA
+
+    # FINALIZADA -> CONFIRMADA (rejeitado)
+    with pytest.raises(TransicaoDeStatusInvalida):
+        service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+
+
+@pytest.mark.unit
+def test_rn03_cancelar_pelo_endpoint_de_status_tambem_libera_o_slot(slot_livre):
+    """RN03 + RN06/RN10 - EXP-02 bug 1.
+
+    `TRANSICOES_PERMITIDAS` aceita CONFIRMADA -> CANCELADA tambem pelo endpoint
+    generico de status; antes da correcao so o `/cancelar` devolvia o horario para a
+    agenda, e cancelar por essa rota bloqueava o slot permanentemente.
+    """
+    slot_livre.disponivel = False
+    consulta = montar_consulta(slot_livre, StatusConsulta.CONFIRMADA)
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    service.mudar_status(consulta.id, StatusConsulta.CANCELADA)
+
+    assert consulta.status is StatusConsulta.CANCELADA
+    assert slot_livre.disponivel is True
+
+
+@pytest.mark.unit
+def test_rn03_confirmar_e_finalizar_nao_liberam_o_slot(slot_livre):
+    """RN03 - so o cancelamento devolve o horario; consulta ativa segue ocupando o slot."""
+    slot_livre.disponivel = False
+    consulta = montar_consulta(slot_livre, StatusConsulta.SOLICITADA)
+    service = ConsultaService(
+        FakeConsultaRepository([consulta]), FakeHorarioRepository([slot_livre])
+    )
+
+    service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+    assert slot_livre.disponivel is False
+
+    service.mudar_status(consulta.id, StatusConsulta.FINALIZADA)
+    assert slot_livre.disponivel is False
+
+
+@pytest.mark.unit
+def test_rn06_rn10_mudancas_de_status_leem_a_consulta_travada(slot_livre):
+    """RN06/RN10 - EXP-02 bug 2: cancelar e mudar status leem com SELECT ... FOR UPDATE.
+
+    A trava e o que serializa duas escritas concorrentes na mesma consulta e impede o
+    lost update que deixava CONFIRMADA com o slot marcado como livre. Aqui se verifica
+    o contrato com o repositorio (DIP); o bloqueio em si e do PostgreSQL.
+    """
+    consulta = montar_consulta(slot_livre, StatusConsulta.SOLICITADA)
+    consultas = FakeConsultaRepository([consulta])
+    service = ConsultaService(consultas, FakeHorarioRepository([slot_livre]))
+
+    service.mudar_status(consulta.id, StatusConsulta.CONFIRMADA)
+    service.cancelar(consulta.id, TipoUsuario.ATENDENTE)
+
+    assert consultas.ids_travados == [consulta.id, consulta.id]
+
+
+@pytest.mark.unit
+def test_leitura_do_paciente_nao_trava_a_consulta(slot_livre):
+    """US-10 - listar/detalhar sao so leitura: nao devem travar linha a toa."""
+    consulta = montar_consulta(slot_livre)
+    consultas = FakeConsultaRepository([consulta])
+    service = ConsultaService(consultas, FakeHorarioRepository([slot_livre]))
+
+    service.detalhar_do_paciente(consulta.id, consulta.paciente_id)
+
+    assert consultas.ids_travados == []

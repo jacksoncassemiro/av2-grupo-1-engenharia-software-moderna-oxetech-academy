@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minhas Consultas — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-10: Histórico de consultas do paciente -->
+  <!-- US-11: Cancelamento pelo paciente (RN04 — só com ≥24h de antecedência) -->
+  <!-- Esta e a tela de pouso do paciente apos o login (rota /consultas). -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="heart" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Menu</div>
+        <a href="paciente-consultas.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Minhas Consultas
+        </a>
+        <a href="paciente-agendar.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="heart" style="width:18px;height:18px;"></i></span> Agendar Consulta
+        </a>
+        <a href="paciente-medicos.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="paciente-meus-dados.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="user" style="width:18px;height:18px;"></i></span> Meus Dados
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header flex justify-between items-start flex-wrap">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="calendar" style="width:22px;height:22px;"></i> Minhas Consultas
+          </h1>
+          <a href="paciente-agendar.html" class="btn btn-primary">
+            <i data-lucide="calendar-plus" style="width:16px;height:16px;"></i> Nova consulta
+          </a>
+        </div>
+
+        <div class="card">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Médico</th>
+                  <th>Especialidade</th>
+                  <th>Data</th>
+                  <th>Horário</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- CONFIRMADA, ≥24h — pode cancelar (RN04) -->
+                <tr>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td>15/08/2026</td>
+                  <td>14:00</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td>
+                    <button class="btn btn-danger-outline btn-xs">Cancelar</button>
+                  </td>
+                </tr>
+                <!-- FINALIZADA — terminal, sem ações -->
+                <tr>
+                  <td>Dr. Ricardo Silva</td>
+                  <td>Cardiologia</td>
+                  <td>15/08/2026</td>
+                  <td>09:00</td>
+                  <td><span class="badge badge-finalizada badge-dot">Finalizada</span></td>
+                  <td><span class="text-xs text-dimmed">—</span></td>
+                </tr>
+                <!-- CONFIRMADA, <24h — RN04 esconde o botão de cancelar -->
+                <tr>
+                  <td>Dra. Mariana Souza</td>
+                  <td>Pediatria</td>
+                  <td>16/08/2026</td>
+                  <td>08:00</td>
+                  <td><span class="badge badge-confirmada badge-dot">Confirmada</span></td>
+                  <td><span class="text-xs text-dimmed" data-tooltip="Faltam menos de 24h — RN04">—</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Referência: modal de cancelamento do paciente -->
+        <div class="card mt-lg" style="border: 1px dashed var(--gray-3);">
+          <p class="text-xs text-dimmed mb-md">📌 Referência: modal de cancelamento (US-11 / RN04)</p>
+          <div style="background:var(--gray-0);border-radius:var(--radius-md);padding:20px;">
+            <div class="modal" style="position:static;max-width:100%;box-shadow:var(--shadow-lg);">
+              <div class="modal-header">
+                <div class="modal-title">Cancelar consulta</div>
+                <button class="modal-close">✕</button>
+              </div>
+              <div class="modal-body">
+                <p class="text-sm mb-md">
+                  Tem certeza que deseja cancelar a consulta com <strong>Dr. Ricardo Silva</strong>
+                  em <strong>15/08/2026 às 14:00</strong>?
+                </p>
+                <div class="input-wrapper">
+                  <label class="input-label">Motivo</label>
+                  <textarea class="input" placeholder="Ex.: imprevisto de última hora"></textarea>
+                  <span class="input-description">Opcional</span>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-white">Voltar</button>
+                <button class="btn btn-danger">Confirmar cancelamento</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Referência: bloqueio com menos de 24h -->
+        <div class="card mt-lg" style="border: 1px dashed var(--gray-3);">
+          <p class="text-xs text-dimmed mb-sm">📌 Referência: bloqueio com menos de 24h (RN04)</p>
+          <div class="alert alert-error">
+            <span class="alert-icon"><i data-lucide="triangle-alert" style="width:18px;height:18px;"></i></span>
+            <div>
+              <strong>Cancelamento indisponível</strong>
+              <div class="text-sm">Prazo de antecedência menor que 24 horas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

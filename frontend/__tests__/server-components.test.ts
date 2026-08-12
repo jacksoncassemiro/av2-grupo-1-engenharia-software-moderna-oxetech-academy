@@ -82,9 +82,7 @@ describe('Server Components e compound components do Mantine', () => {
 
       const usos = [...conteudo.matchAll(PADRAO_COMPOUND)].map((m) => m[0].slice(1));
       if (usos.length > 0) {
-        violacoes.push(
-          `${relative(process.cwd(), arquivo)}: ${[...new Set(usos)].join(', ')}`
-        );
+        violacoes.push(`${relative(process.cwd(), arquivo)}: ${[...new Set(usos)].join(', ')}`);
       }
     }
 
@@ -92,7 +90,7 @@ describe('Server Components e compound components do Mantine', () => {
       violacoes,
       'Compound component em Server Component quebra o `next build` com ' +
         '"Element type is invalid ... got: undefined".\n' +
-        'Adicione \'use client\' no topo do arquivo OU troque para o import nomeado ' +
+        "Adicione 'use client' no topo do arquivo OU troque para o import nomeado " +
         '(List.Item -> ListItem, Popover.Target -> PopoverTarget):\n  ' +
         violacoes.join('\n  ')
     ).toEqual([]);

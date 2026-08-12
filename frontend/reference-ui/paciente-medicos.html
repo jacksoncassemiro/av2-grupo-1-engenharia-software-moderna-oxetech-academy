@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Médicos — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-06: Busca de médicos com filtro por especialidade (rota /buscar-medicos) -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="heart" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Menu</div>
+        <a href="paciente-consultas.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Minhas Consultas
+        </a>
+        <a href="paciente-agendar.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="heart" style="width:18px;height:18px;"></i></span> Agendar Consulta
+        </a>
+        <a href="paciente-medicos.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="paciente-meus-dados.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="user" style="width:18px;height:18px;"></i></span> Meus Dados
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="stethoscope" style="width:22px;height:22px;"></i> Médicos
+          </h1>
+        </div>
+
+        <div class="input-wrapper mb-lg" style="max-width:280px;">
+          <label class="input-label">Filtrar por especialidade</label>
+          <select class="select">
+            <option>Todas as especialidades</option>
+            <option>Cardiologia</option>
+            <option>Pediatria</option>
+          </select>
+        </div>
+
+        <div class="grid-3">
+          <div class="doctor-card">
+            <div class="flex gap-md items-start mb-md">
+              <div class="doctor-avatar">RS</div>
+              <div>
+                <p class="text-bold">Dr. Ricardo Silva</p>
+                <span class="badge badge-primary mt-xs">Cardiologia</span>
+              </div>
+            </div>
+            <p class="text-xs text-dimmed mb-md">CRM CRM11111</p>
+            <a href="paciente-agendar.html" class="btn btn-light btn-full">
+              <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i> Agendar
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

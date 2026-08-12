@@ -117,14 +117,29 @@ especialidade deve ser criada e aparecer como opção nos formulários
 **CA3** — **Quando** o paciente consultar as especialidades, **então** deve ver apenas as
 `ativo = true`
 
+**CA4 (RF23)** — **Dado** que `Cardiologia` está ativa, **quando** eu clicar em `Inativar`,
+**então** ela deve parar de aparecer para o paciente e nos formulários de cadastro de médico,
+**e** o botão deve permitir reativá-la depois
+
+**CA5 (RF23 / RN17)** — **Dado** que `Cardiologia` tem médicos **ativos** vinculados, **quando**
+eu a inativar, **então** esses médicos devem sair de `/buscar-medicos` e de `/agendar`, a agenda
+deles não deve mais ser oferecida **e** nenhuma consulta nova pode ser criada para eles — mas
+eles **continuam `ativo = true`**, visíveis para mim em `Ativos` com a especialidade rotulada
+`(inativa)`, **e** as consultas **já marcadas permanecem com o status original**. Reativar a
+especialidade devolve tudo ao normal, sem nenhuma outra ação
+
 ### Tarefas
 
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/especialidades`
 - `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/especialidades` (ativas)
+- `[BACKEND]` `[OBRIGATÓRIO]` `PATCH /api/especialidades/{id}/status` (RF23)
+- `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/medicos?apenas_agendaveis=true` (RN17)
 - `[FRONTEND]` `[OBRIGATÓRIO]` Tela de cadastro e listagem
+- `[FRONTEND]` `[OBRIGATÓRIO]` Botão ativar/inativar na listagem
 
-> Editar e excluir especialidade **não** fazem parte do MVP — ver MF03 em
-> [`15-melhorias-futuras.md`](Melhorias-Futuras).
+> **Editar** e **excluir** especialidade não fazem parte do MVP — ver MF03 em
+> [`15-melhorias-futuras.md`](Melhorias-Futuras). A **inativação** entrou no MVP pelo
+> [ADR-009](adr/ADR-009-inativacao-especialidade-medico.md).
 
 ---
 
@@ -150,13 +165,21 @@ cadastrar com esse e-mail, **então** o sistema deve recusar com `E-mail em uso`
 **CA4** — Médico desativado não aparece nas listagens do paciente, mas o histórico de consultas
 dele permanece
 
+**CA5 (RF24 / RN16)** — **Dado** que o Dr. Silva está ativo, **quando** eu clicar em
+`Inativar`, **então** ele deve sair das listagens do paciente, **e** a agenda dele não deve mais
+ser oferecida em `/agendar`, **e** nenhuma consulta nova pode ser criada para ele — mas as
+consultas **já marcadas permanecem com o status original**. O botão deve reativá-lo depois
+
 ### Tarefas
 
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/medicos` com validação de e-mail e CRM únicos
+- `[BACKEND]` `[OBRIGATÓRIO]` `PATCH /api/medicos/{id}/status` (RF24, RN16)
 - `[FRONTEND]` `[OBRIGATÓRIO]` Formulário com `Select` de especialidade
+- `[FRONTEND]` `[OBRIGATÓRIO]` Botão ativar/inativar na listagem
 
-> Editar e inativar médico **não** fazem parte do MVP — ver MF04 em
-> [`15-melhorias-futuras.md`](Melhorias-Futuras).
+> **Editar** médico não faz parte do MVP — ver MF04 em
+> [`15-melhorias-futuras.md`](Melhorias-Futuras). A **inativação** entrou no MVP pelo
+> [ADR-009](adr/ADR-009-inativacao-especialidade-medico.md).
 
 ---
 
@@ -349,6 +372,16 @@ deve receber `Horario indisponivel`
 
 **CA4** — Após o agendamento, o horário deixa de aparecer como livre
 
+**CA5** — **Quando** a solicitação der certo, **então** devo ser levado para
+**Minhas Consultas** (US-10), onde a consulta recém-solicitada já aparece — a notificação de
+sucesso manda "aguarde a confirmação do atendente em Minhas Consultas", então o fluxo tem de
+terminar lá. **Quando** der erro (CA2/CA3), **então** devo **permanecer** na grade, que é
+recarregada do backend para eu escolher outro horário
+
+**CA6 (RN17)** — **Dado** que a especialidade do médico foi inativada, **quando** eu abrir
+`/agendar` — inclusive digitando `/agendar?medico=<id>` direto na URL — **então** nenhum
+horário deve ser oferecido **e** `POST /api/consultas` deve recusar com **409**
+
 ### Tarefas
 
 - `[BACKEND]` `[OBRIGATÓRIO]` `POST /api/consultas` com `paciente_id` vindo do token
@@ -408,9 +441,14 @@ horário, status e, se cancelada, o motivo
 **CA4** — **Quando** eu não tiver consulta alguma, **então** deve aparecer estado vazio com
 convite para agendar
 
+**CA5 (RN15)** — **Dado** que tenho consultas futuras e passadas, **quando** eu abrir a lista,
+**então** as **futuras** devem vir primeiro, com a **mais próxima no topo**, e só depois o
+histórico, do mais recente para o mais antigo. A ordenação é do backend, no fuso da RN15 — a
+tela apenas preserva a ordem recebida
+
 ### Tarefas
 
-- `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/consultas` filtrando pelo token
+- `[BACKEND]` `[OBRIGATÓRIO]` `GET /api/consultas` filtrando pelo token, ordenado pelo CA5
 - `[FRONTEND]` `[OBRIGATÓRIO]` Lista com `Badge` por status (SOLICITADA amarelo, CONFIRMADA
   verde-água, FINALIZADA cinza, CANCELADA vermelho)
 
@@ -444,6 +482,12 @@ o sistema deve exibir
 máquina do servidor
 
 **CA5** — Posso informar um motivo opcional, que fica registrado
+
+**CA6** — **Dado** que uma consulta não pode ser cancelada (`pode_cancelar = false`), **quando**
+eu olhar a linha dela, **então** no lugar do botão deve haver um **texto explicando o motivo**
+— `Consulta encerrada` para CANCELADA/FINALIZADA, `Fora do prazo de cancelamento` para as que
+ainda estão abertas — nunca um espaço vazio. Quem decide é o `pode_cancelar` do backend; a tela
+**não** recalcula as horas de antecedência
 
 ### Tarefas
 

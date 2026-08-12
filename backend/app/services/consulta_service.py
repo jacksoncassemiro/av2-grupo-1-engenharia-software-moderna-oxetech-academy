@@ -14,6 +14,7 @@ from app.models.enums import TRANSICOES_PERMITIDAS, StatusConsulta, TipoUsuario
 from app.repositories.consulta_repository import ConsultaRepository
 from app.repositories.horario_repository import HorarioRepository
 from app.services.cancelamento_strategy import obter_strategy
+from app.services.disponibilidade_medico import garantir_que_recebe_consulta
 
 
 class ConsultaService:
@@ -32,15 +33,35 @@ class ConsultaService:
         )
         return self.consultas.salvar(consulta)
 
+    def listar_do_paciente(self, paciente_id: int, agora: datetime | None = None) -> list[Consulta]:
+        """US-10 - o paciente so enxerga o proprio historico, futuras primeiro."""
+        return self.consultas.listar_por_paciente(paciente_id, agora or self._agora())
+
+    def detalhar_do_paciente(self, consulta_id: int, paciente_id: int) -> Consulta:
+        """US-10 / RN12 - consulta de outro paciente responde 404, nunca vaza dado."""
+        return self._buscar_do_paciente_ou_falhar(consulta_id, paciente_id)
+
+    def listar_para_atendente(self, status: StatusConsulta | None = None) -> list[Consulta]:
+        """US-13 / CA5 - o atendente ve tudo, com filtro opcional por status."""
+        if status is None:
+            return self.consultas.listar()
+        return self.consultas.listar_por_status(status)
+
     def cancelar(
         self,
         consulta_id: int,
         perfil: TipoUsuario,
         motivo: str | None = None,
         agora: datetime | None = None,
+        paciente_id: int | None = None,
     ) -> Consulta:
-        """US-11 / US-12. A regra de prazo vem da Strategy, nao de um if."""
-        consulta = self._buscar_ou_falhar(consulta_id)
+        """US-11 / US-12. A regra de prazo vem da Strategy, nao de um if.
+
+        `paciente_id` restringe o cancelamento ao dono da consulta (RN12); o
+        atendente cancela qualquer uma e por isso passa None.
+        """
+        consulta = self._buscar_para_atualizar_ou_falhar(consulta_id)
+        self._garantir_dono(consulta, paciente_id)
         self._garantir_transicao(consulta.status, StatusConsulta.CANCELADA)
 
         strategy = obter_strategy(perfil, settings.CANCELAMENTO_ANTECEDENCIA_HORAS)
@@ -48,14 +69,16 @@ class ConsultaService:
 
         consulta.status = StatusConsulta.CANCELADA
         consulta.motivo_cancelamento = motivo
-        consulta.horario.disponivel = True  # RN03 - libera o slot
+        self._liberar_slot(consulta)
         return self.consultas.salvar(consulta)
 
     def mudar_status(self, consulta_id: int, novo_status: StatusConsulta) -> Consulta:
-        """US-13 - atendente confirma ou finaliza a consulta (RN06 / RN10)."""
-        consulta = self._buscar_ou_falhar(consulta_id)
+        """US-13 - atendente confirma, finaliza ou cancela a consulta (RN06 / RN10)."""
+        consulta = self._buscar_para_atualizar_ou_falhar(consulta_id)
         self._garantir_transicao(consulta.status, novo_status)
         consulta.status = novo_status
+        if novo_status is StatusConsulta.CANCELADA:
+            self._liberar_slot(consulta)
         return self.consultas.salvar(consulta)
 
     # --- privados ---
@@ -64,6 +87,7 @@ class ConsultaService:
         slot = self.horarios.buscar_para_reserva(horario_id)  # SELECT FOR UPDATE
         if slot is None:
             raise RecursoNaoEncontrado("Horario nao encontrado")
+        garantir_que_recebe_consulta(slot.medico)  # RN16 / RN17
         if not slot.disponivel or self.consultas.existe_ativa_no_slot(slot.id):
             raise HorarioIndisponivel  # RN03
         slot.disponivel = False
@@ -74,6 +98,16 @@ class ConsultaService:
         if solicitado_por is TipoUsuario.ATENDENTE:
             return StatusConsulta.CONFIRMADA
         return StatusConsulta.SOLICITADA
+
+    @staticmethod
+    def _liberar_slot(consulta: Consulta) -> None:
+        """RN03 - cancelar por qualquer rota devolve o horario para a agenda.
+
+        Compartilhado por `cancelar` e `mudar_status`: quando so o `/cancelar`
+        liberava o slot, cancelar pelo endpoint generico de status bloqueava o
+        horario para sempre (EXP-02, bug 1).
+        """
+        consulta.horario.disponivel = True
 
     @staticmethod
     def _garantir_transicao(atual: StatusConsulta, destino: StatusConsulta) -> None:
@@ -87,7 +121,34 @@ class ConsultaService:
         return datetime.now(ZoneInfo(settings.TIMEZONE))
 
     def _buscar_ou_falhar(self, consulta_id: int) -> Consulta:
-        consulta = self.consultas.buscar_por_id(consulta_id)
+        """Leitura simples - usada pelos fluxos que nao escrevem na consulta."""
+        return self._exigir_consulta(self.consultas.buscar_por_id(consulta_id))
+
+    def _buscar_para_atualizar_ou_falhar(self, consulta_id: int) -> Consulta:
+        """Leitura travada (SELECT ... FOR UPDATE) para quem vai mudar o status.
+
+        Cancelar e mudar status disputam a mesma linha; sem a trava a segunda escrita
+        sobrescreve a primeira (lost update) e desalinha `status` de `horario.disponivel`.
+        """
+        return self._exigir_consulta(self.consultas.buscar_para_atualizar(consulta_id))
+
+    @staticmethod
+    def _exigir_consulta(consulta: Consulta | None) -> Consulta:
         if consulta is None:
             raise RecursoNaoEncontrado("Consulta nao encontrada")
+        return consulta
+
+    @staticmethod
+    def _garantir_dono(consulta: Consulta, paciente_id: int | None) -> None:
+        """RN12 - consulta de outro paciente e tratada como inexistente.
+
+        `paciente_id` None e o atendente, que age sobre qualquer consulta.
+        """
+        if paciente_id is not None and consulta.paciente_id != paciente_id:
+            raise RecursoNaoEncontrado("Consulta nao encontrada")
+
+    def _buscar_do_paciente_ou_falhar(self, consulta_id: int, paciente_id: int) -> Consulta:
+        """RN12 - consulta de outro paciente e tratada como inexistente."""
+        consulta = self._buscar_ou_falhar(consulta_id)
+        self._garantir_dono(consulta, paciente_id)
         return consulta

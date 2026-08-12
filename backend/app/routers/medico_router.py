@@ -8,15 +8,19 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import UsuarioAutenticado, exigir_atendente, usuario_atual
-from app.exceptions.dominio import EmailDuplicado, RegraDeNegocioViolada
-from app.models.medico import Medico
+from app.repositories.especialidade_repository import EspecialidadeRepository
 from app.repositories.horario_repository import HorarioRepository
 from app.repositories.medico_repository import MedicoRepository
 from app.schemas.agenda_schema import GradeHorariaCriar, HorarioResposta
 from app.schemas.medico_schema import MedicoCriar, MedicoResposta
 from app.services.agenda_service import AgendaService
+from app.services.medico_service import MedicoService
 
 router = APIRouter(prefix="/medicos", tags=["Medicos e Agenda"])
+
+
+def obter_medico_service(db: Annotated[Session, Depends(get_db)]) -> MedicoService:
+    return MedicoService(MedicoRepository(db), EspecialidadeRepository(db))
 
 
 def obter_agenda_service(db: Annotated[Session, Depends(get_db)]) -> AgendaService:
@@ -26,29 +30,50 @@ def obter_agenda_service(db: Annotated[Session, Depends(get_db)]) -> AgendaServi
 @router.post("", response_model=MedicoResposta, status_code=201, summary="US-02")
 def cadastrar(
     dados: MedicoCriar,
+    service: Annotated[MedicoService, Depends(obter_medico_service)],
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
 ) -> MedicoResposta:
-    repositorio = MedicoRepository(db)
-    if repositorio.buscar_por_email(dados.email):
-        raise EmailDuplicado  # RN02
-    if repositorio.buscar_por_crm(dados.crm):
-        raise RegraDeNegocioViolada("CRM ja cadastrado")
-    medico = repositorio.salvar(Medico(**dados.model_dump()))
+    medico = service.cadastrar(dados)
     db.commit()
     return MedicoResposta.model_validate(medico)
 
 
 @router.get("", response_model=list[MedicoResposta], summary="US-06")
 def listar(
-    db: Annotated[Session, Depends(get_db)],
+    service: Annotated[MedicoService, Depends(obter_medico_service)],
     _: Annotated[UsuarioAutenticado, Depends(usuario_atual)],
     especialidade_id: Annotated[int | None, Query()] = None,
+    apenas_ativos: Annotated[
+        bool | None,
+        Query(description="Filtrar status: True=ativos, False=inativos, None=todos"),
+    ] = None,
+    apenas_agendaveis: Annotated[
+        bool,
+        Query(
+            description=(
+                "True = so quem pode receber consulta nova: medico ativo (RN16) "
+                "de especialidade ativa (RN17). Ignora apenas_ativos."
+            )
+        ),
+    ] = False,
 ) -> list[MedicoResposta]:
-    return [
-        MedicoResposta.model_validate(m)
-        for m in MedicoRepository(db).listar_ativos(especialidade_id)
-    ]
+    medicos = service.listar_ativos(
+        especialidade_id, apenas_ativos=apenas_ativos, apenas_agendaveis=apenas_agendaveis
+    )
+    return [MedicoResposta.model_validate(m) for m in medicos]
+
+
+@router.patch("/{medico_id}/status", response_model=MedicoResposta)
+def alternar_status(
+    medico_id: int,
+    service: Annotated[MedicoService, Depends(obter_medico_service)],
+    db: Annotated[Session, Depends(get_db)],
+    _: Annotated[UsuarioAutenticado, Depends(exigir_atendente)],
+) -> MedicoResposta:
+    medico = service.alternar_status(medico_id)
+    db.commit()
+    return MedicoResposta.model_validate(medico)
 
 
 @router.post(

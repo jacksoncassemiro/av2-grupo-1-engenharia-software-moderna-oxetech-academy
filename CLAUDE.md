@@ -8,13 +8,16 @@ Contexto para qualquer agente de IA (Claude Code, Cowork, Antigravity, Copilot) 
 ## 1. O que é este projeto
 
 MVP de um **Sistema de Gestão de Clínica Médica**, entrega da **AV2** da disciplina
-*Engenharia de Software Moderna* (Oxetech Academy) — **Equipe 01** (6 pessoas).
+*Engenharia de Software Moderna* (Oxetech Academy) — **Equipe 01** (7 pessoas).
 **Entrega: 10/08/2026.** Duas sprints curtas: 31/07–05/08 e 05/08–10/08.
 
 **Escopo congelado** pelo [ADR-008](docs/adr/ADR-008-rebaseline-escopo.md): 14 User Stories
 (US-00 a US-13) — as 13 funcionalidades dos dois perfis do enunciado mais autenticação.
 Nada além disso entra sem aprovação do PO. O que ficou de fora está em
 `docs/15-melhorias-futuras.md` com motivo e versão-alvo.
+O [ADR-009](docs/adr/ADR-009-inativacao-especialidade-medico.md) acrescentou RF23/RF24
+(inativar e reativar especialidade e médico) dentro de US-01 e US-02 — o restante do escopo
+do ADR-008 continua valendo.
 
 O projeto é avaliado pela **aplicação dos conceitos**, não pela quantidade de features.
 Toda decisão técnica precisa ser justificável a partir dos módulos do curso
@@ -103,7 +106,7 @@ Se uma regra de negócio parece precisar de HTTP, ela pertence a uma exceção e
 
 ## 6. Regras de negócio — sempre referencie o ID
 
-Toda regra tem um ID (`RN01`…`RN15`). Ao implementar ou testar uma regra, **cite o ID em comentário**
+Toda regra tem um ID (`RN01`…`RN17`). Ao implementar ou testar uma regra, **cite o ID em comentário**
 e no nome do teste. Isso é o que dá rastreabilidade requisito → código → teste → evidência.
 
 Lista canônica: `docs/01-requisitos.md`. Resumo:
@@ -125,6 +128,8 @@ Lista canônica: `docs/01-requisitos.md`. Resumo:
 | RN13 | JWT expira (24h no MVP) |
 | RN14 | Só ATENDENTE cadastra ATENDENTE |
 | RN15 | Regras temporais no fuso `America/Maceio` |
+| RN16 | Médico inativo não recebe consulta nova nem oferece agenda; consultas já existentes não mudam de status |
+| RN17 | Médico de especialidade inativa também não recebe consulta nova nem oferece agenda; inativar a especialidade não inativa os médicos dela nem cancela consultas |
 
 Nunca hardcode `24` para o prazo de cancelamento — use
 `settings.CANCELAMENTO_ANTECEDENCIA_HORAS`.
@@ -187,6 +192,11 @@ Justificativa: `docs/06-design-patterns.md` e `docs/adr/ADR-006-design-patterns.
 - **`next lint` não existe mais** (removido no Next 16, junto com a opção `eslint` do
   `next.config`). O lint roda pela CLI: `yarn lint` → `eslint .`, configurado em
   `eslint.config.mjs` com `eslint-config-next/core-web-vitals` + `/typescript` em flat config.
+- **Formatação é do Prettier**, configurado em `frontend/.prettierrc` para o estilo que o código
+  já usava (aspas simples, 100 colunas, `trailingComma: es5`). `yarn format` escreve,
+  `yarn format:check` confere — e o CI **reprova o PR** se algo estiver fora. Ligue o
+  *format on save* apontando para o Prettier, senão seu editor formata com outro padrão e o
+  PR quebra. Exceções deliberadas ficam em `.prettierignore` ou com `// prettier-ignore`.
 - `yarn typecheck` é `next typegen && tsc --noEmit`. O `next typegen` gera `next-env.d.ts` e os
   tipos de rota — sem ele o `tsc` falha no CI.
 - **`params` e `searchParams` são `Promise` no Next 16** (a compatibilidade síncrona da v15 foi
@@ -274,7 +284,8 @@ Detalhes em `scripts/README.md`.
 ## 12. Coisas que NÃO fazer
 
 - ❌ Criar rota pública de cadastro de atendente (RN14 — falha de segurança).
-- ❌ Adicionar funcionalidade fora das US-00 a US-13. O escopo está congelado (ADR-008).
+- ❌ Adicionar funcionalidade fora das US-00 a US-13. O escopo está congelado (ADR-008), com o
+  acréscimo de RF23/RF24 (US-01/US-02) registrado no ADR-009.
   Ideia nova vai para `docs/15-melhorias-futuras.md`, não para o código.
 - ❌ Chamar o app React de "View do MVC" na documentação ou nos slides.
 - ❌ Duplicar regra de negócio no frontend. As 24h da RN04 são calculadas no backend, que

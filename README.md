@@ -76,12 +76,13 @@ usa.
 
 | Papel | Pessoa | Foco |
 |---|---|---|
-| 👑 **Product Owner** | Uanderson Henrique Batista da Silva | Backlog, User Stories, critérios de aceite, ciclo de desenvolvimento |
-| 💻 **Engenharia** | Ronaldo de Melo Sabino Filho | Backend inteiro: arquitetura MVC, Clean Code, Design Patterns, auth, Git Flow |
-| 💻 **Engenharia** | João Vitor Mandu de Lira | Frontend do paciente, testes Vitest, Clean Code do frontend |
-| 💻 **Engenharia** | Antonio Andrade Gomes Júnior | Frontend do atendente, cerimônias Scrum, apresentação |
-| 🧪 **QA** | Jackson Douglas da Silva Cassemiro | Plano e casos de teste, execução, evidências |
-| 🧪 **QA** | Felipe da Silva Araújo | CI/CD, testes exploratórios, relatório final |
+| 👑 **Product Owner** | Jackson Cassemiro | Backlog, User Stories, critérios de aceite, ciclo de desenvolvimento, aprovação de PRs |
+| 💻 **Engenharia** | Ronaldo Filho | Backend inteiro: arquitetura MVC, Clean Code, Design Patterns, auth, Git Flow |
+| 💻 **Engenharia** | João Vitor Lira | Frontend do paciente, testes Vitest, Clean Code do frontend |
+| 💻 **Engenharia** | Antonio Júnior | Frontend do atendente, cerimônias Scrum, apresentação |
+| 🧪 **QA** | Uanderson Silva | Plano e casos de teste, execução, evidências |
+| 🧪 **QA** | Felipe Araújo | CI/CD, testes exploratórios, relatório final |
+| 🧪 **QA** | Alyssandro Gouveia | Reforço de QA, apoio geral em execução e evidências |
 
 Alocação detalhada de cada entregável avaliado em
 [`docs/13-papeis-e-responsabilidades.md`](docs/13-papeis-e-responsabilidades.md).

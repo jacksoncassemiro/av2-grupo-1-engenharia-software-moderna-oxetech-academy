@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primeiro Acesso — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <!-- US-00: Primeiro acesso — verificar CPF, depois ativar login ou auto-cadastro (ADR-005) -->
+  <!-- Sem logo/stepper na AuthShell real: so titulo + descricao + formulario -->
+
+  <div class="auth-layout">
+    <div class="auth-card">
+      <!-- ===== Passo 1: Verificar CPF ===== -->
+      <h1 style="font-size:1.375rem; margin-bottom:4px;">Verificar CPF</h1>
+      <p class="text-dimmed text-sm" style="margin-bottom:24px;">
+        Informe seu CPF para verificarmos se você já tem cadastro na clínica.
+      </p>
+
+      <form onsubmit="return false">
+        <div class="stack gap-md">
+          <div class="input-wrapper">
+            <label class="input-label input-required" for="cpf">CPF</label>
+            <input id="cpf" class="input" type="text" placeholder="000.000.000-00">
+            <span class="input-description">Pode digitar com ou sem pontos e traço</span>
+          </div>
+          <button class="btn btn-primary btn-full btn-lg" type="submit">Verificar</button>
+        </div>
+      </form>
+
+      <p class="text-center text-xs" style="margin-top:24px;">
+        <a href="login.html">← Já tenho login, voltar para entrar</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- ESTADO 2 — CPF encontrado, ativar login (CA4)                  -->
+  <!-- Descomente este bloco e comente o Passo 1 acima para ver       -->
+  <!-- ============================================================= -->
+  <!--
+  <div class="auth-layout">
+    <div class="auth-card">
+      <div class="alert alert-success" style="margin-bottom:20px;">
+        <strong>Encontramos seu cadastro, Carlos Silva!</strong>
+        <div class="text-sm">Crie uma senha para ativar seu login.</div>
+      </div>
+
+      <form onsubmit="return false">
+        <div class="stack gap-md">
+          <div class="input-wrapper">
+            <label class="input-label">CPF</label>
+            <input class="input" value="529.982.247-25" disabled style="background:var(--gray-0);">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label">Nome</label>
+            <input class="input" value="Carlos Silva" disabled style="background:var(--gray-0);">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Criar senha</label>
+            <input class="input" type="password" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Confirmar senha</label>
+            <input class="input" type="password" placeholder="Repita a senha">
+          </div>
+          <button class="btn btn-primary btn-full btn-lg" type="submit">Ativar meu acesso</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  -->
+
+  <!-- ============================================================= -->
+  <!-- ESTADO 3 — CPF não encontrado, auto-cadastro (CA5 / ADR-005)   -->
+  <!-- ============================================================= -->
+  <!--
+  <div class="auth-layout">
+    <div class="auth-card">
+      <div class="alert alert-info" style="margin-bottom:20px;">
+        <strong>CPF não encontrado</strong>
+        <div class="text-sm">Preencha seus dados para se cadastrar.</div>
+      </div>
+
+      <form onsubmit="return false">
+        <div class="stack gap-md">
+          <div class="input-wrapper">
+            <label class="input-label">CPF</label>
+            <input class="input" value="123.456.789-09" disabled style="background:var(--gray-0);">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Nome completo</label>
+            <input class="input" placeholder="Seu nome completo">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Telefone</label>
+            <input class="input" placeholder="(82) 99999-0000">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label">E-mail</label>
+            <input class="input" placeholder="seu@email.com">
+            <span class="input-description">Opcional</span>
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Criar senha</label>
+            <input class="input" type="password" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="input-wrapper">
+            <label class="input-label input-required">Confirmar senha</label>
+            <input class="input" type="password" placeholder="Repita a senha">
+          </div>
+          <button class="btn btn-primary btn-full btn-lg" type="submit">Criar minha conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  -->
+
+  <!-- ============================================================= -->
+  <!-- ESTADO 4 — CPF já tem login ativo (CA6)                        -->
+  <!-- ============================================================= -->
+  <!--
+  <div class="auth-layout">
+    <div class="auth-card">
+      <div class="alert alert-warning" style="margin-bottom:20px;">
+        <strong>Este CPF já possui login ativo</strong>
+        <div class="text-sm">Você já criou sua senha anteriormente. Use a tela de login.</div>
+      </div>
+      <a href="login.html" class="btn btn-primary btn-full btn-lg">Ir para o login</a>
+    </div>
+  </div>
+  -->
+
+  <!-- Navegação -->
+  <div style="position:fixed;bottom:16px;left:16px;right:16px;text-align:center;">
+    <a href="index.html" class="btn btn-white btn-sm">← Voltar ao índice</a>
+  </div>
+</body>
+</html>

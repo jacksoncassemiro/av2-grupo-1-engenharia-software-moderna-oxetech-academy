@@ -125,9 +125,9 @@ DOD = {
 RESP = {
     "BACKEND": "Ronaldo",
     "FRONTEND": "João Vitor / Antonio",
-    "QA": "Jackson / Felipe",
+    "QA": "Uanderson / Felipe / Alyssandro",
     "INFRA": "Felipe",
-    "DOCS": "Uanderson / Antonio",
+    "DOCS": "Jackson / Antonio",
 }
 
 

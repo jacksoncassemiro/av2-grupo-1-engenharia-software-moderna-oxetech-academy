@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendar Consulta — Clínica Médica</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- US-07: Listar horários livres de um médico numa data -->
+  <!-- US-08: Solicitar consulta (nasce como SOLICITADA — RN06) -->
+
+  <div class="app-shell">
+    <nav class="app-shell__navbar">
+      <div class="app-shell__navbar-header">
+        <div class="app-shell__navbar-brand">
+          <div class="brand-icon"><i data-lucide="heart" style="width:20px;height:20px;"></i></div>
+          <div><div class="brand-text">Clínica Médica</div></div>
+        </div>
+      </div>
+      <div class="app-shell__navbar-body">
+        <div class="nav-section-label">Menu</div>
+        <a href="paciente-consultas.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span> Minhas Consultas
+        </a>
+        <a href="paciente-agendar.html" class="nav-link active">
+          <span class="nav-icon"><i data-lucide="heart" style="width:18px;height:18px;"></i></span> Agendar Consulta
+        </a>
+        <a href="paciente-medicos.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="stethoscope" style="width:18px;height:18px;"></i></span> Médicos
+        </a>
+        <a href="paciente-meus-dados.html" class="nav-link">
+          <span class="nav-icon"><i data-lucide="user" style="width:18px;height:18px;"></i></span> Meus Dados
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-shell__main">
+      <header class="app-shell__header">
+        <div></div>
+        <a href="login.html" class="nav-link" style="color:var(--color-error);width:auto;">
+          <span class="nav-icon"><i data-lucide="log-out" style="width:16px;height:16px;"></i></span> Sair
+        </a>
+      </header>
+
+      <div class="app-shell__content">
+        <div class="page-header">
+          <h1 style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="calendar-heart" style="width:22px;height:22px;"></i> Agendar Consulta
+          </h1>
+        </div>
+
+        <div class="card">
+          <div class="grid-2 mb-md">
+            <div class="input-wrapper">
+              <label class="input-label input-required">Médico</label>
+              <select class="select">
+                <option>Dr. Ricardo Silva</option>
+              </select>
+            </div>
+            <div class="input-wrapper">
+              <label class="input-label input-required">Data</label>
+              <input class="input" placeholder="Selecione a data" value="15/08/2026">
+            </div>
+          </div>
+
+          <p class="text-xs text-dimmed mb-sm">Horários livres</p>
+          <div class="chip-group mb-lg">
+            <span class="chip selected">15:00</span>
+          </div>
+
+          <div class="flex justify-end">
+            <button class="btn btn-primary">Confirmar agendamento</button>
+          </div>
+        </div>
+
+        <!-- Referência: notificação de sucesso -->
+        <div class="card mt-lg" style="border: 1px dashed var(--gray-3);">
+          <p class="text-xs text-dimmed mb-md">📌 Referência: consulta solicitada (RN06 — nasce SOLICITADA)</p>
+          <div class="notification notification-success" style="position:static;max-width:100%;">
+            <span style="color:var(--color-success);"><i data-lucide="check" style="width:18px;height:18px;"></i></span>
+            <div>
+              <div class="notification-title">Consulta com Dr. Ricardo Silva solicitada</div>
+              <div class="notification-body">Aguarde a confirmação do atendente em Minhas Consultas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position:fixed;bottom:16px;right:16px;z-index:300;">
+    <a href="index.html" class="btn btn-white btn-sm">← Índice</a>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

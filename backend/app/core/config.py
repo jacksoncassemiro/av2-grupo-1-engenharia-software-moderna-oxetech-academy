@@ -22,7 +22,10 @@ class Settings(BaseSettings):
     JWT_EXPIRE_MINUTES: int = 60 * 24  # 24h (RN13)
 
     # --- Regras de negocio parametrizaveis ---
-    CANCELAMENTO_ANTECEDENCIA_HORAS: int = 24  # RN04
+    # RN04 - nome unico da antecedencia minima de cancelamento. E a mesma variavel
+    # publicada no .env.example e no docker-compose: baixar para 0 tem de afetar
+    # tanto a validacao do ConsultaService quanto o `pode_cancelar` da resposta.
+    CANCELAMENTO_ANTECEDENCIA_HORAS: int = 24
     TIMEZONE: str = "America/Maceio"  # RN15 - fuso de referencia das regras temporais
 
     # --- Bootstrap do primeiro atendente (RN14 / ADR-004) ---

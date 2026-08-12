@@ -37,12 +37,20 @@ class CancelamentoStrategy(ABC):
 class CancelamentoPorPaciente(CancelamentoStrategy):
     """RN04 - exige antecedencia minima."""
 
-    def __init__(self, antecedencia_minima_horas: int = 24):
-        self.antecedencia_minima = timedelta(hours=antecedencia_minima_horas)
+    def __init__(self, antecedencia_minima_horas: int | None = None):
+        horas = (
+            antecedencia_minima_horas
+            if antecedencia_minima_horas is not None
+            else settings.CANCELAMENTO_ANTECEDENCIA_HORAS
+        )
+        self.antecedencia_minima = timedelta(hours=horas)
 
     def validar(self, consulta: Consulta, agora: datetime) -> None:
         if momento_agendado(consulta) - agora < self.antecedencia_minima:
-            raise CancelamentoNaoPermitido
+            horas = int(self.antecedencia_minima.total_seconds() // 3600)
+            raise CancelamentoNaoPermitido(
+                f"Cancelamento indisponivel. Prazo de antecedencia menor que {horas} horas"
+            )
 
 
 class CancelamentoPorAtendente(CancelamentoStrategy):
@@ -52,7 +60,9 @@ class CancelamentoPorAtendente(CancelamentoStrategy):
         return None
 
 
-def obter_strategy(perfil: TipoUsuario, antecedencia_horas: int = 24) -> CancelamentoStrategy:
+def obter_strategy(
+    perfil: TipoUsuario, antecedencia_horas: int | None = None
+) -> CancelamentoStrategy:
     """Factory simples que resolve a estrategia a partir do perfil autenticado."""
     if perfil is TipoUsuario.PACIENTE:
         return CancelamentoPorPaciente(antecedencia_horas)

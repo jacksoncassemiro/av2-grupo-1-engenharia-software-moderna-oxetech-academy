@@ -50,25 +50,44 @@ Estes itens **existiam** no planejamento anterior e foram removidos.
 - **Esforço:** P
 - **Versão-alvo:** v1.1
 
-### MF03 — Edição e exclusão de especialidades
+### MF03 — Edição e exclusão de especialidades — ⚠️ **parcialmente entregue no MVP**
+
+> **A inativação saiu daqui e entrou no MVP** pelo
+> [ADR-009](adr/ADR-009-inativacao-especialidade-medico.md): `PATCH /api/especialidades/{id}/status`
+> e o botão ativar/inativar já estavam implementados e mergeados. Virou o **RF23**, coberto pelo
+> CA4 da US-01.
+>
+> A pergunta que estava em aberto aqui — o que acontece com os **médicos vinculados** a uma
+> especialidade inativada — foi respondida pela **RN17**, na mesma forma da RN16: eles
+> continuam `ativo = true` e as consultas deles não mudam de status, mas nenhum agendamento
+> novo é aceito e a agenda deles não é oferecida.
+>
+> **Continua fora:** editar o nome e excluir o registro.
 
 - **Era:** parte da US-01
-- **Por que saiu:** o enunciado pede *"cadastrar especialidades"*. Editar e excluir são duas
-  telas e dois endpoints a mais, além de exigir decidir o que acontece com médicos vinculados a
-  uma especialidade excluída — regra que não existe hoje.
-- **Precisaria antes:** definir se a exclusão é lógica (`ativa = false`) ou física, e o que
-  ocorre com médicos e consultas já vinculados.
+- **Por que o resto continua fora:** a exclusão física quebraria o histórico de consultas, que
+  referencia a especialidade pelo médico. A inativação lógica já resolve o caso real.
+- **Precisaria antes:** definir o que fazer com médicos vinculados a uma especialidade
+  **excluída** — a RN17 responde só o caso da inativação.
 - **Esforço:** P
 - **Versão-alvo:** v1.1
 
-### MF04 — Edição e inativação de médicos
+### MF04 — Edição de médicos — ⚠️ **parcialmente entregue no MVP**
+
+> **A inativação saiu daqui e entrou no MVP** pelo
+> [ADR-009](adr/ADR-009-inativacao-especialidade-medico.md): `PATCH /api/medicos/{id}/status` e o
+> botão ativar/inativar já estavam implementados e mergeados. Virou o **RF24**, coberto pelo CA5
+> da US-02.
+>
+> A pergunta que estava em aberto aqui — o que acontece com a agenda e as consultas de um médico
+> inativado — foi respondida pela **RN16**: o passado é preservado (nenhuma consulta muda de
+> status) e o futuro é barrado (não se agenda com médico inativo, e a agenda dele não é
+> oferecida). Cancelamento em cascata com aviso ao paciente virou a MF16.
+>
+> **Continua fora:** editar nome, e-mail, CRM ou especialidade de um médico.
 
 - **Era:** parte da US-02
-- **Por que saiu:** mesma razão da MF03. O enunciado pede *"cadastrar médicos"*.
-- **Precisaria antes:** definir o que acontece com os horários futuros e as consultas já
-  marcadas de um médico inativado — provavelmente uma RN nova de cancelamento em cascata com
-  aviso ao paciente.
-- **Esforço:** M
+- **Esforço:** P
 - **Versão-alvo:** v1.1
 
 ### MF05 — Edição de dados do paciente pelo atendente
@@ -166,13 +185,25 @@ Estes itens **existiam** no planejamento anterior e foram removidos.
 - **Esforço:** M
 - **Versão-alvo:** v2.0
 
+### MF16 — Cancelamento em cascata ao inativar um médico
+
+- **O que é:** ao inativar um médico com consultas futuras, cancelá-las automaticamente e
+  avisar cada paciente.
+- **Por que não agora:** a **RN16** ([ADR-009](adr/ADR-009-inativacao-especialidade-medico.md))
+  decidiu o mínimo seguro — inativar preserva as consultas existentes e apenas barra novos
+  agendamentos. Cancelar em cascata exige uma política de aviso ao paciente, que depende da
+  MF07 (notificações) para não deixar ninguém sabendo só ao chegar na clínica.
+- **Precisaria antes:** MF07.
+- **Esforço:** M
+- **Versão-alvo:** v2.0
+
 ---
 
 ## 4. Resumo por versão
 
 | Versão | Itens | Tema |
 |---|---|---|
-| **v1.0 (MVP — 10/08)** | US-00 a US-13 | Agendamento funcionando ponta a ponta com os dois perfis |
+| **v1.0 (MVP — 10/08)** | US-00 a US-13 + RF23/RF24 (inativação, com RN16 e RN17 — [ADR-009](adr/ADR-009-inativacao-especialidade-medico.md)) | Agendamento funcionando ponta a ponta com os dois perfis |
 | **v1.1** | MF01, MF02, MF03, MF04, MF06, MF12 | Completar o CRUD e a visão consolidada |
 | **v1.2** | MF05, MF08, MF11, MF13, MF14 | Conveniência de uso e automação de testes |
 | **v2.0** | MF07, MF09, MF10, MF15 | Notificações, terceiro perfil, prontuário, deploy |
