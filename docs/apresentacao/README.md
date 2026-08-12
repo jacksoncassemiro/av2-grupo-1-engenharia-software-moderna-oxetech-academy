@@ -1,6 +1,6 @@
 # Apresentação final
 
-`apresentacao-final-av2-equipe01.pptx` — **22 slides**, 16:9.
+`apresentacao-final-av2-equipe01.pptx` — **23 slides**, 16:9.
 
 ---
 
@@ -25,14 +25,17 @@
 | 15 | O board — o que cada coluna significa |
 | 16 | Plano de testes — pirâmide e cobertura das RNs |
 | 17 | Gestão de defeitos — do bug encontrado ao bug fechado |
-| 18 | Pipeline de integração contínua |
-| 19 | Demonstração ao vivo |
-| 20 | Métricas do projeto |
-| 21 | Melhorias futuras |
-| 22 | Retrospectiva |
+| 18 | GitHub Actions — três jobs, um portão (diagrama do pipeline) |
+| 19 | O gate provado — o vermelho que virou verde ([IF03](../evidencias/IF03/README.md)) |
+| 20 | Demonstração ao vivo |
+| 21 | Métricas do projeto |
+| 22 | Melhorias futuras |
+| 23 | Retrospectiva |
 
 O backlog ocupa três slides (4 a 6): conceito com exemplo real, sprints e priorização.
-A estratégia de entrega ocupa três (13 a 15) e a qualidade, dois (16 e 17).
+A estratégia de entrega ocupa três (13 a 15), a qualidade dois (16 e 17) e a integração
+contínua dois (18 e 19): o pipeline em diagrama e a evidência real do quality gate barrando
+o PR #21 e liberando o PR #25.
 
 ---
 
